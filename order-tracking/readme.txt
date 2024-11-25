@@ -3,8 +3,8 @@ Contributors: Rustaurius, EtoileWebDesign
 Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order shortcode, order management, delivery, deliveries, shipping, track, tracking, order processing, inventory management, customer orders, support tickets, helpdesk, help desk, help desk software, support software
 Requires at least: 5.0
-Tested up to: 6.6
-Stable tag: 3.3.17
+Tested up to: 6.7
+Stable tag: 3.3.18
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.3.18 (2024-11-25) =
+- Tested with WordPress 6.7.
 
 = 3.3.17 (2024-09-18) =
 - Fixed issue in which order delete button wasn't working in the sales rep admin for certain WP user roles.
