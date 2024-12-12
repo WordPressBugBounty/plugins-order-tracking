@@ -537,6 +537,9 @@ class ewdotpSalesRepsTable extends WP_List_Table {
 					<label class='ewd-otp-admin-table-filter-label'><?php esc_html_e( 'Sales Rep Email', 'order-tracking' ); ?></label>
 					<input type='text' name='sales_rep_email' class='ewd-otp-sales-reps-table-filter ewd-otp-sales-rep-email ewd-otp-admin-table-filter-field' value='<?php echo ( empty( $this->filter_sales_rep_email ) ? esc_attr( $this->filter_sales_rep_email ) : '' ); ?>' />
 				</div>
+				<div class='ewd-otp-admin-table-filter-div ewd-otp-hidden'>
+					<input type='submit' name='sales_rep_filtering' value='<?php _e( 'Search Sales Reps', 'order-tracking' ); ?>' />
+				</div>
 			</div>
 			<div class="ewd-otp-table-header-controls-right">
 				<div class="tablenav top ewd-otp-top-actions-wrapper">

@@ -18,7 +18,7 @@ class ewdotpNotifications {
 
 		add_action( 'ewd_otp_admin_order_inserted', 	array( $this, 'user_order_created_notification' ) );
 		add_action( 'ewd_otp_admin_order_updated', 		array( $this, 'user_status_updated_notification' ), 10, 2 );
-		add_action( 'ewd_otp_status_updated', 			array( $this, 'user_status_updated_notification' ), 10, 2 );
+		add_action( 'ewd_otp_status_updated', 				array( $this, 'user_status_updated_notification' ), 10, 2 );
 
 		// Sales rep notifications
 		add_action( 'ewd_otp_insert_customer_order', 	array( $this, 'sales_rep_status_updated_notification' ) );
@@ -380,8 +380,10 @@ class ewdotpNotifications {
 			'email'								=> $order->email,
 			'tracking_link_code'	=> $confirmation_code
 		);
+
+		$url = ! empty( $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) ) ? $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) : false;
 	
-		return add_query_arg( $args, $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) );
+		return add_query_arg( $args, $url );
 	}
 
 	/**

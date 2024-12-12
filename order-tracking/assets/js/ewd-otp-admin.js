@@ -343,5 +343,15 @@ jQuery( document ).ready( function() {
 	jQuery( '.ewd-otp-settings-preview' ).prevAll( 'h2' ).hide();
 	jQuery( '.ewd-otp-settings-preview' ).prevAll( '.sap-tutorial-toggle' ).hide();
 	jQuery( '.ewd-otp-settings-preview .sap-tutorial-toggle' ).hide();
-});
+
+	jQuery( 'h2' ).each( function(){
+
+		var thish2 = jQuery( this );
+		
+		if ( thish2.is( ':contains("WooCommerce")' ) ) {
+
+			thish2.show();
+		} 
+	} );
+} );
 

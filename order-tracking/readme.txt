@@ -4,7 +4,7 @@ Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order shortcode, order management, delivery, deliveries, shipping, track, tracking, order processing, inventory management, customer orders, support tickets, helpdesk, help desk, help desk software, support software
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 3.3.18
+Stable tag: 3.4.0
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,7 +28,7 @@ Since the plugin can be used for the status tracking of anything, not just order
 * Set up searchable orders or ticket numbers / tracking numbers for customers. Order management made simple!
 * Easily update and change the order status in the plugin admin panel.
 * Create custom statuses tailored to your business.
-* Require email verficiation to view order tracking.
+* Require email verification to view order tracking.
 * Order status notifications that automatically send an alert email to a customer whenever an order is created or updated.
 * Choose what order tracking information gets displayed in the results when you place the order shortcode or block on a page.
 
@@ -303,73 +303,12 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 == Changelog ==
 
-= 3.3.18 (2024-11-25) =
-- Tested with WordPress 6.7.
-
-= 3.3.17 (2024-09-18) =
-- Fixed issue in which order delete button wasn't working in the sales rep admin for certain WP user roles.
-
-= 3.3.16 (2024-09-12) =
-- Correcting version number error in last update.
-
-= 3.3.15 (2024-09-11) =
-- Bumping version number and pushing again, since WordPress says "not found" when trying to update to 3.3.14.
-
-= 3.3.14 (2024-09-10) =
-- Fixed issue causing email select option fields to not populate correctly.
-
-= 3.3.13 (2024-08-09) =
-- Bumping version number due to incorrect version number in readme file in last update.
-
-= 3.3.12 (2024-08-08) =
-- Removing an unused Ajax function.
-
-= 3.3.11 (2024-07-16) =
-- Tested with WordPress 6.6.
-
-= 3.3.10 (2024-04-03) =
-- Added phone number to the import/export.
-- Tested for compatibility with WP 6.5 and PHP 8.2 and eliminated/fixed deprecated notices associated with this.
-
-= 3.3.9 (2024-01-03) =
-- Fix for an issue causing admin notification to not send when a new customer order was created via the front end.
-
-= 3.3.8 (2023-11-07) =
-- Tested for WordPress 6.4 compatibility/support.
-
-= 3.3.7 (2023-08-28) =
-- Tested and declaring compatibility with WooCommerce High-Performance Order Storage.
-- Updates to the escaping/sanitization for elements in the walk-through and the export feature.
-
-= 3.3.6 (2023-08-08) =
-- Tested for WordPress 6.3 compatibility/support.
-
-= 3.3.5 (2023-07-27) =
-- Added the ability to bulk import customers and sales reps.
-- Fixed issue with sales reps and customers getting re-added if they were created and then updated without reloading the page.
-- Fixed issue causing the sales rep name to not display correctly in the admin customers overview table.
-- Updated PHPSpreadsheet version.
-
-= 3.3.4 (2023-06-16) =
-- Fix for admin menu items showing in the wrong order. 
-
-= 3.3.3 (2023-06-01) =
-- Fix for notifications not being sent for bulk order updates or status changes (either via the bulk actions menu or spreadsheet import).
-- Fix for notifications being sent for internal statuses.
-
-= 3.3.2 (2023-05-19) =
-- Fixed an issue sometimes causing the Settings page to be inaccessible on new installations/activations.
-
-= 3.3.1 (2023-05-04) =
-- Updating an incorrect settings page version number that could, in some cases, cause a plugin error.
-
-= 3.3.0 (2023-05-04) =
-- Introducing the ultimate version of the plugin.
-- With the ultimate version, you can now send SMS order notifications.
-- Create an unlimited amount of different SMS messages.
-- Then you can assign a specific SMS message to each status.
-- You can also choose an SMS message for the admin notification when a customer note is updated.
-- You can also choose an SMS message for the notification sent to the administrator when a new customer order is created.
-- Fixed an issue with custom field values not displaying correctly in notifications. 
+= 3.4.0 (2024-12-12) =
+- Added an option to show the tracking form on the WooCommerce view order (order tracking) page.
+- Plugin will now default to using WooCommerce statuses on activation.
+- New orders will now also be automatically added for orders created manually in the WooCommerce admin.
+- Added search button to orders, customers and sales reps admin screens.
+- Fix for issue with not being able to delete all custom fields.
+- Fixes for deprecated notices.
 
 [See changelog for all versions](https://www.etoilewebdesign.com/changelogs/order-tracking.txt).

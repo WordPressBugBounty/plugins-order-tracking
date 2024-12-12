@@ -23,6 +23,8 @@ class ewdotpWooCommerce {
 
 		if ( empty( $ewd_otp_controller->settings->get_setting( 'woocommerce-integration' ) ) ) { return; }
 
+		add_action( 'save_post_shop_order', array( $this, 'maybe_add_admin_order' ), 10, 2 );
+
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'add_order' ) );
 		add_action( 'woocommerce_order_status_changed', 	array( $this, 'update_order' ) );
 
@@ -45,6 +47,11 @@ class ewdotpWooCommerce {
 			add_filter( 'woocommerce_reports_get_order_report_data_args', array( $this, 'report_parent_statuses' ) );
 		}
 
+		if ( $ewd_otp_controller->settings->get_setting( 'woocommerce-show-on-view-order' ) ) {
+
+			add_action( 'woocommerce_view_order', array( $this, 'add_tracking_form_to_order_view' ) );
+		}
+
 		if ( $ewd_otp_controller->settings->get_setting( 'woocommerce-show-on-order-page' ) ) {
 
 			add_action( 'woocommerce_order_details_after_order_table', array( $this, 'add_tracking_to_order_page' ) );
@@ -55,6 +62,48 @@ class ewdotpWooCommerce {
 			add_action( 'woocommerce_admin_order_data_after_order_details', array( $this, 'add_order_location' ) );
 			add_action( 'save_post_shop_order', array( $this, 'save_wc_location' ), 1 );
 		}
+	}
+
+	/**
+	 * Automatically create an OTP order when admin creates an order
+	 * @since 3.4.0
+	 */
+	public function maybe_add_admin_order( $post_id, $post ) {
+		global $ewd_otp_controller;
+
+		// If this is an autosave, our form has not been submitted, so we don't want to do anything.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// If post is a draft, don't add it yet
+		if ( ! empty( $post ) and ! empty( $post->post_status ) and $post->post_status == 'draft' ) {
+			return;
+		}
+	
+		// Check the user's permissions.
+		if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
+	
+			if ( ! current_user_can( 'edit_page', $post_id ) ) {
+				return;
+			}
+	
+		} else {
+	
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				return;
+			}
+		}
+
+		// Check if the order already exists, don't create a new one if it does
+		$woocommerce_order = $ewd_otp_controller->order_manager->get_order_from_woocommerce_id( $post_id );
+
+		if ( ! empty( $woocommerce_order ) ) { 
+			return; 
+		}
+
+		// Go ahead and add the admin-created order
+		$this->add_order( $post_id );
 	}
 
 	/**
@@ -97,7 +146,7 @@ class ewdotpWooCommerce {
 
 		$order->insert_order_status();
 
-		do_action( 'ewd_otp_admin_order_inserted', $this );
+		do_action( 'ewd_otp_admin_order_inserted', $order );
 	}
 
 	/**
@@ -204,7 +253,7 @@ class ewdotpWooCommerce {
 		$return_statuses = array();
 		foreach ( $statuses_array as $status ) {
 
-			$return_statuses[] = $equivalent_statuses[ $status ];
+			$return_statuses[] = array_key_exists( $status, $equivalent_statuses ) ? $equivalent_statuses[ $status ] : '';
 		}
 	
 		return is_array( $statuses ) ? $return_statuses : reset( $return_statuses );
@@ -223,6 +272,23 @@ class ewdotpWooCommerce {
 		}
 	
 		return $query_params;
+	}
+
+	/**
+	 * Adds the tracking form to an order's view order page
+	 * @since 3.4.0
+	 */
+	public function add_tracking_form_to_order_view( $wc_order_id ) {
+		global $ewd_otp_controller;
+
+		$db_order = $ewd_otp_controller->order_manager->get_order_from_woocommerce_id( $wc_order_id );
+
+		if ( empty( $db_order ) ) { return; }
+
+		$order = new ewdotpOrder();
+		$order->load_order( $db_order );
+
+		echo do_shortcode( '[order-tracking order_id=\'' . $order->id . '\']' );
 	}
 
 	/**

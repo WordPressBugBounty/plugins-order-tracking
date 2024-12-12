@@ -1520,6 +1520,12 @@ NEW DASHBOARD
 /*************************
 SETTINGS PREVIEW SCREENS
 *************************/
+.ewd-otp-settings-preview {
+  position: relative;
+  float: left;
+  width: 100%;
+  clear: both;
+}
 .ewd-otp-settings-preview h2 {
   font-size: 24px !important;
 }

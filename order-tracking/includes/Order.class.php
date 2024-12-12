@@ -50,6 +50,9 @@ class ewdotpOrder {
 	// Current status of the order
 	public $current_status;
 
+	// Current location of the order
+	public $current_location;
+
 	// Stores all of the previous statuses for an order
 	public $status_history = array();
 
@@ -62,6 +65,8 @@ class ewdotpOrder {
 	 */
 	public function load_order( $db_order ) {
 		global $ewd_otp_controller;
+
+		if ( ! is_object( $db_order ) ) { return false; }
 
 		$this->id 						= is_object( $db_order ) ? $db_order->Order_ID : 0;
 
@@ -99,6 +104,7 @@ class ewdotpOrder {
 
 		$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
 
+		$this->custom_fields = array();
 		foreach ( $custom_fields as $custom_field ) {
 
 			$this->custom_fields[ $custom_field->id ] = $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $this->id );
@@ -117,6 +123,8 @@ class ewdotpOrder {
 
 			if ( $this->location == $location->name ) { $this->current_location = $location; }
 		}
+
+		return true;
 	}
 
 	/**
@@ -128,7 +136,9 @@ class ewdotpOrder {
 
 		$db_order = $ewd_otp_controller->order_manager->get_order_from_id( $order_id );
 
-		$this->load_order( $db_order );
+		if ( empty( $db_order ) ) { return false; }
+
+		return $this->load_order( $db_order );
 	}
 
 	/**
@@ -140,7 +150,9 @@ class ewdotpOrder {
 
 		$db_order = $ewd_otp_controller->order_manager->get_order_from_tracking_number( $order_number );
 
-		$this->load_order( $db_order );
+		if ( empty( $db_order ) ) { return false; }
+
+		return $this->load_order( $db_order );
 	}
 
 	/**
@@ -190,7 +202,7 @@ class ewdotpOrder {
 	 */
 	public function verify_order_email( $email_address ) {
 
-		if ( $email_address == $this->email ) { return true; }
+		if ( (empty( $email_address) and empty( $this->email ) ) or strtolower( $email_address ) == strtolower( $this->email ) ) { return true; }
 
 		return false;
 	}
@@ -532,6 +544,24 @@ class ewdotpOrder {
 
 			do_action( 'ewd_otp_status_updated', $this, $old_status );
 		}
+	}
+
+	/**
+	 * Takes a location and updates the orders location
+	 * @since 3.0.0
+	 */
+	public function set_location( $new_location ) {
+		global $ewd_otp_controller;
+
+		$old_location = $this->location;
+		
+		$this->location = $new_location;
+		
+		$this->update_order();
+
+		$this->insert_order_status();
+		
+		do_action( 'ewd_otp_location_updated', $this, $old_location );
 	}
 
 	/**

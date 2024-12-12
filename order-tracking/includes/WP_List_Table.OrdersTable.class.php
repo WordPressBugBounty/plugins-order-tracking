@@ -769,6 +769,9 @@ class ewdotpOrdersTable extends WP_List_Table {
 						</label>
 					</fieldset>
 				</div>
+				<div class='ewd-otp-admin-table-filter-div ewd-otp-hidden'>
+					<input type='submit' name='order_filtering' value='<?php _e( 'Search Orders', 'order-tracking' ); ?>' />
+				</div>
 			</div>
 			<div class="ewd-otp-table-header-controls-right">
 				<div class="tablenav top ewd-otp-top-actions-wrapper">

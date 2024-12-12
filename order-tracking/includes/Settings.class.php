@@ -298,6 +298,17 @@ class ewdotpSettings {
 
 			'google-maps-api-key'				=> 'AIzaSyBFLmQU4VaX-T67EnKFtos7S7m_laWn6L4',
 
+			'woocommerce-integration'			=> true,
+			'woocommerce-replace-statuses'		=> true,
+
+			'woocommerce-paid-status'			=> __( 'Completed', 'order-tracking' ),
+			'woocommerce-unpaid-status'			=> __( 'Pending Payment', 'order-tracking' ),
+			'woocommerce-processing-status'		=> __( 'Processing', 'order-tracking' ),
+			'woocommerce-cancelled-status'		=> __( 'Cancelled', 'order-tracking' ),
+			'woocommerce-onhold-status'			=> __( 'On Hold', 'order-tracking' ),
+			'woocommerce-failed-status'			=> __( 'Failed', 'order-tracking' ),
+			'woocommerce-refunded-status'		=> __( 'Refunded', 'order-tracking' ),
+
 			'admin-email'						=> get_option( 'admin_email' ),
 			'ultimate-purchase-email'			=> get_option( 'admin_email' ),
 			'email-messages'					=> array(),
@@ -793,154 +804,202 @@ class ewdotpSettings {
 		);
 
 		/**
-	     * Premium options preview only
-	     */
-	    // "Premium" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-premium-tab',
-	        'title'					=> __( 'Premium', 'order-tracking' ),
-	        'is_tab'				=> true,
+		 * Premium options preview only
+		 */
+		// "Premium" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-premium-tab',
+			'title'					=> __( 'Premium', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 2,
 			'tutorial_yt_id'		=> 'DDQO1Wkahf0',
-	        'show_submit_button'	=> $this->show_submit_button( 'premium' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-premium-tab-body',
-	        'tab'      => 'ewd-otp-premium-tab',
-	        'callback' => $this->premium_info( 'premium' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'premium' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-premium-tab-body',
+			'tab'      => 'ewd-otp-premium-tab',
+			'callback' => $this->premium_info( 'premium' )
+		)
+		);
 	
-	    // "Locations" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-locations-tab',
-	        'title'					=> __( 'Locations', 'order-tracking' ),
-	        'is_tab'				=> true,
+		// "Locations" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-locations-tab',
+			'title'					=> __( 'Locations', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 4,
 			'tutorial_yt_id'		=> 'hptAmlqQ4G0',
-	        'show_submit_button'	=> $this->show_submit_button( 'locations' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-locations-tab-body',
-	        'tab'      => 'ewd-otp-locations-tab',
-	        'callback' => $this->premium_info( 'locations' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'locations' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-locations-tab-body',
+			'tab'      => 'ewd-otp-locations-tab',
+			'callback' => $this->premium_info( 'locations' )
+		)
+		);
 
-	    // "Payments" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-payments-tab',
-	        'title'					=> __( 'Payments', 'order-tracking' ),
-	        'is_tab'				=> true,
+		// "Payments" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-payments-tab',
+			'title'					=> __( 'Payments', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 7,
 			'tutorial_yt_id'		=> 'oDt9BGvVdtQ',
-	        'show_submit_button'	=> $this->show_submit_button( 'payments' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-payments-tab-body',
-	        'tab'      => 'ewd-otp-payments-tab',
-	        'callback' => $this->premium_info( 'payments' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'payments' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-payments-tab-body',
+			'tab'      => 'ewd-otp-payments-tab',
+			'callback' => $this->premium_info( 'payments' )
+		)
+		);
 	
-	    // "WooCommerce" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-woocommerce-tab',
-	        'title'					=> __( 'WooCommerce', 'order-tracking' ),
-	        'is_tab'				=> true,
-			'rank'					=> 6,
-			'tutorial_yt_id'		=> 'zWTGldvnnc8',
-	        'show_submit_button'	=> $this->show_submit_button( 'woocommerce' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-woocommerce-tab-body',
-	        'tab'      => 'ewd-otp-woocommerce-tab',
-	        'callback' => $this->premium_info( 'woocommerce' )
-	      )
-	    );	    
+		// "WooCommerce" Tab
+		$sap->add_section(
+			'ewd-otp-settings',
+			array(
+				'id'					=> 'ewd-otp-woocommerce-tab',
+				'title'					=> __( 'WooCommerce', 'order-tracking' ),
+				'is_tab'				=> true,
+				'rank'					=> 6,
+				'tutorial_yt_id'		=> 'zWTGldvnnc8'
+			)
+		);
+
+		$sap->add_section(
+			'ewd-otp-settings',
+			array_merge(
+				array(
+				'id'		=> 'ewd-otp-woocommerce-general-options',
+				'title'		=> __( 'WooCommerce Options', 'order-tracking' ),
+				'tab'		=> 'ewd-otp-woocommerce-tab',
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'ewd-otp-settings',
+			'ewd-otp-woocommerce-general-options',
+			'toggle',
+			array(
+				'id'			=> 'woocommerce-integration',
+				'title'			=> __( 'WooCommerce Integration', 'order-tracking' ),
+				'description'	=> __( 'Should WooCommerce orders be automatically created inside of the Status Tracking plugin?', 'order-tracking' )
+			)
+		);
+
+		$sap->add_setting(
+			'ewd-otp-settings',
+			'ewd-otp-woocommerce-general-options',
+			'toggle',
+			array(
+				'id'      => 'woocommerce-replace-statuses',
+				'title'     => __( 'Replace WooCommerce Statuses with Status Tracking Statuses', 'order-tracking' ),
+				'description' => __( 'Should order tracking statuses replace the default WooCommerce statuses?', 'order-tracking' ),
+				'conditional_on'    => 'woocommerce-integration',
+				'conditional_on_value'  => true
+			)
+		);
 	
-	    // "Zendesk" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-zendesk-tab',
-	        'title'					=> __( 'Zendesk', 'order-tracking' ),
-	        'is_tab'				=> true,
+		$sap->add_setting(
+			'ewd-otp-settings',
+			'ewd-otp-woocommerce-general-options',
+			'toggle',
+			array(
+				'id'      => 'disable-woocommerce-revert-statuses',
+				'title'     => __( 'Disable Revert WooCommerce Statuses on Deactivation', 'order-tracking' ),
+				'description' => __( 'Should WooCommerce orders having their statuses returned to one of the defaults when the plugin is deactivated be disabled? This is disabled by default if WooCommerce integration is not enabled, but could result in orders with custom statuses being hidden from the WooCommerce admin orders table after deactivation.', 'order-tracking' ),
+				'conditional_on'    => 'woocommerce-integration',
+				'conditional_on_value'  => true
+			)
+		);
+	  
+		$sap->add_section(
+			'ewd-otp-settings',
+			array(
+				'id'       => 'ewd-otp-woocommerce-tab-body',
+				'tab'      => 'ewd-otp-woocommerce-tab',
+				'callback' => $this->premium_info( 'woocommerce' )
+			)
+		);	    
+	
+		// "Zendesk" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-zendesk-tab',
+			'title'					=> __( 'Zendesk', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 10,
 			'tutorial_yt_id'		=> 'r00ewZ8l0z8',
-	        'show_submit_button'	=> $this->show_submit_button( 'zendesk' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-zendesk-tab-body',
-	        'tab'      => 'ewd-otp-zendesk-tab',
-	        'callback' => $this->premium_info( 'zendesk' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'zendesk' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-zendesk-tab-body',
+			'tab'      => 'ewd-otp-zendesk-tab',
+			'callback' => $this->premium_info( 'zendesk' )
+		)
+		);
 	
-	    // "Labelling" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-labelling-tab',
-	        'title'					=> __( 'Labelling', 'order-tracking' ),
-	        'is_tab'				=> true,
+		// "Labelling" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-labelling-tab',
+			'title'					=> __( 'Labelling', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 9,
 			'tutorial_yt_id'		=> 'oGimPjCPTdU',
-	        'show_submit_button'	=> $this->show_submit_button( 'labelling' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-labelling-tab-body',
-	        'tab'      => 'ewd-otp-labelling-tab',
-	        'callback' => $this->premium_info( 'labelling' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'labelling' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-labelling-tab-body',
+			'tab'      => 'ewd-otp-labelling-tab',
+			'callback' => $this->premium_info( 'labelling' )
+		)
+		);
 	
-	    // "Styling" Tab
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'					=> 'ewd-otp-styling-tab',
-	        'title'					=> __( 'Styling', 'order-tracking' ),
-	        'is_tab'				=> true,
+		// "Styling" Tab
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'					=> 'ewd-otp-styling-tab',
+			'title'					=> __( 'Styling', 'order-tracking' ),
+			'is_tab'				=> true,
 			'rank'					=> 8,
 			'tutorial_yt_id'		=> 'c75VcMG11a8',
-	        'show_submit_button'	=> $this->show_submit_button( 'styling' )
-	      )
-	    );
-	    $sap->add_section(
-	      'ewd-otp-settings',
-	      array(
-	        'id'       => 'ewd-otp-styling-tab-body',
-	        'tab'      => 'ewd-otp-styling-tab',
-	        'callback' => $this->premium_info( 'styling' )
-	      )
-	    );
+			'show_submit_button'	=> $this->show_submit_button( 'styling' )
+		)
+		);
+		$sap->add_section(
+		'ewd-otp-settings',
+		array(
+			'id'       => 'ewd-otp-styling-tab-body',
+			'tab'      => 'ewd-otp-styling-tab',
+			'callback' => $this->premium_info( 'styling' )
+		)
+		);
 
 		$sap = apply_filters( 'ewd_otp_settings_page', $sap, $this );
 
@@ -976,7 +1035,7 @@ class ewdotpSettings {
 				<li>' . __( 'Create & Assign Orders to Sales Reps', 'order-tracking' ) . '</li>
 				<li>' . __( 'Create & Tie Orders to Customers', 'order-tracking' ) . '</li>
 				<li>' . __( 'Custom Fields', 'order-tracking' ) . '</li>
-				<li>' . __( 'WooCommerce Order Integration', 'order-tracking' ) . '</li>
+				<li>' . __( 'Advanced WooCommerce Features', 'order-tracking' ) . '</li>
 				<li>' . __( 'Advanced Display & Styling Options', 'order-tracking' ) . '</li>
 				<li>' . __( 'Front-End Customer Order Form', 'order-tracking' ) . '</li>
 				<li>' . __( 'Import/Export Orders', 'order-tracking' ) . '</li>
@@ -1041,7 +1100,7 @@ class ewdotpSettings {
 				$content = '
 					<div class="ewd-otp-settings-preview">
 						<h2>' . __( 'WooCommerce', 'order-tracking' ) . '<span>' . __( 'Premium', 'order-tracking' ) . '</span></h2>
-						<p>' . __( 'The WooCommerce options let you enable and configure the ability to have the plugin automatically create a corresponding order every time a new order is placed on your site via WooCommerce.', 'order-tracking' ) . '</p>
+						<p>' . __( 'With the premium version of the plugin, you gain access to advanced WooCommerce options, such as the ability to show the tracking status right on the WooCommerce order and tracking pages, the ability to control the order location in WooCommerce, the ability to customize the order number with prefix and suffix, and the ability to link WooCommerce statuses with status in the Order Tracking plugin.', 'order-tracking' ) . '</p>
 						<div class="ewd-otp-settings-preview-images">
 							<img src="' . EWD_OTP_PLUGIN_URL . '/assets/img/premium-screenshots/woocommerce1.png" alt="OTP woocommerce screenshot one">
 							<img src="' . EWD_OTP_PLUGIN_URL . '/assets/img/premium-screenshots/woocommerce2.png" alt="OTP woocommerce screenshot two">
@@ -1126,50 +1185,72 @@ class ewdotpSettings {
 
 		$this->set_setting( 'email-messages', json_encode( $emails ) );
 
-		$statuses = array(
-			array(
-				'status'		=> __( 'Pending Payment', 'order-tracking' ),
-				'percentage'	=> '25',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'Processing', 'order-tracking' ),
-				'percentage'	=> '50',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'On Hold', 'order-tracking' ),
-				'percentage'	=> '50',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'Completed', 'order-tracking' ),
-				'percentage'	=> '100',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'Cancelled', 'order-tracking' ),
-				'percentage'	=> '0',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'Refunded', 'order-tracking' ),
-				'percentage'	=> '0',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-			array(
-				'status'		=> __( 'Failed', 'order-tracking' ),
-				'percentage'	=> '0',
-				'email'			=> 1,
-				'internal'		=> 'no',
-			),
-		);
+		$wc_statuses = function_exists( 'wc_get_order_statuses' ) ? wc_get_order_statuses() : array();
+
+		$statuses = array();
+
+		if ( ! empty( $wc_statuses ) ) {
+
+			foreach ( $wc_statuses as $wc_status_slug => $wc_status ) {
+
+				$status_item = array(
+					'status'		=> $wc_status,
+					'percentage'	=> '0',
+					'email'			=> 1,
+					'internal'		=> 'no'
+				);
+
+				if ( $wc_status_slug == 'wc-pending' ) { $status_item['percentage'] = '25'; }
+				elseif ( $wc_status_slug == 'wc-processing' or $wc_status_slug == 'wc-on-hold' ) { $status_item['percentage'] = '50'; }
+				elseif ( $wc_status_slug == 'wc-completed' ) { $status_item['percentage'] = '100'; }
+			}
+		}
+		else { 
+			$statuses = array(
+				array(
+					'status'		=> __( 'Pending Payment', 'order-tracking' ),
+					'percentage'	=> '25',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'Processing', 'order-tracking' ),
+					'percentage'	=> '50',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'On Hold', 'order-tracking' ),
+					'percentage'	=> '50',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'Completed', 'order-tracking' ),
+					'percentage'	=> '100',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'Cancelled', 'order-tracking' ),
+					'percentage'	=> '0',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'Refunded', 'order-tracking' ),
+					'percentage'	=> '0',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+				array(
+					'status'		=> __( 'Failed', 'order-tracking' ),
+					'percentage'	=> '0',
+					'email'			=> 1,
+					'internal'		=> 'no',
+				),
+			);
+		}
 
 
 		$this->set_setting( 'statuses', json_encode( $statuses ) );

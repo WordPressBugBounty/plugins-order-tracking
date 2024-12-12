@@ -30,6 +30,7 @@ class ewdotpPermissions {
 			'payments'			=> 2,
 			'labelling'			=> 2,
 			'sms'				=> 3,
+			'api_usage'			=> 3,
 		);
 	}
 

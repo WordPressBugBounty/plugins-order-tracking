@@ -9,6 +9,7 @@ function ewd_otp_tracking_form_shortcode( $atts ) {
 
 	// Define shortcode attributes
 	$order_atts = array(
+		'order_id'				=> 0,
 		'show_orders'			=> 'no',
 		'order_form_title'		=> '',
 		'order_field_text'		=> '',
@@ -38,6 +39,8 @@ function ewd_otp_tracking_form_shortcode( $atts ) {
 	$order_form = new ewdotpViewOrderForm( $args );
 
 	$order_form->set_request_parameters();
+
+	$order_form->set_order_from_id();
 
 	$output = $order_form->render();
 

@@ -7,7 +7,7 @@ Author: Etoile Web Design
 Author URI: https://www.etoilewebdesign.com/
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.3.18
+Version: 3.4.0
 WC requires at least: 7.1
 WC tested up to: 9.4
 */
@@ -60,7 +60,7 @@ class ewdotpInit {
 		define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 		define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 		define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-		define( 'EWD_OTP_VERSION', '3.3.18' );
+		define( 'EWD_OTP_VERSION', '3.4.0' );
 	}
 
 	/**
@@ -471,7 +471,7 @@ class ewdotpInit {
 						GET FULL ACCESS WITH OUR PREMIUM VERSION
 					</div>
 					<div class="ewd-otp-dashboard-banner-brief">
-						Includes locations, custom fields, a customer order form, WooCommerce integration, advanced styling options and more!
+						Includes locations, custom fields, a customer order form, advanced WooCommerce integration, advanced styling options and more!
 					</div>
 				</div>
 			</div>

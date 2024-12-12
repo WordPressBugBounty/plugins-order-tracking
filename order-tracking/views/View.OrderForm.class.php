@@ -20,6 +20,7 @@ class ewdotpViewOrderForm extends ewdotpView {
 	public $customer_notes_submit;
 
 	// Pointers
+	public $order_id;
 	public $order;
 	public $customer;
 	public $sales_rep;
@@ -450,6 +451,22 @@ class ewdotpViewOrderForm extends ewdotpView {
 
 			$order->set_tracking_link_clicked();
 		}
+
+		$this->order_id = $order->id;
+	}
+
+	/**
+	 * Load a specific order to display, if one has been provided either
+	 * via the shortcode attributes or via the request parameters
+	 * @since 3.0.0
+	 */
+	function set_order_from_id() {
+
+		if ( empty( $this->order_id ) ) { return; }
+
+		$order = new ewdotpOrder();
+
+		$order->load_order_from_id( intval( $this->order_id ) );
 
 		$this->order = $order;
 

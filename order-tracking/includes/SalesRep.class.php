@@ -16,6 +16,7 @@ class ewdotpSalesRep {
 
 	public $first_name;
 	public $last_name;
+	public $name;
 	public $email;
 	public $phone_number;
 	
@@ -38,6 +39,7 @@ class ewdotpSalesRep {
 
 		$this->first_name				= is_object( $db_sales_rep ) ? $db_sales_rep->Sales_Rep_First_Name : '';
 		$this->last_name				= is_object( $db_sales_rep ) ? $db_sales_rep->Sales_Rep_Last_Name : '';
+		$this->name						= $this->first_name . ' ' . $this->last_name;
 		$this->email					= is_object( $db_sales_rep ) ? $db_sales_rep->Sales_Rep_Email : '';
 		$this->phone_number				= is_object( $db_sales_rep ) ? $db_sales_rep->Sales_Rep_Phone_Number : '';
 

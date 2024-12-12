@@ -330,13 +330,26 @@ class ewdotpOrderManager {
 		if ( ! empty( $args['status'] ) ) {
 
 			if( is_array( $args['status'] ) ) {
-				$stts_plchldr = implode( ', ', array_fill( 0, count( $args['status'] ), '%s' ) );
-				$query_string .= " AND Order_Status IN ( $stts_plchldr )";
+				$status_placeholder = implode( ', ', array_fill( 0, count( $args['status'] ), '%s' ) );
+				$query_string .= " AND Order_Status IN ( $status_placeholder )";
 				$query_args   = array_merge( $query_args, $args['status'] );
 			}
 			else {
 				$query_string .= " AND Order_Status=%s";
 				$query_args[] = $args['status'];
+			}
+		}
+
+		if ( ! empty( $args['location'] ) ) {
+
+			if( is_array( $args['location'] ) ) {
+				$location_placeholder = implode( ', ', array_fill( 0, count( $args['location'] ), '%s' ) );
+				$query_string .= " AND Order_Location IN ( $location_placeholder )";
+				$query_args   = array_merge( $query_args, $args['location'] );
+			}
+			else {
+				$query_string .= " AND Order_Location=%s";
+				$query_args[] = $args['location'];
 			}
 		}
 
@@ -412,6 +425,8 @@ class ewdotpOrderManager {
 
 		if ( ! empty( $args['orderby'] ) ) {
 			
+			$args['orderby'] = $args['orderby'] = 'date' ? 'Order_Status_Updated' : $args['orderby'];
+
 			$query_string .= ' ORDER BY ' . esc_sql( $args['orderby'] ) . ' ' . ( strtolower( $args['order'] ) == 'desc' ? 'DESC' : 'ASC' );
 		}
 

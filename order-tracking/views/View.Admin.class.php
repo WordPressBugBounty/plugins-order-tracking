@@ -10,6 +10,9 @@ class ewdotpViewAdmin extends ewdotpView {
 	// Locations that should be searched for templates
 	public $template_dirs;
 
+	// Pointer
+	public $custom_field;
+
 	/**
 	 * Prints custom fields area
 	 *

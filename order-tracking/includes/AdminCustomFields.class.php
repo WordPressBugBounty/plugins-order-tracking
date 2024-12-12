@@ -227,9 +227,9 @@ class ewdotpAdminCustomFields {
 	 */
 	public function save_custom_fields() {
 
-		$custom_fields = json_decode( stripslashes( sanitize_text_field( $_POST['ewd-otp-custom-field-save-values'] ) ) );
+		$custom_fields = ! empty( $_POST['ewd-otp-custom-field-save-values'] ) ? json_decode( stripslashes( sanitize_text_field( $_POST['ewd-otp-custom-field-save-values'] ) ) ) : '';
 
-		if ( ! empty( $custom_fields ) ) {
+		if ( isset( $_POST['ewd-otp-custom-fields-submit'] ) ) {
 
 			update_option( 'ewd-otp-custom-fields', $custom_fields );
 		}
