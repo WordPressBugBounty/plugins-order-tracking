@@ -7,9 +7,9 @@ Author: Etoile Web Design
 Author URI: https://www.etoilewebdesign.com/
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.4.0
+Version: 3.4.1
 WC requires at least: 7.1
-WC tested up to: 9.4
+WC tested up to: 9.8
 */
 
 
@@ -60,7 +60,7 @@ class ewdotpInit {
 		define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 		define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 		define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-		define( 'EWD_OTP_VERSION', '3.4.0' );
+		define( 'EWD_OTP_VERSION', '3.4.1' );
 	}
 
 	/**

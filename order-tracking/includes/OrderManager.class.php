@@ -425,7 +425,7 @@ class ewdotpOrderManager {
 
 		if ( ! empty( $args['orderby'] ) ) {
 			
-			$args['orderby'] = $args['orderby'] = 'date' ? 'Order_Status_Updated' : $args['orderby'];
+			$args['orderby'] = $args['orderby'] == 'date' ? 'Order_Status_Updated' : $args['orderby'];
 
 			$query_string .= ' ORDER BY ' . esc_sql( $args['orderby'] ) . ' ' . ( strtolower( $args['order'] ) == 'desc' ? 'DESC' : 'ASC' );
 		}
