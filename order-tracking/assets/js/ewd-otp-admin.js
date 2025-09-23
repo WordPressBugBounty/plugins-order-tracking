@@ -355,3 +355,17 @@ jQuery( document ).ready( function() {
 	} );
 } );
 
+// NEW PLUGIN NOTICE
+
+jQuery( document ).ready( function( $ ) {
+
+  jQuery(document).on( 'click', '.ait-iat-new-plugin-notice .notice-dismiss', function( event ) {
+    var data = jQuery.param({
+      action: 'ewd_otp_hide_new_plugin_notice',
+      plugin: 'ait_iat',
+      nonce: ewd_otp_php_admin_data.nonce
+    });
+
+    jQuery.post( ajaxurl, data, function() {} );
+  });
+});

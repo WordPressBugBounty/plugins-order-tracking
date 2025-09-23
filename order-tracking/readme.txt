@@ -4,7 +4,7 @@ Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order shortcode, order management, delivery, deliveries, shipping, track, tracking, order processing, inventory management, customer orders, support tickets, helpdesk, help desk, help desk software, support software
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.4.2 (2025-09-23) =
+- Updated WooCommerce compatibility.
 
 = 3.4.1 (2025-04-29) =
 - Fixed issued with order sorting in admin sometimes not applying correctly.
