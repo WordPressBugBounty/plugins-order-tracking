@@ -113,7 +113,7 @@ function ewd_otp_customer_form_shortcode( $atts ) {
 			$ewd_otp_controller->exports->customer_id 	= $customer_id;
 			$ewd_otp_controller->exports->after 		= date( 'Y-m-d H:i:s', strtotime( '-365 days' ) );
 
-			$ewd_otp_controller->exports->export_orders();
+			$ewd_otp_controller->exports->run_export();
 		}
 	}
 
@@ -192,7 +192,7 @@ function ewd_otp_sales_rep_form_shortcode( $atts ) {
 			$ewd_otp_controller->exports->sales_rep_id 	= $sales_rep_id;
 			$ewd_otp_controller->exports->after 		= date( 'Y-m-d H:i:s', strtotime( '-365 days' ) );
 
-			$ewd_otp_controller->exports->export_orders();
+			$ewd_otp_controller->exports->run_export();
 		}
 	}
 
