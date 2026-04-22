@@ -7,9 +7,9 @@ Author: Etoile Web Design
 Author URI: https://www.etoilewebdesign.com/
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.4.3
+Version: 3.4.4
 WC requires at least: 7.1
-WC tested up to: 10.3
+WC tested up to: 10.7
 */
 
 
@@ -60,7 +60,7 @@ class ewdotpInit {
 		define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 		define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 		define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-		define( 'EWD_OTP_VERSION', '3.4.3' );
+		define( 'EWD_OTP_VERSION', '3.4.4' );
 	}
 
 	/**
@@ -541,25 +541,54 @@ class ewdotpInit {
 
 	public function maybe_display_new_plugin_notice() {
 
+		if ( ! current_user_can( 'activate_plugins' ) ) { return; }
+
 		$screen = get_current_screen();
-        if (!isset($screen->id) || strpos($screen->id, 'tracking_page_') === false) { return; }
+		
+        if ( ! isset( $screen->id ) ) { return; }
 
-		if ( get_transient( 'ewd-otp-ait-iat-plugin-notice-dismissed' ) ) { return; }
+        $allowed_screens = array( 
+        	'plugins', 
+        	'update-core', 
+        	'dashboard', 
+        	'options-general', 
+        	'options-writing', 
+        	'options-reading', 
+        	'options-discussion', 
+        	'options-media',
+        	'options-permalink',
+        	'options-privacy'
+        );
 
-		// October 17th, 2025
-		if ( time() > 1760759940 ) { return; }
+        if ( strpos( $screen->id, 'tracking_page_' ) === false and 
+        	 ! in_array( $screen->id, $allowed_screens ) ) { 
+        	return; 
+    	}
+
+		if ( get_transient( 'ait-aiaa-plugin-notice-dismissed' ) ) { return; }
+
+		// May 22nd, 2026
+		if ( time() > 1779508748 ) { return; }
+
+		$hook_lines = array(
+			__( 'Tired of digging through settings? Let <strong>AI Admin Assistance</strong> guide you!', 'order-tracking' ),
+			__( 'Stop wasting time searching for answers—use <strong>AI Admin Assistance</strong> to bring AI-powered help directly into your dashboard!', 'order-tracking' ),
+			__( 'Overwhelmed in the WordPress admin? <strong>AI Admin Assistance</strong> has you covered with AI-powered help directly in your dashboard!', 'order-tracking' ),
+		);
+
+		$selection = array_rand( $hook_lines );
 
 		?>
 
-		<div class='notice notice-error is-dismissible ait-iat-new-plugin-notice'>
+		<div class='notice notice-error is-dismissible ait-aiaa-new-plugin-notice'>
 			
 			<div class='ewd-otp-new-plugin-notice-img'>
-				<img src='<?php echo EWD_OTP_PLUGIN_URL . '/assets/img/ait-iat-plugin-icon.png' ; ?>' />
+				<img src='<?php echo EWD_OTP_PLUGIN_URL . '/assets/img/ait-aiaa-plugin-icon.png' ; ?>' />
 			</div>
 
 			<div class='ewd-otp-new-plugin-notice-txt'>
-				<p><?php _e( 'Want to improve your search rankings? Try our new <strong>AI Image Alt Text</strong> plugin!', 'order-tracking' ); ?></p>
-				<p><?php echo sprintf( __( 'As a thank you to our customers, for a limited time you can get a <strong>free pro license</strong>! Try the <a target=\'_blank\' href=\'%s\'>free version</a> today or use code <code>early_adopter_pro</code> to <a target=\'_blank\' href=\'%s\'>get your pro version license</a>!', 'order-tracking' ), admin_url( 'plugin-install.php?tab=plugin-information&plugin=ai-image-alt-text' ), 'https://www.wpaiplugins.dev/wordpress-image-alt-text-ai-plugin/' ); ?></p>
+				<p><?php echo $hook_lines[ $selection ]; ?></p>
+                <p><?php echo sprintf( __( 'As a thank you to our customers, for a limited time you can get a <strong>free pro license</strong>! Try the <a target=\'_blank\' href=\'%s\'>free version</a> today or use code <code>early_adopter_pro</code> to <a target=\'_blank\' href=\'%s\'>get your pro version license</a>!', 'order-tracking' ), admin_url( 'plugin-install.php?tab=plugin-information&plugin=ait-ai-admin-assistance' ), 'https://www.wpaiplugins.dev/wordpress-ai-admin-assistance/?utm_source=' . dirname( EWD_OTP_PLUGIN_FNAME ) . '_aiaa_notice&utm_content=' . $selection ); ?></p>
 			</div>
 
 			<div class='ewd-otp-clear'></div>
@@ -574,7 +603,7 @@ class ewdotpInit {
 
 		// Authenticate request
 		if (
-			! check_ajax_referer( 'ewd-otp-admin-js', 'nonce' )
+			! check_ajax_referer( 'ewd-otp-helper-notice', 'nonce' )
 			||
 			! current_user_can( $ewd_otp_controller->settings->get_setting( 'access-role' ) )
 		) {
@@ -582,7 +611,7 @@ class ewdotpInit {
 
 		}
 
-		set_transient( 'ewd-otp-ait-iat-plugin-notice-dismissed', true, 3600*24*7 );
+		set_transient( 'ait-aiaa-plugin-notice-dismissed', true, 3600*24*7 );
 
 		die();
 	}

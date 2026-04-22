@@ -93,10 +93,16 @@ class ewdotpDashboard {
 						apply_filters( 'ewd_dashboard_top_kses_allowed_tags', wp_kses_allowed_html( 'post' ) )
 					);
 				} ?>
-		
+	
 				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-dashboard-support-widget-box">
 					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Get Support', 'order-tracking'); ?><span id="ewd-otp-dash-mobile-support-down-caret">&nbsp;&nbsp;&#9660;</span><span id="ewd-otp-dash-mobile-support-up-caret">&nbsp;&nbsp;&#9650;</span></div>
 					<div class="ewd-otp-dashboard-new-widget-box-bottom">
+						<div class="ewd-otp-dashboard-aiaa-support-notice">
+							<div class="ewd-otp-dashboard-aiaa-support-notice-inside">
+								<span class="dashicons dashicons-info"></span>
+								<p><?php echo sprintf( __( 'Add help to each plugin admin screen! Install <a target=\'_blank\' href=\'%s\'>AI Admin Assistance</a> to view our in-admin help content!', 'order-tracking' ), admin_url( 'plugin-install.php?tab=plugin-information&plugin=ait-ai-admin-assistance' ) ); ?></p>
+							</div>
+						</div>
 						<ul class="ewd-otp-dashboard-support-widgets">
 							<li>
 								<a href="https://www.youtube.com/watch?v=rMULYuPjVXU&list=PLEndQUuhlvSqa6Txwj1-Ohw8Bj90CIRl0" target="_blank">

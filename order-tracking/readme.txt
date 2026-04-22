@@ -4,7 +4,7 @@ Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order shortcode, order management, delivery, deliveries, shipping, track, tracking, order processing, inventory management, customer orders, support tickets, helpdesk, help desk, help desk software, support software
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 3.4.3
+Stable tag: 3.4.4
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.4.4 (2026-04-22) =
+- Added a lot of in-admin help content, including guidance, support, links to applicable documentation and an AI assistant. It works via the AI Admin Assistance plugin (https://wordpress.org/plugins/ait-ai-admin-assistance/).
 
 = 3.4.3 (2025-11-24) =
 - Fix for issue causing error when trying to use the customer download or sales rep download features.
