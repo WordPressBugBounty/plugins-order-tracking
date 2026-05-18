@@ -21,7 +21,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingSelect_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingSelect_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	public $sanitize_callback = 'sanitize_text_field';
 
@@ -65,6 +65,9 @@ class sapAdminPageSettingSelect_2_6_22 extends sapAdminPageSetting_2_6_22 {
 	 * @since 2.6.18
 	 */
 	public function print_options( $options ) {
+		
+		$selected_option_value = $this->value !== null ? $this->value : 
+			( $this->default !== null ? $this->default : null );
 
 		foreach ( $options as $option_value => $option_name ) {
 
@@ -81,7 +84,7 @@ class sapAdminPageSettingSelect_2_6_22 extends sapAdminPageSetting_2_6_22 {
 
 			?>
 
-			<option value='<?php echo esc_attr( $option_value ); ?>' <?php echo ( $this->value == $option_value ? 'selected' : '' ); ?>>
+			<option value='<?php echo esc_attr( $option_value ); ?>' <?php echo ( $selected_option_value == $option_value ? 'selected' : '' ); ?>>
 				<?php echo esc_html( $option_name ); ?>
 			</option>
 		

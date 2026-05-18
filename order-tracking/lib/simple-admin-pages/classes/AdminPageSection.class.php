@@ -7,7 +7,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSection_2_6_22 {
+class sapAdminPageSection_2_7_4 {
 
 	// Page defaults
 	public $id; // unique id for this section
@@ -15,6 +15,7 @@ class sapAdminPageSection_2_6_22 {
 	public $tab; // optional id of the parent tab (if) for this section
 	public $title; // optional title to display above this section
 	public $description; // optional description of the section
+	public $icon; // section icon
 	public $is_tab = false; // whether this section should be a tab (parent) section
 	public $settings = array(); // Array of settings to display in this option set
 	public $rank; // optional ordering rank for this section
@@ -25,6 +26,7 @@ class sapAdminPageSection_2_6_22 {
 	public $tutorial_yt_id; // optional ID of a YouTube tutorial for this section
 	public $show_submit_button; // whether or not to display options save button
 	public $callback; // optional function to call to display a particular section
+	public $page_id; // page id parameter
 
 	// Array to store errors
 	public $errors = array();
@@ -143,7 +145,7 @@ class sapAdminPageSection_2_6_22 {
 
 			<?php echo ( isset($this->purchase_link ) ? "<div class='sap-premium-options-table-overlay'>" : '' ); ?>
 				<div class="section-disabled">
-					<img src="<?php echo plugins_url( '../img/options-asset-lock.png', __FILE__ ); ?>" alt="Upgrade to Premium">
+					<img src="<?php echo esc_attr( plugins_url( '../img/options-asset-lock.png', __FILE__ ) ); ?>" alt="Upgrade to Premium">
 					<p>Access this section by upgrading to <?php echo ( ! empty( $this->ultimate_needed ) ? 'ultimate' : 'premium' ); ?></p>
 					<a href="<?php echo esc_url( add_query_arg( 'utm_content', $this->id, $this->purchase_link ) ); ?>" class="sap-dashboard-get-premium-widget-button" target="_blank">UPGRADE NOW</a>
 				</div>

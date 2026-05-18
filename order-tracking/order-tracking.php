@@ -7,7 +7,7 @@ Author: Etoile Web Design
 Author URI: https://www.etoilewebdesign.com/
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.4.4
+Version: 3.5.0
 WC requires at least: 7.1
 WC tested up to: 10.7
 */
@@ -60,7 +60,7 @@ class ewdotpInit {
 		define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 		define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 		define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-		define( 'EWD_OTP_VERSION', '3.4.4' );
+		define( 'EWD_OTP_VERSION', '3.5.0' );
 	}
 
 	/**
@@ -483,7 +483,7 @@ class ewdotpInit {
 		?>
 		<div class="ewd-otp-admin-header-menu">
 			<h2 class="nav-tab-wrapper">
-			<a id="ewd-otp-dash-mobile-menu-open" href="#" class="menu-tab nav-tab"><?php _e("MENU", 'order-tracking'); ?><span id="ewd-otp-dash-mobile-menu-down-caret">&nbsp;&nbsp;&#9660;</span><span id="ewd-otp-dash-mobile-menu-up-caret">&nbsp;&nbsp;&#9650;</span></a>
+			<a id="ewd-otp-dash-mobile-menu-open" href="#" class="menu-tab nav-tab ewd-otp-hidden"><span class="dashicons dashicons-menu"></span><?php _e("Menu", 'order-tracking'); ?></a>
 			<a id="dashboard-menu" href='admin.php?page=ewd-otp-dashboard' class="menu-tab nav-tab <?php if ( $screen->id == 'tracking_page_ewd-otp-dashboard' ) {echo 'nav-tab-active';}?>"><?php _e("Dashboard", 'order-tracking'); ?></a>
 			<a id="orders-menu" href='admin.php?page=ewd-otp-orders' class="menu-tab nav-tab <?php if ( $screen->id == 'toplevel_page_ewd-otp-orders' ) {echo 'nav-tab-active';}?>"><?php _e("Orders", 'order-tracking'); ?></a>
 			<a id="customers-menu" href='admin.php?page=ewd-otp-customers' class="menu-tab nav-tab <?php if ( $screen->id == 'toplevel_page_ewd-otp-customers' ) {echo 'nav-tab-active';}?>"><?php _e("Customers", 'order-tracking'); ?></a>

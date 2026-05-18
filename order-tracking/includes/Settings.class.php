@@ -478,7 +478,7 @@ class ewdotpSettings {
 		require_once( EWD_OTP_PLUGIN_DIR . '/lib/simple-admin-pages/simple-admin-pages.php' );
 		$sap = sap_initialize_library(
 			$args = array(
-				'version'       => '2.6.22',
+				'version'       => '2.7.4',
 				'lib_url'       => EWD_OTP_PLUGIN_URL . '/lib/simple-admin-pages/',
 				'theme'			=> 'purple',
 			)
@@ -505,7 +505,8 @@ class ewdotpSettings {
 				'is_tab'			=> true,
 				'rank'				=> 1,
 				'tutorial_yt_id'	=> 'v8t0Z06Y_XY',
-				)
+				'icon'				=> 'text'
+			)
 		);
 
 		$sap->add_section(
@@ -524,7 +525,7 @@ class ewdotpSettings {
 			array(
 				'id'			=> 'custom-css',
 				'title'			=> __( 'Custom CSS', 'order-tracking' ),
-				'description'	=> __( 'You can add custom CSS styles to your appointment booking page in the box above.', 'order-tracking' ),			
+				'description'	=> __( 'You can add custom CSS styles to your tracking form/page in the box above.', 'order-tracking' ),			
 			)
 		);
 
@@ -681,7 +682,8 @@ class ewdotpSettings {
 				'is_tab'				=> true,
 				'rank'					=> 3,
 				'tutorial_yt_id'		=> 'ih7qJEuOgPY',
-				)
+				'icon'					=> 'post-status'
+			)
 		);
 
 		$sap->add_section(
@@ -741,7 +743,8 @@ class ewdotpSettings {
 				'is_tab'			=> true,
 				'rank'				=> 5,
 				'tutorial_yt_id'	=> 'IDi__KeytMQ',
-				)
+				'icon'				=> 'bell'
+			)
 		);
 
 		$sap->add_section(
@@ -804,7 +807,7 @@ class ewdotpSettings {
 		);
 
 		/**
-		 * Premium options preview only
+		 * Premium options preview only, except for some free WC options
 		 */
 		// "Premium" Tab
 		$sap->add_section(
@@ -815,7 +818,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 2,
 			'tutorial_yt_id'		=> 'DDQO1Wkahf0',
-			'show_submit_button'	=> $this->show_submit_button( 'premium' )
+			'show_submit_button'	=> $this->show_submit_button( 'premium' ),
+			'icon'					=> 'awards'
 		)
 		);
 		$sap->add_section(
@@ -836,7 +840,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 4,
 			'tutorial_yt_id'		=> 'hptAmlqQ4G0',
-			'show_submit_button'	=> $this->show_submit_button( 'locations' )
+			'show_submit_button'	=> $this->show_submit_button( 'locations' ),
+			'icon'					=> 'location'
 		)
 		);
 		$sap->add_section(
@@ -857,7 +862,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 7,
 			'tutorial_yt_id'		=> 'oDt9BGvVdtQ',
-			'show_submit_button'	=> $this->show_submit_button( 'payments' )
+			'show_submit_button'	=> $this->show_submit_button( 'payments' ),
+			'icon'					=> 'money-alt'
 		)
 		);
 		$sap->add_section(
@@ -877,7 +883,8 @@ class ewdotpSettings {
 				'title'					=> __( 'WooCommerce', 'order-tracking' ),
 				'is_tab'				=> true,
 				'rank'					=> 6,
-				'tutorial_yt_id'		=> 'zWTGldvnnc8'
+				'tutorial_yt_id'		=> 'zWTGldvnnc8',
+				'icon'					=> 'cart'
 			)
 		);
 
@@ -947,7 +954,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 10,
 			'tutorial_yt_id'		=> 'r00ewZ8l0z8',
-			'show_submit_button'	=> $this->show_submit_button( 'zendesk' )
+			'show_submit_button'	=> $this->show_submit_button( 'zendesk' ),
+			'icon'					=> 'feedback'
 		)
 		);
 		$sap->add_section(
@@ -968,7 +976,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 9,
 			'tutorial_yt_id'		=> 'oGimPjCPTdU',
-			'show_submit_button'	=> $this->show_submit_button( 'labelling' )
+			'show_submit_button'	=> $this->show_submit_button( 'labelling' ),
+			'icon'					=> 'translation'
 		)
 		);
 		$sap->add_section(
@@ -989,7 +998,8 @@ class ewdotpSettings {
 			'is_tab'				=> true,
 			'rank'					=> 8,
 			'tutorial_yt_id'		=> 'c75VcMG11a8',
-			'show_submit_button'	=> $this->show_submit_button( 'styling' )
+			'show_submit_button'	=> $this->show_submit_button( 'styling' ),
+			'icon'					=> 'welcome-widgets-menus'
 		)
 		);
 		$sap->add_section(

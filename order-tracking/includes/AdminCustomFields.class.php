@@ -156,9 +156,9 @@ class ewdotpAdminCustomFields {
 									<label><?php _e( 'Options', 'order-tracking' ); ?></label>
 	
 									<div class='ewd-otp-custom-field-cell-checkbox-container'>
-										<input type='checkbox' name='ewd_otp_custom_field_required' value='1' <?php echo ( ! empty( $custom_field->required ) ? 'checked' : '' ); ?> /><?php _e( 'Required', 'order-tracking' ); ?><br />
-										<input type='checkbox' name='ewd_otp_custom_field_display' value='1' <?php echo ( ! empty( $custom_field->display ) ? 'checked' : '' ); ?> /><?php _e( 'Admin Display?', 'order-tracking' ); ?><br />
-										<input type='checkbox' name='ewd_otp_custom_field_front_end_display' value='1' <?php echo ( ! empty( $custom_field->front_end_display ) ? 'checked' : '' ); ?> /><?php _e( 'Front-End Display?', 'order-tracking' ); ?><br />
+										<div class="ewd-otp-custom-field-cell-checkbox-each"><label><input type='checkbox' name='ewd_otp_custom_field_required' value='1' <?php echo ( ! empty( $custom_field->required ) ? 'checked' : '' ); ?> /><span><?php _e( 'Required', 'order-tracking' ); ?></span></label></div>
+										<div class="ewd-otp-custom-field-cell-checkbox-each"><label><input type='checkbox' name='ewd_otp_custom_field_display' value='1' <?php echo ( ! empty( $custom_field->display ) ? 'checked' : '' ); ?> /><span><?php _e( 'Admin Display?', 'order-tracking' ); ?></span></label></div>
+										<div class="ewd-otp-custom-field-cell-checkbox-each"><label><input type='checkbox' name='ewd_otp_custom_field_front_end_display' value='1' <?php echo ( ! empty( $custom_field->front_end_display ) ? 'checked' : '' ); ?> /><span><?php _e( 'Front-End Display?', 'order-tracking' ); ?></span></label></div>
 									</div>
 	
 								</div>
@@ -191,8 +191,10 @@ class ewdotpAdminCustomFields {
 	
 								</div>
 	
-								<div class='ewd-otp-custom-field-cell ewd-otp-custom-field-delete'>
-									<?php _e( 'Delete', 'order-tracking' ); ?>
+								<div class='ewd-otp-custom-field-cell'>
+									<div class='ewd-otp-custom-field-delete'>
+										<?php _e( 'Delete', 'order-tracking' ); ?>
+									</div>
 								</div>
 	
 							</div>
@@ -200,12 +202,12 @@ class ewdotpAdminCustomFields {
 						<?php } ?>
 	
 						<div class='ewd-otp-custom-fields-add'>
-							<?php _e( '+ ADD', 'order-tracking' ); ?>
+							<?php _e( '+ Add Field', 'order-tracking' ); ?>
 						</div>
 	
 					</div>
 	
-					<input type='submit' class='button button-primary' name='ewd-otp-custom-fields-submit' value='<?php _e( 'Update Fields', 'order-tracking' ); ?>' />
+					<input type='submit' class='ewd-otp-custom-fields-submit' name='ewd-otp-custom-fields-submit' value='<?php _e( 'Update Fields', 'order-tracking' ); ?>' />
 					
 				</form>
 				<?php do_action( 'ewd_otp_custom_fields_table_bottom' ); ?>

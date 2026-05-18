@@ -369,6 +369,9 @@ $all_page_settings[ $my_setting_id ];
 
 ## Changelog
 
+- 2.7.4 - 2026-05-15
+	- Updates and deprecated notice fixes for WordPress 7.0.
+
 - 2.4.0 - 2020-12-04
 	- Updating to make this a more global library that can be used by multiple plugins.
 

@@ -10,7 +10,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingScheduler_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	public $sanitize_callback = 'sanitize_text_field';
 
@@ -391,7 +391,7 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 					<?php if ( $this->disable_date_range === false ) : ?>
 					<li>
 						<a href="#" data-format="date_range"<?php echo $date_format == 'date_range' ? ' class="selected"' : ''; ?>>
-							<?php echo $this->strings['date_range']; ?>
+							<?php echo esc_html( $this->strings['date_range'] ); ?>
 						</a>
 					</li>
 					<?php endif; ?>
@@ -409,7 +409,7 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 						$input_name = $this->get_input_name() . '[' . $id . '][weekdays][' . $slug . ']';
 				?>
 					<li>
-						&nbsp;<input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>" id="<?php echo esc_attr( $input_name ); ?>" value="1"<?php echo empty( $values['weekdays'][$slug] ) ? '' : ' checked="checked"'; ?> data-day="<?php echo esc_attr( $slug ); ?>"><label for="<?php echo esc_attr( $input_name ); ?>"><?php echo ucfirst( $label ); ?></label>
+						&nbsp;<input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>" id="<?php echo esc_attr( $input_name ); ?>" value="1"<?php echo empty( $values['weekdays'][$slug] ) ? '' : ' checked="checked"'; ?> data-day="<?php echo esc_attr( $slug ); ?>"><label for="<?php echo esc_attr( $input_name ); ?>"><?php echo esc_html( ucfirst( $label ) ); ?></label>
 					</li>
 				<?php endforeach; ?>
 				</ul>
@@ -425,7 +425,7 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 						$input_name = $this->get_input_name() . '[' . $id . '][weeks][' . $slug . ']';
 				?>
 					<li>
-						&nbsp;<input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>" id="<?php echo esc_attr( $input_name ); ?>" value="1"<?php echo empty( $values['weeks'][$slug] ) ? '' : ' checked="checked"'; ?> data-week="<?php echo esc_attr( $slug ); ?>"><label for="<?php echo esc_attr( $input_name ); ?>"><?php echo ucfirst( $label ); ?></label>
+						&nbsp;<input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>" id="<?php echo esc_attr( $input_name ); ?>" value="1"<?php echo empty( $values['weeks'][$slug] ) ? '' : ' checked="checked"'; ?> data-week="<?php echo esc_attr( $slug ); ?>"><label for="<?php echo esc_attr( $input_name ); ?>"><?php echo esc_html( ucfirst( $label ) ); ?></label>
 					</li>
 				<?php endforeach; ?>
 				</ul>
@@ -433,7 +433,7 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 
 				<?php if ( $this->disable_date === false ) : ?>
 				<div class="sap-scheduler-date-input">
-					<label for="<?php echo $this->get_input_name(); ?>[<?php echo esc_attr( $id ); ?>][date]">
+					<label for="<?php echo esc_attr( $this->get_input_name() ); ?>[<?php echo esc_attr( $id ); ?>][date]">
 						<?php echo esc_html( $this->strings['date_label'] ); ?>
 					</label>
 					<input type="text" name="<?php echo esc_attr( $this->get_input_name() ); ?>[<?php echo esc_attr( $id ); ?>][date]" id="<?php echo esc_attr( $this->get_input_name() ); ?>[<?php echo esc_attr( $id ); ?>][date]" value="<?php echo empty( $values['date'] ) ? '' : esc_attr( $values['date'] ); ?>">
@@ -445,16 +445,16 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 				<?php $range_end_name = "{$this->get_input_name()}[{$id}][date_range][end]"; ?>
 				<div class="sap-scheduler-date-range-input">
 					<div class="date-range-start">
-						<label for="<?php echo $range_start_name; ?>">
-							<?php echo $this->strings['start']; ?>
+						<label for="<?php echo esc_attr( $range_start_name ); ?>">
+							<?php echo esc_html( $this->strings['start'] ); ?>
 						</label>
-						<input type="text" name="<?php echo $range_start_name; ?>" id="<?php echo $range_start_name; ?>" value="<?php echo empty( $values['date_range']['start'] ) ? '' : $values['date_range']['start']; ?>">
+						<input type="text" name="<?php echo esc_attr( $range_start_name ); ?>" id="<?php echo esc_attr( $range_start_name ); ?>" value="<?php echo empty( $values['date_range']['start'] ) ? '' : esc_attr( $values['date_range']['start'] ); ?>">
 					</div>
 					<div class="date-range-end">
-						<label for="<?php echo $range_end_name; ?>">
-							<?php echo $this->strings['end']; ?>
+						<label for="<?php echo esc_attr( $range_end_name ); ?>">
+							<?php echo esc_html( $this->strings['end'] ); ?>
 						</label>
-						<input type="text" name="<?php echo $range_end_name; ?>" id="<?php echo $range_end_name; ?>" value="<?php echo empty( $values['date_range']['end'] ) ? '' : $values['date_range']['end']; ?>">
+						<input type="text" name="<?php echo esc_attr( $range_end_name ); ?>" id="<?php echo esc_attr( $range_end_name ); ?>" value="<?php echo empty( $values['date_range']['end'] ) ? '' : esc_attr( $values['date_range']['end'] ); ?>">
 					</div>
 				</div>
 				<?php endif; ?>
@@ -499,7 +499,7 @@ class sapAdminPageSettingScheduler_2_6_22 extends sapAdminPageSetting_2_6_22 {
 				</div>
 
 				<div class="sap-scheduler-all-day">
-					<?php printf( $this->strings['set_time_prompt'], '<a href="#" data-format="time-slot">', '</a>' ); ?>
+					<?php printf( wp_kses_post( $this->strings['set_time_prompt'] ), '<a href="#" data-format="time-slot">', '</a>' ); ?>
 				</div>
 
 			</div>

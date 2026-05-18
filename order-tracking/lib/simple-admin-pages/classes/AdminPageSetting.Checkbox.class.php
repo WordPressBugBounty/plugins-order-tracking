@@ -19,7 +19,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingCheckbox_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingCheckbox_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	//public $sanitize_callback = 'sanitize_text_field';
 
@@ -35,7 +35,7 @@ class sapAdminPageSettingCheckbox_2_6_22 extends sapAdminPageSetting_2_6_22 {
 		$values = ! empty( $values ) ? $values : $this->get_default_setting( $values );
 
 		?>
-		<fieldset <?php echo ( isset( $this->columns ) ? 'class="sap-setting-columns-' . $this->columns . '"' : '' ); ?> <?php $this->print_conditional_data(); ?>>
+		<fieldset <?php echo ( isset( $this->columns ) ? 'class="sap-setting-columns-' . esc_attr( $this->columns ) . '"' : '' ); ?> <?php $this->print_conditional_data(); ?>>
 			<?php foreach ( $this->options as $id => $title  ) : ?> 
 				<label title="<?php echo ( strpos( $title, '<' ) === false ? esc_attr( $title ) : ''); ?>" class="sap-admin-input-container">
 					<input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>[]" id="<?php echo esc_attr( $input_name . "-" . $id ); ?>" value="<?php echo esc_attr( $id ); ?>" <?php echo ( in_array($id, $values) ?  'checked="checked"' : '' ) ?> <?php echo ( $this->disabled ? 'disabled' : ''); ?> />

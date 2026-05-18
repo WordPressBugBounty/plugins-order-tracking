@@ -25,10 +25,10 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingInfiniteTable_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	public $has_editor = false; // Whether an editor field is included in the table columns
-	public $add_label = '+ ADD'; // Label applied to the add row button
+	public $add_label = '+ Add Row'; // Label applied to the add row button
 	public $del_label = 'Delete'; // Label applied to the delete row button
 	public $fields = array(); // Settings that can be set for each row in the table
 
@@ -67,7 +67,7 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 	public function display_setting() {
 
 		$input_name = $this->get_input_name();
-		$values = json_decode( html_entity_decode( $this->value ) );
+		$values = json_decode( html_entity_decode( $this->value ?? '' ) ) ?? [];
 		
 		$this->fields = array_filter( $this->fields );
 
@@ -84,23 +84,16 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 
 		<fieldset <?php $this->print_conditional_data(); ?>>
 			<div class='sap-infinite-table <?php echo ( $this->disabled ? 'disabled' : ''); ?>' data-fieldids='<?php echo esc_attr( $field_ids ); ?>'>
-				<input type='hidden' id="sap-infinite-table-main-input" name='<?php echo esc_attr( $input_name ); ?>' value='<?php echo $this->value; ?>' />
+				<input type='hidden' id="sap-infinite-table-main-input" name='<?php echo esc_attr( $input_name ); ?>' value='<?php echo esc_attr( $this->value ); ?>' />
 				<table>
-					<thead>
-						<tr>
-							<?php foreach ($this->fields as $field) { ?>
-								<th class='<?php echo esc_attr( $field['class_string'] ); ?>'><?php echo esc_html( $field['label'] ); ?></th>
-								<?php if ($field['type'] == 'editor') { $this->has_editor = true; } ?>
-							<?php } ?>
-							<th></th>
-						</tr>
-					</thead>
 					<tbody>
 						<?php foreach ($values as $row_id => $row) { ?>
 							<tr class='sap-infinite-table-row' data-row_id='<?php echo esc_attr( $row_id ); ?>'>
 								<?php foreach ($this->fields as $field_id => $field) { ?>
+									<th class='<?php echo esc_attr( $field['class_string'] ); ?>'><?php echo esc_html( $field['label'] ); ?></th>
+									<?php if ($field['type'] == 'editor') { $this->has_editor = true; } ?>
 									<td data-field-type="<?php echo esc_attr( $field['type'] ); ?>" class='<?php echo esc_attr( $field['class_string'] ); ?>'>
-										<span class='sap-infinite-table-td-content <?php echo $this->get_conditional_display( $field, $row ); ?>' <?php $this->print_field_conditional_data( $field ); ?>>
+										<span class='sap-infinite-table-td-content <?php echo esc_attr( $this->get_conditional_display( $field, $row ) ); ?>' <?php $this->print_field_conditional_data( $field ); ?>>
 											<?php if ($field['type'] == 'id') : ?>
 												<span class='sap-infinite-table-id-html'><?php echo esc_html( $row->$field_id ); ?></span>
 												<input type='hidden' data-name='<?php echo esc_attr( $field_id ); ?>' value='<?php echo esc_attr( $row->$field_id ); ?>' />
@@ -117,6 +110,9 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 											<?php endif; ?>
 											<?php if ($field['type'] == 'number') : ?>
 												<input type='number' data-name='<?php echo esc_attr( $field_id ); ?>' value='<?php echo esc_attr( $row->$field_id ); ?>' />
+											<?php endif; ?>
+											<?php if ($field['type'] == 'datetime') : ?>
+												<input type='datetime-local' data-name='<?php echo esc_attr( $field_id ); ?>' value='<?php echo esc_attr( $row->$field_id ); ?>' />
 											<?php endif; ?>
 											<?php if ($field['type'] == 'hidden') : ?>
 												<span class='sap-infinite-table-hidden-value'><?php echo esc_html( $row->$field_id ); ?></span>
@@ -144,6 +140,7 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 					<tfoot>
 						<tr class='sap-infinite-table-row-template sap-hidden'>
 							<?php foreach ($this->fields as $field_id => $field) { ?>
+								<th class='<?php echo esc_attr( $field['class_string'] ); ?>'><?php echo esc_html( $field['label'] ); ?></th>
 								<td data-field-type="<?php echo esc_attr( $field['type'] ); ?>" class='<?php echo esc_attr( $field['class_string'] ); ?>'>
 									<?php if ($field['type'] == 'id') : ?>
 										<span class='sap-infinite-table-id-html'></span>
@@ -161,6 +158,9 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 									<?php endif; ?>
 									<?php if ($field['type'] == 'number') : ?>
 										<input type='number' data-name='<?php echo esc_attr( $field_id ); ?>' value='' />
+									<?php endif; ?>
+									<?php if ($field['type'] == 'datetime') : ?>
+										<input type='datetime-local' data-name='<?php echo esc_attr( $field_id ); ?>' value='' />
 									<?php endif; ?>
 									<?php if ($field['type'] == 'hidden') : ?>
 										<span class='sap-infinite-table-hidden-value'></span>
@@ -185,7 +185,7 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 							</td>
 						</tr>
 						<tr class='sap-infinite-table-add-row'>
-							<td colspan="<?php echo count( $this->fields ) ?>">
+							<td colspan="100%">
 								<a class="sap-new-admin-add-button">
 									<?php echo wp_kses_post( $this->add_label ); ?>
 								</a>
@@ -202,8 +202,8 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 						<div class='sap-infinite-table-editor-container-inside-scroll'>
 							<?php wp_editor( '', preg_replace( '/[^\da-z]/i', '', $this->id ) ); ?>
 							<div class='sap-infinite-table-editor-buttons'>
-								<div class='sap-infinite-table-editor-cancel'><?php _e( 'Cancel', 'simple-admin-pages' ); ?></div>
-								<div class='sap-infinite-table-editor-save'><?php _e( 'Save', 'simple-admin-pages' ); ?></div>
+								<div class='sap-infinite-table-editor-cancel'><?php esc_html_e( 'Cancel', 'simple-admin-pages' ); ?></div>
+								<div class='sap-infinite-table-editor-save'><?php esc_html_e( 'Save', 'simple-admin-pages' ); ?></div>
 							</div>
 						</div>
 					</div>
@@ -268,7 +268,7 @@ class sapAdminPageSettingInfiniteTable_2_6_22 extends sapAdminPageSetting_2_6_22
 	 */
 	public function get_editor_row_preview( $value, $preview_length = 60 ) {
 
-		return substr( strip_tags( $value ), 0, $preview_length ) . ( strlen( $value ) > $preview_length ? '...' : '' );
+		return substr( wp_strip_all_tags( $value ), 0, $preview_length ) . ( strlen( $value ) > $preview_length ? '...' : '' );
 	}
 
 	/**

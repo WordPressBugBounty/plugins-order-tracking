@@ -1,10 +1,10 @@
 === Order Tracking - WordPress Status Tracking Plugin ===
 Contributors: Rustaurius, EtoileWebDesign
 Donate Link: http://www.etoilewebdesign.com/plugin-donations/
-Tags: order tracking, status tracking, order status, woocommerce order tracking, order shortcode, order management, delivery, deliveries, shipping, track, tracking, order processing, inventory management, customer orders, support tickets, helpdesk, help desk, help desk software, support software
+Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 3.4.4
+Tested up to: 7.0
+Stable tag: 3.5.0
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -303,25 +303,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 == Changelog ==
 
-= 3.4.4 (2026-04-22) =
-- Added a lot of in-admin help content, including guidance, support, links to applicable documentation and an AI assistant. It works via the AI Admin Assistance plugin (https://wordpress.org/plugins/ait-ai-admin-assistance/).
-
-= 3.4.3 (2025-11-24) =
-- Fix for issue causing error when trying to use the customer download or sales rep download features.
-
-= 3.4.2 (2025-09-23) =
-- Updated WooCommerce compatibility.
-
-= 3.4.1 (2025-04-29) =
-- Fixed issued with order sorting in admin sometimes not applying correctly.
-- Tested with WordPress 6.8.
-
-= 3.4.0 (2024-12-12) =
-- Added an option to show the tracking form on the WooCommerce view order (order tracking) page.
-- Plugin will now default to using WooCommerce statuses on activation.
-- New orders will now also be automatically added for orders created manually in the WooCommerce admin.
-- Added search button to orders, customers and sales reps admin screens.
-- Fix for issue with not being able to delete all custom fields.
-- Fixes for deprecated notices.
+= 3.5.0 (2026-05-18) =
+- Newly redesigned admin interface.
+- Fixed issue causing trial selection to not work correctly.
+- Compatibility updates for WordPress 7.0.
 
 [See changelog for all versions](https://www.etoilewebdesign.com/changelogs/order-tracking.txt).

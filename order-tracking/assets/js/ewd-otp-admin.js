@@ -232,7 +232,7 @@ function ewd_otp_custom_field_delete_handlers() {
 
 	jQuery( '.ewd-otp-custom-field-delete' ).off( 'click' ).on( 'click', function() {
 
-		jQuery( this ).parent().remove();
+		jQuery( this ).parent().parent().remove();
 
 	});
 }
@@ -287,7 +287,7 @@ jQuery(document).ready(function($) {
 	
 	jQuery( '.ewd-premium-helper-dashboard-new-trial-button' ).on('click', function() {
 
-		jQuery( '.ewd-otp-trial-version-select-modal-background , .ewd-otp-trial-version-select-modal' ).removeClass( 'ewd-otp-hidden' );
+		jQuery( '.ewd-otp-trial-version-select-modal-background, .ewd-otp-trial-version-select-modal' ).removeClass( 'ewd-otp-hidden' );
 
 		return false;
 	});

@@ -17,7 +17,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingSelectMenu_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingSelectMenu_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	public $sanitize_callback = 'intval';
 
@@ -36,7 +36,12 @@ class sapAdminPageSettingSelectMenu_2_6_22 extends sapAdminPageSetting_2_6_22 {
 	 */
 	public function display_setting() {
 
-		$menus = get_terms( 'nav_menu', array( 'hide_empty' => true ) );
+		$args = array(
+			'taxonomy' =>'nav_menu',
+			'hide_empty' => true,
+		);
+
+		$menus = get_terms( $args );
 		?>
 
 		<fieldset <?php $this->print_conditional_data(); ?>>

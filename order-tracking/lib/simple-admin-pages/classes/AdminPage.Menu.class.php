@@ -8,7 +8,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageMenu_2_6_22 extends sapAdminPage_2_6_22 {
+class sapAdminPageMenu_2_7_4 extends sapAdminPage_2_7_4 {
 
 	public $default_tab; // which menu tab to option on page load, if none selected
 	public $position; // what priority should be entered for the page

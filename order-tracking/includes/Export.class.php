@@ -51,7 +51,7 @@ class ewdotpExport {
 		require_once( EWD_OTP_PLUGIN_DIR . '/lib/simple-admin-pages/simple-admin-pages.php' );
 		$sap = sap_initialize_library(
 			$args = array(
-				'version' => '2.6.22',
+				'version' => '2.7.4',
 				'lib_url' => EWD_OTP_PLUGIN_URL . '/lib/simple-admin-pages/',
 				'theme'   => 'purple',
 			)
@@ -93,8 +93,6 @@ class ewdotpExport {
 						$_POST['type-of-record'] = isset( $_POST['type-of-record'] ) ? $_POST['type-of-record'] : 'order';
 					?>
 
-					<h2>Filters</h2>
-					
 					<table class="form-table ewd-otp-export-filters" role="presentation">
 
 						<tr class="row type-of-record">

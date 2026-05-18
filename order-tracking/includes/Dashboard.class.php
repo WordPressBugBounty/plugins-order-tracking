@@ -66,240 +66,207 @@ class ewdotpDashboard {
 		?>
 
 		<div id="ewd-otp-dashboard-content-area">
-
-			<div id="ewd-otp-dashboard-content-left">
 		
-				<?php if ( ! $permission or ! $ultimate or get_option("EWD_OTP_Trial_Happening") == "Yes" or get_option("EWD_OTPU_Trial_Happening") == "Yes" ) {
-					
-					$premium_info = '<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full">';
-					$premium_info .= '<div class="ewd-otp-dashboard-new-widget-box-top">';
-					$premium_info .= sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to upgrade to premium.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/' );
-					$premium_info .= '</div>';
-					$premium_info .= '</div>';
+			<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" ) {
+				$premium_info = '<div class="ewd-otp-dashboard-visit-our-site">';
+				$premium_info .= sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to upgrade to premium.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/' );
+				$premium_info .= '</div>';
 
-					$premium_info = apply_filters( 'ewd_dashboard_top', $premium_info, 'OTP', 'https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1' );
+				$premium_info = apply_filters( 'ewd_dashboard_top', $premium_info, 'OTP', 'https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1' );
 
-					if ( $permission and get_option("EWD_OTPU_Trial_Happening") != "Yes" ) {
-						$ultimate_premium_notice = '<div class="ewd-otp-ultimate-notification">';
-						$ultimate_premium_notice .= __( 'Thanks for being a premium user! <strong>If you\'re looking to upgrade to our ultimate version, enter your new product key below.</strong>', 'order-tracking' );
-						$ultimate_premium_notice .= '</div>';
-						$ultimate_premium_notice .= '<div class="ewd-otp-ultimate-upgrade-dismiss"></div>';
+				echo wp_kses(
+					$premium_info,
+					apply_filters( 'ewd_dashboard_top_kses_allowed_tags', wp_kses_allowed_html( 'post' ) )
+				);
+			} ?>
 
-						$premium_info = str_replace('<div class="ewd-premium-helper-dashboard-new-widget-box-top">', '<div class="ewd-premium-helper-dashboard-new-widget-box-top">' . $ultimate_premium_notice, $premium_info);
-					}
+			<div class="ewd-otp-dashboard-aiaa-support-notice">
+				<div class="ewd-otp-dashboard-aiaa-support-notice-inside">
+					<span class="dashicons dashicons-info"></span>
+					<p><?php echo sprintf( __( 'We\'ve added in-admin help, support and an AI assistant for the Order Tracking plugin! Install <a target=\'_blank\' href=\'%s\'>AI Admin Assistance</a> to view and access it.', 'order-tracking' ), admin_url( 'plugin-install.php?tab=plugin-information&plugin=ait-ai-admin-assistance' ) ); ?></p>
+				</div>
+			</div>
 
-					echo wp_kses(
-						$premium_info,
-						apply_filters( 'ewd_dashboard_top_kses_allowed_tags', wp_kses_allowed_html( 'post' ) )
-					);
-				} ?>
+			<ul class="ewd-otp-dashboard-support-widgets">
+				<li>
+					<div class="ewd-otp-dashboard-support-widgets-title"><?php _e('YouTube Tutorials', 'order-tracking'); ?></div>
+					<div class="ewd-otp-dashboard-support-widgets-text-and-link">
+						<div class="ewd-otp-dashboard-support-widgets-text"><span class="dashicons dashicons-star-empty"></span>Get help with our video tutorials</div>
+						<a class="ewd-otp-dashboard-support-widgets-link" href="https://www.youtube.com/watch?v=ylJ6CET7ppU&list=PLEndQUuhlvSqa6Txwj1-Ohw8Bj90CIRl0" target="_blank"><?php _e('View', 'order-tracking'); ?></a>
+					</div>
+				</li>
+				<li>
+					<div class="ewd-otp-dashboard-support-widgets-title"><?php _e('Documentation', 'order-tracking'); ?></div>
+					<div class="ewd-otp-dashboard-support-widgets-text-and-link">
+						<div class="ewd-otp-dashboard-support-widgets-text"><span class="dashicons dashicons-star-empty"></span>View our in-depth plugin documentation</div>
+						<a class="ewd-otp-dashboard-support-widgets-link" href="https://doc.etoilewebdesign.com/plugins/order-tracking/user/?utm_source=otp_dashboard&utm_content=icons_documentation" target="_blank"><?php _e('View', 'order-tracking'); ?></a>
+					</div>
+				</li>
+				<li>
+					<div class="ewd-otp-dashboard-support-widgets-title"><?php _e('Plugin FAQs', 'order-tracking'); ?></div>
+					<div class="ewd-otp-dashboard-support-widgets-text-and-link">
+						<div class="ewd-otp-dashboard-support-widgets-text"><span class="dashicons dashicons-star-empty"></span>Access plugin and info and FAQs here.</div>
+						<a class="ewd-otp-dashboard-support-widgets-link" href="https://wordpress.org/plugins/order-tracking/#faq" target="_blank"><?php _e('View', 'order-tracking'); ?></a>
+					</div>
+				</li>
+				<li>
+					<div class="ewd-otp-dashboard-support-widgets-title"><?php _e('Get Support', 'order-tracking'); ?></div>
+					<div class="ewd-otp-dashboard-support-widgets-text-and-link">
+						<div class="ewd-otp-dashboard-support-widgets-text"><span class="dashicons dashicons-star-empty"></span>Need more help? Get in touch.</div>
+						<a class="ewd-otp-dashboard-support-widgets-link" href="https://www.etoilewebdesign.com/support-center/?utm_source=otp_dashboard&utm_content=icons_get_support" target="_blank"><?php _e('View', 'order-tracking'); ?></a>
+					</div>
+				</li>
+			</ul>
 	
-				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-dashboard-support-widget-box">
-					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Get Support', 'order-tracking'); ?><span id="ewd-otp-dash-mobile-support-down-caret">&nbsp;&nbsp;&#9660;</span><span id="ewd-otp-dash-mobile-support-up-caret">&nbsp;&nbsp;&#9650;</span></div>
-					<div class="ewd-otp-dashboard-new-widget-box-bottom">
-						<div class="ewd-otp-dashboard-aiaa-support-notice">
-							<div class="ewd-otp-dashboard-aiaa-support-notice-inside">
-								<span class="dashicons dashicons-info"></span>
-								<p><?php echo sprintf( __( 'Add help to each plugin admin screen! Install <a target=\'_blank\' href=\'%s\'>AI Admin Assistance</a> to view our in-admin help content!', 'order-tracking' ), admin_url( 'plugin-install.php?tab=plugin-information&plugin=ait-ai-admin-assistance' ) ); ?></p>
+			<div class="ewd-otp-dashboard-catalogs">
+				<div class="ewd-otp-dashboard-catalogs-title"><?php _e('Orders', 'order-tracking'); ?></div>
+				<table class='ewd-otp-overview-table wp-list-table widefat fixed striped posts'>
+					<thead>
+						<tr>
+							<th><?php _e("Order Number", 'order-tracking'); ?></th>
+							<th><?php _e("Name", 'order-tracking'); ?></th>
+							<th><?php _e("Status", 'order-tracking'); ?></th>
+							<th><?php _e("Updated", 'order-tracking'); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+							if ( empty( $orders ) ) {echo "<tr><td colspan='3'>" . __("No orders to display yet. Create an order for it to be displayed here.", 'order-tracking') . "</td></tr>";}
+							else {
+								foreach ( $orders as $order ) { ?>
+									<tr>
+										<td><?php echo '<a href="admin.php?page=ewd-otp-add-edit-order&order_id=' . $order->id . '" data-id="' . esc_attr( $order->id ) . '">' . $order->number . '</a>'; ?></td>
+										<td><?php echo $order->name; ?></td>
+										<td><?php echo $order->status; ?></td>
+										<td><?php echo $order->status_updated_fmtd; ?></td>
+									</tr>
+								<?php }
+							}
+						?>
+					</tbody>
+				</table>
+			</div>
+
+			<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" ) { ?>
+				<div class="ewd-otp-dashboard-get-premium-and-trial<?php echo get_option( 'EWD_OTP_Trial_Happening' ) == 'Yes' ? ' trial-happening' : ''; ?>">
+					<div id="ewd-otp-dashboard-new-footer-one">
+						<div class="ewd-otp-dashboard-new-footer-one-inside">
+							<div class="ewd-otp-dashboard-new-footer-one-left">
+								<div class="ewd-otp-dashboard-new-footer-one-title">What's Included in Our Premium Version?</div>
+								<ul class="ewd-otp-dashboard-new-footer-one-benefits">
+									<li>Create &amp; Assign Orders to Sales Reps</li>
+									<li>Create &amp; Tie Orders to Customers</li>
+									<li>Custom Fields</li>
+									<li>WooCommerce Order Integration</li>
+									<li>Advanced Display &amp; Styling Options</li>
+									<li>Front-End Customer Order Form</li>
+									<li>Import/Export Orders</li>
+									<li>Set Up Status Locations</li>
+									<li>Email Support</li>
+								</ul>
 							</div>
-						</div>
-						<ul class="ewd-otp-dashboard-support-widgets">
-							<li>
-								<a href="https://www.youtube.com/watch?v=rMULYuPjVXU&list=PLEndQUuhlvSqa6Txwj1-Ohw8Bj90CIRl0" target="_blank">
-									<img src="<?php echo plugins_url( '../assets/img/ewd-support-icon-youtube.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-support-widgets-text"><?php _e('YouTube Tutorials', 'order-tracking'); ?></div>
-								</a>
-							</li>
-							<li>
-								<a href="https://wordpress.org/plugins/order-tracking/#faq" target="_blank">
-									<img src="<?php echo plugins_url( '../assets/img/ewd-support-icon-faqs.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-support-widgets-text"><?php _e('Plugin FAQs', 'order-tracking'); ?></div>
-								</a>
-							</li>
-							<li>
-								<a href="https://www.etoilewebdesign.com/support-center/?Plugin=OTP&Type=FAQs" target="_blank">
-									<img src="<?php echo plugins_url( '../assets/img/ewd-support-icon-documentation.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-support-widgets-text"><?php _e('Documentation', 'order-tracking'); ?></div>
-								</a>
-							</li>
-							<li>
-								<a href="https://www.etoilewebdesign.com/support-center/" target="_blank">
-									<img src="<?php echo plugins_url( '../assets/img/ewd-support-icon-forum.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-support-widgets-text"><?php _e('Get Support', 'order-tracking'); ?></div>
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-		
-				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-dashboard-optional-table">
-					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Orders', 'order-tracking'); ?><span id="ewd-otp-dash-optional-table-down-caret">&nbsp;&nbsp;&#9660;</span><span id="ewd-otp-dash-optional-table-up-caret">&nbsp;&nbsp;&#9650;</span></div>
-					<div class="ewd-otp-dashboard-new-widget-box-bottom">
-						<table class='ewd-otp-overview-table wp-list-table widefat fixed striped posts'>
-							<thead>
-								<tr>
-									<th><?php _e("Order Number", 'order-tracking'); ?></th>
-									<th><?php _e("Name", 'order-tracking'); ?></th>
-									<th><?php _e("Status", 'order-tracking'); ?></th>
-									<th><?php _e("Updated", 'order-tracking'); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-									if ( empty( $orders ) ) {echo "<tr><td colspan='3'>" . __("No orders to display yet. Create an order for it to be displayed here.", 'order-tracking') . "</td></tr>";}
-									else {
-										foreach ( $orders as $order ) { ?>
-											<tr>
-												<td><?php echo '<a href="admin.php?page=ewd-otp-add-edit-order&order_id=' . $order->id . '" data-id="' . esc_attr( $order->id ) . '">' . $order->number . '</a>'; ?></td>
-												<td><?php echo $order->name; ?></td>
-												<td><?php echo $order->status; ?></td>
-												<td><?php echo $order->status_updated_fmtd; ?></td>
-											</tr>
-										<?php }
-									}
-								?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-		
-				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full">
-					<div class="ewd-otp-dashboard-new-widget-box-top">What People Are Saying</div>
-					<div class="ewd-otp-dashboard-new-widget-box-bottom">
-						<ul class="ewd-otp-dashboard-testimonials">
-							<?php $randomTestimonial = rand(0,2);
-							if($randomTestimonial == 0){ ?>
-								<li id="ewd-otp-dashboard-testimonial-one">
-									<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-testimonial-title">"Great Plugin. Great Support!"</div>
-									<div class="ewd-otp-dashboard-testimonial-author">- @pfernand</div>
-									<div class="ewd-otp-dashboard-testimonial-text">The next best thing about finding a great plugin is finding a plugin with AWESOME support... <a href="https://wordpress.org/support/topic/great-plugin-great-support-644/" target="_blank">read more</a></div>
-								</li>
-							<?php }
-							if($randomTestimonial == 1){ ?>
-								<li id="ewd-otp-dashboard-testimonial-two">
-									<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-testimonial-title">"Order tracking made easy"</div>
-									<div class="ewd-otp-dashboard-testimonial-author">- @vietnamsales</div>
-									<div class="ewd-otp-dashboard-testimonial-text">That’s a wonderful plugin. Did I mention that customer service was fast, friendly and useful? <a href="https://wordpress.org/support/topic/order-tracking-made-easy/" target="_blank">read more</a></div>
-								</li>
-							<?php }
-							if($randomTestimonial == 2){ ?>
-								<li id="ewd-otp-dashboard-testimonial-three">
-									<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
-									<div class="ewd-otp-dashboard-testimonial-title">"Amazing plugin, Awesome Customer Support"</div>
-									<div class="ewd-otp-dashboard-testimonial-author">- @diegoduarte</div>
-									<div class="ewd-otp-dashboard-testimonial-text">The plugin is simple, but really amazing. It does everything is supposed to do. Five stars! <a href="https://wordpress.org/support/topic/amazing-plugin-awesome-customer-support/" target="_blank">read more</a></div>
-								</li>
-							<?php } ?>
-						</ul>
-					</div>
-				</div>
-		
-				<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" or get_option("EWD_OTPU_Trial_Happening") == "Yes" ) { ?>
-					<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-dashboard-guarantee-widget-box">
-						<div class="ewd-otp-dashboard-new-widget-box-top">
-							<div class="ewd-otp-dashboard-guarantee">
-								<div class="ewd-otp-dashboard-guarantee-title">14-Day 100% Money-Back Guarantee</div>
-								<div class="ewd-otp-dashboard-guarantee-text">If you're not 100% satisfied with the premium version of our plugin - no problem. You have 14 days to receive a FULL REFUND. We're certain you won't need it, though.</div>
+							<div class="ewd-otp-dashboard-new-footer-one-buttons">
+								<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_dashboard&utm_content=footer_upgrade" target="_blank">UPGRADE NOW</a>
+								<?php if ( ! get_option("EWD_OTP_Trial_Happening") and ! get_option( "EWD_OTPU_Trial_Happening" ) ) { 
+									$trial_info = sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to get a free 7-day trial of the premium plugin.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/?utm_source=otp_dashboard&utm_content=sidebar_visit_our_site_link' );
+
+									$version_select_modal = '<div class="ewd-otp-trial-version-select-modal ewd-otp-hidden">';
+									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-title">' . __( 'Select version to trial', 'order-tracking' ) . '</div>';
+									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-option"><input type="radio" value="premium" name="ewd-otp-trial-version" checked /> ' . __( 'Premium', 'order-tracking' ) . '</div>';
+									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-option"><input type="radio" value="ultimate" name="ewd-otp-trial-version" /> ' . __( 'Ultimate', 'order-tracking' ) . '</div>';
+									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-explanation">' . __( 'SMS messaging will not work in the ultimate version trial.', 'order-tracking' ) . '</div>';
+									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-submit">' . __( 'Select', 'order-tracking' ) . '</div>';
+									$version_select_modal .= '</div>';
+
+									$trial_info = apply_filters( 'ewd_trial_button', $trial_info, 'OTP' );
+
+									$trial_info = str_replace( '</form>', '</form>' . $version_select_modal, $trial_info );
+
+									echo $trial_info;
+								} ?>
 							</div>
 						</div>
 					</div>
-				<?php } ?>
-		
-			</div> <!-- left -->
-		
-			<div id="ewd-otp-dashboard-content-right">
-		
-				<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" or get_option("EWD_OTPU_Trial_Happening") == "Yes" ) { ?>
-					<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-dashboard-get-premium-widget-box">
-						<div class="ewd-otp-dashboard-new-widget-box-top">Get Premium</div>
-
-						<?php if ( get_option( "EWD_OTP_Trial_Happening" ) == "Yes" ) { do_action( 'ewd_trial_happening', 'OTP' ); } ?>
-						<?php if ( get_option( "EWD_OTPU_Trial_Happening" ) == "Yes" ) { do_action( 'ewd_trial_happening', 'OTPU' ); } ?>
-
-						<div class="ewd-otp-dashboard-new-widget-box-bottom">
-							<div class="ewd-otp-dashboard-get-premium-widget-features-title"<?php echo ( ( get_option("EWD_OTP_Trial_Happening") == "Yes" or get_option( "EWD_OTPU_Trial_Happening" ) == "Yes" ) ? "style='padding-top: 20px;'" : ""); ?>>GET FULL ACCESS WITH OUR PREMIUM VERSION AND GET:</div>
-							<ul class="ewd-otp-dashboard-get-premium-widget-features">
-								<li>Set Up Sales Reps &amp; Customers</li>
-								<li>Custom Fields</li>
-								<li>WooCommerce Order Integration</li>
-								<li>Advanced Display Options</li>
-								<li>+ More</li>
-							</ul>
-							<a href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_admin&utm_content=dashboard_sidebar" class="ewd-otp-dashboard-get-premium-widget-button" target="_blank">UPGRADE NOW</a>
-							
-							<?php if ( ! get_option("EWD_OTP_Trial_Happening") and ! get_option( "EWD_OTPU_Trial_Happening" ) == "Yes" ) { 
-								$trial_info = sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to get a free 7-day trial of the premium plugin.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/' );		
-
-								$version_select_modal = '<div class="ewd-otp-trial-version-select-modal-background ewd-otp-hidden"></div>';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal ewd-otp-hidden">';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-title">' . __( 'Select version to trial', 'order-tracking' ) . '</div>';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-option"><input type="radio" value="premium" name="ewd-otp-trial-version" checked /> ' . __( 'Premium', 'order-tracking' ) . '</div>';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-option"><input type="radio" value="ultimate" name="ewd-otp-trial-version" /> ' . __( 'Ultimate', 'order-tracking' ) . '</div>';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-explanation">' . __( 'SMS messaging will not work in the ultimate version trial.', 'order-tracking' ) . '</div>';
-								$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-submit">' . __( 'Select', 'order-tracking' ) . '</div>';
-								$version_select_modal .= '</div>';
-
-								$trial_info = apply_filters( 'fsp_trial_button', $trial_info, 'OTP' );
-
-								$trial_info = str_replace( '</form>', '</form>' . $version_select_modal, $trial_info );
-
-								echo apply_filters( 'ewd_trial_button', $trial_info, 'OTP' );
-							} ?>
+					<?php if ( get_option( "EWD_OTP_Trial_Happening" ) == "Yes" ) { ?>
+						<div class="ewd-otp-dashboard-trial-container">
+							<?php do_action( 'ewd_trial_happening', 'OTP' ); ?>
+						</div>
+					<?php } ?>
+					<?php if ( get_option( "EWD_OTPU_Trial_Happening" ) == "Yes" ) { ?>
+						<div class="ewd-otp-dashboard-trial-container">
+							<?php do_action( 'ewd_trial_happening', 'OTPU' ); ?>
+						</div>
+					<?php } ?>
 				</div>
-					</div>
-				<?php } ?>
-		
-				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full">
-					<div class="ewd-otp-dashboard-new-widget-box-top">Other Plugins by Etoile</div>
-					<div class="ewd-otp-dashboard-new-widget-box-bottom">
-						<ul class="ewd-otp-dashboard-other-plugins">
-							<li>
-								<a href="https://wordpress.org/plugins/ultimate-product-catalogue/" target="_blank"><img src="<?php echo plugins_url( '../assets/img/ewd-otp-icon.png', __FILE__ ); ?>"></a>
-								<div class="ewd-otp-dashboard-other-plugins-text">
-									<div class="ewd-otp-dashboard-other-plugins-title">Product Catalog</div>
-									<div class="ewd-otp-dashboard-other-plugins-blurb">Enables you to display your business's products in a clean and efficient manner.</div>
-								</div>
+			<?php } ?>	
+
+			<div class="ewd-otp-dashboard-testimonials-and-other-plugins">
+
+				<div class="ewd-otp-dashboard-testimonials-container">
+					<div class="ewd-otp-dashboard-testimonials-container-title"><?php _e( 'What People Are Saying', 'order-tracking' ); ?></div>
+					<ul class="ewd-otp-dashboard-testimonials">
+						<?php $randomTestimonial = rand(0,2);
+						if($randomTestimonial == 0){ ?>
+							<li id="ewd-otp-dashboard-testimonial-one">
+								<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
+								<div class="ewd-otp-dashboard-testimonial-title">"Great Plugin. Great Support!"</div>
+								<div class="ewd-otp-dashboard-testimonial-author">- @pfernand</div>
+								<div class="ewd-otp-dashboard-testimonial-text">The next best thing about finding a great plugin is finding a plugin with AWESOME support... <a href="https://wordpress.org/support/topic/great-plugin-great-support-644/" target="_blank">read more</a></div>
 							</li>
-							<li>
-								<a href="https://wordpress.org/plugins/ultimate-faqs/" target="_blank"><img src="<?php echo plugins_url( '../assets/img/ewd-ufaq-icon.png', __FILE__ ); ?>"></a>
-								<div class="ewd-otp-dashboard-other-plugins-text">
-									<div class="ewd-otp-dashboard-other-plugins-title">Ultimate FAQs</div>
-									<div class="ewd-otp-dashboard-other-plugins-blurb">An easy-to-use FAQ plugin that lets you create, order and publicize FAQs, with many styles and options!</div>
-								</div>
+						<?php }
+						if($randomTestimonial == 1){ ?>
+							<li id="ewd-otp-dashboard-testimonial-two">
+								<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
+								<div class="ewd-otp-dashboard-testimonial-title">"Order tracking made easy"</div>
+								<div class="ewd-otp-dashboard-testimonial-author">- @vietnamsales</div>
+								<div class="ewd-otp-dashboard-testimonial-text">That’s a wonderful plugin. Did I mention that customer service was fast, friendly and useful? <a href="https://wordpress.org/support/topic/order-tracking-made-easy/" target="_blank">read more</a></div>
 							</li>
-						</ul>
+						<?php }
+						if($randomTestimonial == 2){ ?>
+							<li id="ewd-otp-dashboard-testimonial-three">
+								<img src="<?php echo plugins_url( '../assets/img/dash-asset-stars.png', __FILE__ ); ?>">
+								<div class="ewd-otp-dashboard-testimonial-title">"Amazing plugin, Awesome Customer Support"</div>
+								<div class="ewd-otp-dashboard-testimonial-author">- @diegoduarte</div>
+								<div class="ewd-otp-dashboard-testimonial-text">The plugin is simple, but really amazing. It does everything is supposed to do. Five stars! <a href="https://wordpress.org/support/topic/amazing-plugin-awesome-customer-support/" target="_blank">read more</a></div>
+							</li>
+						<?php } ?>
+					</ul>
+				</div>
+
+				<div class="ewd-otp-dashboard-other-plugins-container">
+					<div class="ewd-otp-dashboard-other-plugins-container-title"><?php _e('Other plugins by Etoile', 'order-tracking'); ?></div>
+					<ul class="ewd-otp-dashboard-other-plugins">
+						<li>
+							<a href="https://wordpress.org/plugins/ultimate-product-catalogue/" target="_blank"><img src="<?php echo plugins_url( '../assets/img/ewd-otp-icon.png', __FILE__ ); ?>"></a>
+							<div class="ewd-otp-dashboard-other-plugins-text">
+								<div class="ewd-otp-dashboard-other-plugins-title">Product Catalog</div>
+								<div class="ewd-otp-dashboard-other-plugins-blurb">Enables you to display your business's products in a clean and efficient manner.</div>
+							</div>
+						</li>
+						<li>
+							<a href="https://wordpress.org/plugins/ultimate-faqs/" target="_blank"><img src="<?php echo plugins_url( '../assets/img/ewd-ufaq-icon.png', __FILE__ ); ?>"></a>
+							<div class="ewd-otp-dashboard-other-plugins-text">
+								<div class="ewd-otp-dashboard-other-plugins-title">Ultimate FAQs</div>
+								<div class="ewd-otp-dashboard-other-plugins-blurb">An easy-to-use FAQ plugin that lets you create, order and publicize FAQs, with many styles and options!</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" ) { ?>
+				<div class="ewd-otp-dashboard-guarantee">
+					<img src="<?php echo plugins_url( '../assets/img/dash-asset-badge.png', __FILE__ ); ?>" alt="14-Day 100% Money-Back Guarantee">
+					<div class="ewd-otp-dashboard-guarantee-title-and-text">
+						<div class="ewd-otp-dashboard-guarantee-title">14-Day 100% Money-Back Guarantee</div>
+						<div class="ewd-otp-dashboard-guarantee-text">If you're not 100% satisfied with the premium version of our plugin - no problem. You have 14 days to receive a FULL REFUND. We're certain you won't need it, though.</div>
 					</div>
 				</div>
+			<?php } ?>
+
+		</div> <!-- ewd-otp-dashboard-content-area -->
 		
-			</div> <!-- right -->	
-		
-		</div> <!-- us-dashboard-content-area -->
-		
-		<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" or get_option( "EWD_OTPU_Trial_Happening" ) == "Yes" ) { ?>
-			<div id="ewd-otp-dashboard-new-footer-one">
-				<div class="ewd-otp-dashboard-new-footer-one-inside">
-					<div class="ewd-otp-dashboard-new-footer-one-left">
-						<div class="ewd-otp-dashboard-new-footer-one-title">What's Included in Our Premium Version?</div>
-						<ul class="ewd-otp-dashboard-new-footer-one-benefits">
-							<li>Create &amp; Assign Orders to Sales Reps</li>
-							<li>Create &amp; Tie Orders to Customers</li>
-							<li>Custom Fields</li>
-							<li>WooCommerce Order Integration</li>
-							<li>Advanced Display &amp; Styling Options</li>
-							<li>Front-End Customer Order Form</li>
-							<li>Import/Export Orders</li>
-							<li>Set Up Status Locations</li>
-							<li>Email Support</li>
-						</ul>
-					</div>
-					<div class="ewd-otp-dashboard-new-footer-one-buttons">
-						<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_admin&utm_content=dashboard_footer" target="_blank">UPGRADE NOW</a>
-					</div>
-				</div>
-			</div> <!-- us-dashboard-new-footer-one -->
-		<?php } ?>	
 		<div id="ewd-otp-dashboard-new-footer-two">
 			<div class="ewd-otp-dashboard-new-footer-two-inside">
 				<img src="<?php echo plugins_url( '../assets/img/ewd-logo-white.png', __FILE__ ); ?>" class="ewd-otp-dashboard-new-footer-two-icon">
@@ -307,17 +274,17 @@ class ewdotpDashboard {
 					At Etoile Web Design, we build reliable, easy-to-use WordPress plugins with a modern look. Rich in features, highly customizable and responsive, plugins by Etoile Web Design can be used as out-of-the-box solutions and can also be adapted to your specific requirements.
 				</div>
 				<ul class="ewd-otp-dashboard-new-footer-two-menu">
+					<li>SUPPORT</li>
+					<li><a href="https://www.youtube.com/watch?v=ylJ6CET7ppU&list=PLEndQUuhlvSqa6Txwj1-Ohw8Bj90CIRl0" target="_blank">YouTube Tutorials</a></li>
+					<li><a href="https://doc.etoilewebdesign.com/plugins/order-tracking/user/?utm_source=otp_dashboard&utm_content=footer_documentation" target="_blank">Documentation</a></li>
+					<li><a href="https://www.etoilewebdesign.com/support-center/?utm_source=otp_dashboard&utm_content=footer_get_support" target="_blank">Get Support</a></li>
+					<li><a href="https://wordpress.org/plugins/order-tracking/#faq" target="_blank">FAQs</a></li>
+				</ul>
+				<ul class="ewd-otp-dashboard-new-footer-two-menu">
 					<li>SOCIAL</li>
 					<li><a href="https://www.facebook.com/EtoileWebDesign/" target="_blank">Facebook</a></li>
 					<li><a href="https://twitter.com/EtoileWebDesign" target="_blank">Twitter</a></li>
-					<li><a href="https://www.etoilewebdesign.com/category/blog/" target="_blank">Blog</a></li>
-				</ul>
-				<ul class="ewd-otp-dashboard-new-footer-two-menu">
-					<li>SUPPORT</li>
-					<li><a href="https://www.youtube.com/watch?v=rMULYuPjVXU&list=PLEndQUuhlvSqa6Txwj1-Ohw8Bj90CIRl0" target="_blank">YouTube Tutorials</a></li>
-					<li><a href="https://www.etoilewebdesign.com/support-center/?Plugin=OTP&Type=FAQs" target="_blank">Documentation</a></li>
-					<li><a href="https://www.etoilewebdesign.com/support-center/" target="_blank">Get Support</a></li>
-					<li><a href="https://wordpress.org/plugins/order-tracking/#faq" target="_blank">FAQs</a></li>
+					<li><a href="https://www.etoilewebdesign.com/category/blog/?utm_source=otp_dashboard&utm_content=footer_blog" target="_blank">Blog</a></li>
 				</ul>
 			</div>
 		</div> <!-- ewd-otp-dashboard-new-footer-two -->

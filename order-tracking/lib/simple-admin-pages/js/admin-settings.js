@@ -37,25 +37,54 @@ jQuery(document).ready(function() {
     jQuery( 'fieldset[data-conditional_on]' ).each( function() {
         
         var option = jQuery( this );
-        var option_name = jQuery( 'input[name="option_page"]' ).val() + '[' + option.data( 'conditional_on' ) + ']';
+        var option_page = jQuery( 'input[name="option_page"]' ).val();
 
-        jQuery( '[name="' + option_name + '"], [name="' + option_name + '[]"]' ).on( 'change', function() { 
-            
-            var conditional_on_value = String( option.data( 'conditional_on_value' ) ).split( ',' ); 
+        var conditional_on = option.data( 'conditional_on' ); console.log( conditional_on );
+        var conditional_on_value = option.data( 'conditional_on_value' );
 
-            var option_value = jQuery( this ).attr( 'type' ) != 'checkbox' ? jQuery( this ).val() : 
-                                ( ( option.data( 'conditional_on_value' ) == 1 || option.data( 'conditional_on_value' ) == '' ) ? jQuery( this ).is( ':checked' ) : 
-                                    ( jQuery( this ).is( ':checked' ) ? option.data( 'conditional_on_value' ) : false ) ); 
-                                
-            if ( jQuery.inArray( option_value, conditional_on_value ) !== -1 || ( option_value === true && conditional_on_value[0] === '1' ) ) {
+        jQuery.each( conditional_on, function ( index, field ) {
 
-                option.parent().parent().removeClass( 'sap-hidden' );
-            }
-             else {
+            var option_name = option_page + '[' + field + ']';
 
-                option.parent().parent().addClass( 'sap-hidden' );
-            }
-        });
+            jQuery( '[name="' + option_name + '"], [name="' + option_name + '[]"]' ).on( 'change', function() { console.log( option_name );
+
+                var show_option = true;
+
+                jQuery.each( conditional_on, function ( index, field ) { //console.log( conditional_on ); console.log( conditional_on_value );
+
+                    var check_option = option_page + '[' + field + ']';
+                    var input_element = jQuery( '[name="' + check_option + '"], [name="' + check_option + '[]"]' );
+
+                    if ( input_element.length ) {
+
+                        if (input_element.is(':checkbox')) {
+                            option_value = input_element.is(':checked') ? input_element.val() : false;
+                        } else if (input_element.is(':radio')) {
+                            option_value = jQuery('[name="' + check_option + '"]:checked').val() || false;
+                        } else {
+                            option_value = input_element.val();
+                        }
+                    } //console.log( option_value );
+
+                    var values_to_check = Array.isArray( conditional_on_value[ index ] ) ? conditional_on_value[ index ] : [ conditional_on_value[ index ] ];
+                    //console.log( values_to_check ); console.log( values_to_check.includes( option_value ) ); console.log( option_value == true  ); console.log( values_to_check.includes( true ) );
+                    if ( ! values_to_check.includes( option_value ) && ! ( option_value == true && values_to_check.includes( true ) ) ) {
+
+                        show_option = false;
+                        return false;
+                    }
+                } );
+
+                if ( show_option ) {
+
+                    option.parent().parent().removeClass( 'sap-hidden' );
+                }
+                else {
+
+                    option.parent().parent().addClass( 'sap-hidden' );
+                }
+            } );
+        } );
     });
 });
 
@@ -115,10 +144,27 @@ jQuery( document ).ready( function() {
 
     tutorial_div.next().insertBefore( tutorial_div );
 
-    jQuery( '.sap-parent-form h2:first-of-type' ).after( '<div class="sap-tutorial-toggle button button-primary">Video Tutorial</div>' );
+    jQuery( '.sap-settings-menu-and-video-button > h2:first-of-type' ).after( '<div class="sap-tutorial-toggle"><span class="dashicons dashicons-format-video"></span>Video Tutorial</div>' );
 
     jQuery( document ).on('click', '.sap-tutorial-toggle', function( event ) { 
 
-        jQuery( '.sap-tutorial-div' ).toggle();
+        jQuery( '.sap-tutorial-div' ).toggleClass( 'sap-hidden' );
     } );
+} );
+
+
+/* NEW SETTINGS PAGE LAYOUT */
+
+jQuery( document ).ready( function() {
+
+    jQuery( 'table.form-table > tbody > tr' ).each( function () {
+        
+        var this_tr = jQuery( this );
+        var this_description = this_tr.find( 'td .description' );
+        var this_th = this_tr.find( '> th' );
+
+        this_description.appendTo( this_th );
+    } );
+
+    jQuery( '.sap-parent-form input#submit' ).removeClass( 'button button-primary' );
 } );

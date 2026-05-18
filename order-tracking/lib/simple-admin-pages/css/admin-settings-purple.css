@@ -1,5 +1,7 @@
 :root {
-  --main-color: #6026B4;
-  --main-color-border: #6026B4;
+  --main-color: #7B31AF;
+  --main-color-border: #7B31AF;
   --main-color-hover: #915add;
+  --main-color-light: #FBF9FD;
+  --main-color-control-back: #F2EAF7;
 }

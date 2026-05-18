@@ -14,7 +14,7 @@
  * @package Simple Admin Pages
  */
 
-class sapAdminPageSettingHTML_2_6_22 extends sapAdminPageSetting_2_6_22 {
+class sapAdminPageSettingHTML_2_7_4 extends sapAdminPageSetting_2_7_4 {
 
 	public $html; // The HTML that should be displayed by this option
 	public $sanitize_callback = 'sanitize_text_field';
@@ -28,7 +28,13 @@ class sapAdminPageSettingHTML_2_6_22 extends sapAdminPageSetting_2_6_22 {
 		?>
 
         <fieldset <?php $this->print_conditional_data(); ?>>
-            <?php echo wp_kses_post( $this->html ); ?>
+        	<?php
+        		if ( is_callable( $this->html ) ) {
+    				wp_kses_post( call_user_func( $this->html ) ?? '' ); 
+				} else {
+					echo wp_kses_post( $this->html );
+				}
+            ?>
         </fieldset>
 
         <?php
