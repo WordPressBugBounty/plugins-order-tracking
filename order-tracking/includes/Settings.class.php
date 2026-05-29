@@ -296,7 +296,7 @@ class ewdotpSettings {
 			'access-role'						=> 'manage_options',
 			'tracking-graphic'					=> 'default',
 
-			'google-maps-api-key'				=> 'AIzaSyBFLmQU4VaX-T67EnKFtos7S7m_laWn6L4',
+			'google-maps-api-key'				=> '',
 
 			'woocommerce-integration'			=> true,
 			'woocommerce-replace-statuses'		=> true,

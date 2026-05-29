@@ -4,7 +4,7 @@ Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 3.5.0
+Stable tag: 3.5.1
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.5.1 (2026-05-29) =
+- Update for Google Maps functionality/compatibility. To use the maps features, please make sure you have correctly entered your Google API credentials in the plugin settings.
 
 = 3.5.0 (2026-05-18) =
 - Newly redesigned admin interface.
