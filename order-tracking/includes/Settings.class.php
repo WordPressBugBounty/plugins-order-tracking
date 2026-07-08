@@ -1040,20 +1040,28 @@ class ewdotpSettings {
 		$content = '';
 
 		$premium_features = '
-			<p><strong>' . __( 'The premium version also gives you access to the following features:', 'order-tracking' ) . '</strong></p>
-			<ul class="ewd-otp-dashboard-new-footer-one-benefits">
-				<li>' . __( 'Create & Assign Orders to Sales Reps', 'order-tracking' ) . '</li>
-				<li>' . __( 'Create & Tie Orders to Customers', 'order-tracking' ) . '</li>
-				<li>' . __( 'Custom Fields', 'order-tracking' ) . '</li>
-				<li>' . __( 'Advanced WooCommerce Features', 'order-tracking' ) . '</li>
-				<li>' . __( 'Advanced Display & Styling Options', 'order-tracking' ) . '</li>
-				<li>' . __( 'Front-End Customer Order Form', 'order-tracking' ) . '</li>
-				<li>' . __( 'Import/Export Orders', 'order-tracking' ) . '</li>
-				<li>' . __( 'Set Up Status Locations', 'order-tracking' ) . '</li>
-				<li>' . __( 'Email Support', 'order-tracking' ) . '</li>
-			</ul>
-			<div class="ewd-otp-dashboard-new-footer-one-buttons">
-				<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_settings&utm_content=' . $section_and_perm_type . '" target="_blank">' . __( 'UPGRADE NOW', 'order-tracking' ) . '</a>
+			<div class="ewd-otp-settings-preview-other-features">
+				<div id="ewd-otp-dashboard-new-footer-one">
+					<div class="ewd-otp-dashboard-new-footer-one-inside">
+						<div class="ewd-otp-dashboard-new-footer-one-left">
+							<div class="ewd-otp-dashboard-new-footer-one-title">' . __( 'The premium version also gives you access to the following features:', 'order-tracking' ) . '</div>
+							<ul class="ewd-otp-dashboard-new-footer-one-benefits">
+								<li>' . __( 'Create & Assign Orders to Sales Reps', 'order-tracking' ) . '</li>
+								<li>' . __( 'Create & Tie Orders to Customers', 'order-tracking' ) . '</li>
+								<li>' . __( 'Custom Fields', 'order-tracking' ) . '</li>
+								<li>' . __( 'Advanced WooCommerce Features', 'order-tracking' ) . '</li>
+								<li>' . __( 'Advanced Display & Styling Options', 'order-tracking' ) . '</li>
+								<li>' . __( 'Front-End Customer Order Form', 'order-tracking' ) . '</li>
+								<li>' . __( 'Import/Export Orders', 'order-tracking' ) . '</li>
+								<li>' . __( 'Set Up Status Locations', 'order-tracking' ) . '</li>
+								<li>' . __( 'Email Support', 'order-tracking' ) . '</li>
+							</ul>
+						</div>
+						<div class="ewd-otp-dashboard-new-footer-one-buttons">
+							<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_settings&utm_content=' . $section_and_perm_type . '" target="_blank">' . __( 'UPGRADE NOW', 'order-tracking' ) . '</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		';
 

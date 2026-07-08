@@ -168,7 +168,7 @@ class ewdotpDashboard {
 							<div class="ewd-otp-dashboard-new-footer-one-buttons">
 								<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_dashboard&utm_content=footer_upgrade" target="_blank">UPGRADE NOW</a>
 								<?php if ( ! get_option("EWD_OTP_Trial_Happening") and ! get_option( "EWD_OTPU_Trial_Happening" ) ) { 
-									$trial_info = sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to get a free 7-day trial of the premium plugin.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/?utm_source=otp_dashboard&utm_content=sidebar_visit_our_site_link' );
+									$trial_info = sprintf( __( '<div class="ewd-otp-dashboard-visit-site-to-learn-about-trial"><a href="%s" target="_blank">Visit our website</a> to learn how to get a free 7-day trial of the premium or ultimate versions.</div>'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/?utm_source=otp_dashboard&utm_content=sidebar_visit_our_site_link' );
 
 									$version_select_modal = '<div class="ewd-otp-trial-version-select-modal ewd-otp-hidden">';
 									$version_select_modal .= '<div class="ewd-otp-trial-version-select-modal-title">' . __( 'Select version to trial', 'order-tracking' ) . '</div>';

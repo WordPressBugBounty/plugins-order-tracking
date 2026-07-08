@@ -454,6 +454,17 @@
 	border-color: #ece2f3;
 	color: #212427;
 }
+.ewd-otp-dashboard-visit-site-to-learn-about-trial {
+	margin-top: 12px;
+	color: #fff;
+}
+.ewd-otp-dashboard-visit-site-to-learn-about-trial a {
+	color: #fff;
+	transition: color .35s;
+}
+.ewd-otp-dashboard-visit-site-to-learn-about-trial a:hover {
+	color: #dec7ef;
+}
 .ewd-premium-helper-dashboard-get-premium-widget-button  {
 	background: transparent !important;
 	border: 1px solid #fff !important;
@@ -804,6 +815,7 @@
 .ewd-otp-settings-preview-images {
 	display: flex;
 	justify-content: space-between;
+	flex-wrap: wrap;
 	width: 100%;
 }
 .ewd-otp-settings-preview-images img {
