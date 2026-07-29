@@ -1,9 +1,7 @@
 jQuery(function($){
-	// This is a temporary addition. Remove along with Main.php summer 2021
-	$('#the-list').find('[data-plugin="order-tracking/Main.php"]').hide();
-
 	var $deactivateLink = $('#the-list').find('[data-slug="order-tracking"] span.deactivate a'),
 		$overlay        = $('#ewd-otp-deactivate-survey-order-tracking'),
+		$cancelButton   = $('#ewd-otp-deactivation-cancel'),
 		$form           = $overlay.find('form'),
 		formOpen        = false;
 	// Plugin listing table deactivate link.
@@ -12,6 +10,11 @@ jQuery(function($){
 		$overlay.css('display', 'table');
 		formOpen = true;
 		$form.find('.ewd-otp-deactivate-survey-option:first-of-type input[type=radio]').focus();
+	});
+	// Exit the survey without deactivating or submitting the form
+	$cancelButton.on( 'click', function( event ) {
+	 	$overlay.css('display', 'none');
+	 	formOpen = false;
 	});
 	// Survey radio option selected.
 	$form.on('change', 'input[type=radio]', function(event) {

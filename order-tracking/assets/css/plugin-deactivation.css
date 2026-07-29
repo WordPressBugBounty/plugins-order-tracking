@@ -40,6 +40,11 @@
 	color: #999;
 	margin-right: 10px;
 }
+#ewd-otp-deactivation-cancel {
+	display: inline-block;
+    float: right;
+    cursor: pointer;
+}
 .ewd-otp-deactivate-survey-desc {
 	display: block;
 	font-weight: 600;

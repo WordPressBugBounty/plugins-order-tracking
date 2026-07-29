@@ -55,8 +55,8 @@ class ewdotpDeactivationSurvey {
 		<div class="ewd-otp-deactivate-survey-modal" id="ewd-otp-deactivate-survey-order-tracking">
 			<div class="ewd-otp-deactivate-survey-wrap">
 				<form class="ewd-otp-deactivate-survey" method="post" data-installtime="<?php echo $install_time; ?>">
-					<span class="ewd-otp-deactivate-survey-title"><span class="dashicons dashicons-testimonial"></span><?php echo ' ' . __( 'Quick Feedback', 'order-tracking' ); ?></span>
-					<span class="ewd-otp-deactivate-survey-desc"><?php echo __('If you have a moment, please share why you are deactivating Order Tracking:', 'order-tracking' ); ?></span>
+					<span class="ewd-otp-deactivate-survey-title"><span class="dashicons dashicons-testimonial"></span><?php echo ' ' . __( 'Quick Feedback', 'order-tracking' ); ?><span id="ewd-otp-deactivation-cancel">X</span></span>
+					<span class="ewd-otp-deactivate-survey-desc"><?php echo __('Need help? Contact us at <a href="mailto:contact@etoilewebdesign.com">contact@etoilewebdesign.com</a> for a quick reply!<br/> Please share why you are deactivating Order Tracking:', 'order-tracking' ); ?></span>
 					<div class="ewd-otp-deactivate-survey-options">
 						<?php foreach ( $options as $id => $option ) : ?>
 							<div class="ewd-otp-deactivate-survey-option">
