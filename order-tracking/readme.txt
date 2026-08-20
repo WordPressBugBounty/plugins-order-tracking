@@ -3,8 +3,8 @@ Contributors: Rustaurius, EtoileWebDesign
 Donate Link: http://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.0
-Tested up to: 7.0
-Stable tag: 3.5.3
+Tested up to: 7.1
+Stable tag: 3.5.4
 License: GPLv3
 License URI:http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.5.4 (2026-08-20) =
+- Compatibility with WordPress 7.1 and WooCommerce 11.0.
 
 = 3.5.3 (2026-07-29) =
 - Added a direct support option to the deactivation survey, making it easier to get help right away if you're uninstalling due to an issue.
