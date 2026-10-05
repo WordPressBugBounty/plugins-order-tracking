@@ -1,0 +1,13 @@
+{
+  "name": "etoilewebdesign/order-tracking-development",
+  "description": "Development-only test dependencies for Order Tracking.",
+  "type": "project",
+  "license": "GPL-3.0-or-later",
+  "require-dev": {
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

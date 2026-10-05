@@ -2,9 +2,9 @@
 
 	<?php if ( $this->get_option( 'display-print-button' ) ) { ?>
 
-		<div class='ewd-otp-tracking-results-field'>
+		<div class='ewd-otp-tracking-results-field ewd-otp-print-controls'>
 
-			<button class='ewd-otp-print-results' data-cssurl='<?php echo EWD_OTP_PLUGIN_URL . '/css/ewd-otp-print.css'; ?>'>
+			<button type='button' class='ewd-otp-print-results'>
 				<?php echo esc_html( $this->get_label( 'label-order-print-button' ) ); ?>
 			</button>
 
@@ -174,7 +174,7 @@
 
 	<?php if ( $this->get_order_customer_notes_display() ) { ?>
 		
-		<div class='ewd-otp-tracking-results-field'>
+		<div class='ewd-otp-tracking-results-field ewd-otp-print-controls'>
 
 			<div class='ewd-otp-tracking-results-label'>
 				<?php echo esc_html( $this->get_label( 'label-customer-notes' ) ); ?>:
@@ -186,7 +186,9 @@
 
 					<input type='hidden' name='ewd_otp_order_id' value='<?php echo esc_attr( $this->order->id ); ?>' />
 					<input type='hidden' name='ewd_otp_order_number' value='<?php echo esc_attr( $this->order->number ); ?>' />
-
+					<input type='hidden' name='ewd_otp_order_email_proof' value='<?php echo esc_attr( $this->access_email ); ?>' />
+					<input type='hidden' name='ewd_otp_tracking_token' value='<?php echo esc_attr( $this->access_token ); ?>' />
+					<input type='hidden' name='ewd_otp_collection_token' value='<?php echo esc_attr( $this->access_collection_token ); ?>' />
 					<textarea name='ewd_otp_customer_notes'><?php echo esc_html( $this->order->customer_notes ); ?></textarea>
 					
 					<input class='ewd-otp-submit' type='submit' name='ewd_otp_customer_notes_submit' value='<?php echo esc_attr( $this->customer_notes_submit ); ?>' />

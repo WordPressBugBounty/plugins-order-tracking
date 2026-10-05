@@ -505,7 +505,7 @@ class ewdotpCustomersTable extends WP_List_Table {
 				<?php else : ?>
 					<input type="submit" class="hidden" value="Apply">
 				<?php endif; ?>
-				<a id="ewd-otp-table-header-search-filter" href="#"><?php esc_html_e( 'Search', 'order-tracking' ); ?></a>
+				<a id="ewd-otp-table-header-search-filter" class="button" href="#"><?php esc_html_e( 'Search', 'order-tracking' ); ?></a>
 				<div class='ewd-otp-admin-table-filter-div ewd-otp-hidden'>
 					<label class='ewd-otp-admin-table-filter-label'><?php esc_html_e( 'Customer Number', 'order-tracking' ); ?></label>
 					<input type='text' name='customer_number' class='ewd-otp-customers-table-filter ewd-otp-customer-number ewd-otp-admin-table-filter-field' value='<?php echo ( empty( $this->filter_customer_number ) ? esc_attr( $this->filter_customer_number ) : '' ); ?>' />

@@ -1,6 +1,6 @@
 <div <?php echo ewd_format_classes( $this->classes ); ?> >
 
-	<div class='ewd-otp-tracking-results'>
+	<div class='ewd-otp-tracking-results' role='status' aria-live='polite' aria-atomic='false'>
 		<?php $this->maybe_print_order_results(); ?>
 	</div>
 

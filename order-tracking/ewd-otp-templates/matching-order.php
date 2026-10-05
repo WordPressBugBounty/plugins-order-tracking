@@ -1,12 +1,26 @@
-<tr class='ewd-otp-tracking-table-order' data-order_number='<?php echo esc_attr( $this->current_order->number ); ?>' data-order_email='<?php echo esc_attr( $this->current_order->email ); ?>'>
+<?php
+/**
+ * Render one matching order row.
+ *
+ * @package OrderTracking
+ */
+
+?>
+<tr class='ewd-otp-tracking-table-order' data-order_number='<?php echo esc_attr( $this->current_order->number ); ?>' data-order_proof='<?php echo esc_attr( $this->access_proof ); ?>'>
 
 	<?php if ( in_array( 'order_number', $this->get_option( 'order-information' ) ) ) { ?>
 
 		<td>
 
-			<?php if ( $this->include_separate_tracking_link() ) { ?> <a href='<?php echo esc_url( add_query_arg( 'tracking_number', $this->current_order->number, $this->get_option( 'tracking-page-url' ) ) ); ?>'> <?php  } ?>
+			<?php
+			if ( $this->include_separate_tracking_link() ) {
+				?>
+				<a href='<?php echo esc_url( add_query_arg( 'tracking_number', $this->current_order->number, $this->get_option( 'tracking-page-url' ) ) ); ?>'> <?php } ?>
 				<?php echo esc_html( $this->current_order->number ); ?>
-			<?php if ( $this->include_separate_tracking_link() ) { ?> </a> <?php  } ?>
+			<?php
+			if ( $this->include_separate_tracking_link() ) {
+				?>
+				</a> <?php } ?>
 
 		</td>
 

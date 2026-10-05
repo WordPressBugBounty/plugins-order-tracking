@@ -4,7 +4,7 @@
 
 	<form action='#' method='post' class='ewd-otp-admin-form' enctype='multipart/form-data'>
 
-		<?php wp_nonce_field( 'ewd-otp-admin-nonce', 'ewd-otp-admin-nonce' );  ?>
+		<?php wp_nonce_field( 'ewd-otp-admin-nonce', 'ewd-otp-admin-nonce' ); ?>
 
 		<?php echo ( ! empty( $this->order ) ? '<input type="hidden" name="ewd_otp_order_id" value="' . esc_attr( $this->order->id ) . '">' : '' ); ?>
 
@@ -12,7 +12,7 @@
 
 			<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full ewd-otp-admin-edit-product-left-full-widget-box" id="ewd-otp-admin-edit-order-details-widget-box">
 
-				<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Order Details', 'order-tracking'); ?></div>
+				<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e( 'Order Details', 'order-tracking' ); ?></div>
 				
 				<div class="ewd-otp-dashboard-new-widget-box-bottom">
 
@@ -84,7 +84,7 @@
 
 								<?php foreach ( $statuses as $status ) { ?>
 
-									<option value='<?php echo esc_attr( $status->status ); ?>' <?php echo ( (! empty( $this->order->status ) and $this->order->status == $status->status ) ? 'selected' : '' ); ?>>
+									<option value='<?php echo esc_attr( $status->status ); ?>' <?php echo ( ( ! empty( $this->order->status ) and $this->order->status == $status->status ) ? 'selected' : '' ); ?>>
 										<?php echo esc_html( $status->status ); ?>
 									</option>
 
@@ -114,7 +114,7 @@
 
 								<?php foreach ( $locations as $location ) { ?>
 
-									<option value='<?php echo esc_attr( $location->name ); ?>' <?php echo ( (! empty( $this->order->location ) and $this->order->location == $location->name ) ? 'selected' : '' ); ?>>
+									<option value='<?php echo esc_attr( $location->name ); ?>' <?php echo ( ( ! empty( $this->order->location ) and $this->order->location == $location->name ) ? 'selected' : '' ); ?>>
 										<?php echo esc_html( $location->name ); ?>
 									</option>
 
@@ -138,15 +138,15 @@
 
 						<div class='ewd-otp-admin-input'>
 
-							<?php 
+							<?php
 
 								$args = array(
-									'customers_per_page'	=> -1
+									'customers_per_page' => -1,
 								);
 
-								$customers = $ewd_otp_controller->customer_manager->get_matching_customers( $args ); 
+								$customers = $ewd_otp_controller->customer_manager->get_matching_customers( $args );
 
-							?>
+								?>
 
 							<select name='ewd_otp_customer'>
 
@@ -154,7 +154,7 @@
 
 								<?php foreach ( $customers as $customer ) { ?>
 
-									<option value='<?php echo esc_attr( $customer->id ); ?>' <?php echo ( (! empty( $this->order->customer ) and $this->order->customer == $customer->id ) ? 'selected' : '' ); ?>>
+									<option value='<?php echo esc_attr( $customer->id ); ?>' <?php echo ( ( ! empty( $this->order->customer ) and $this->order->customer == $customer->id ) ? 'selected' : '' ); ?>>
 										<?php echo esc_html( $customer->name ); ?>
 									</option>
 
@@ -180,15 +180,15 @@
 		
 							<div class='ewd-otp-admin-input'>
 		
-								<?php 
-		
+								<?php
+
 									$args = array(
-										'sales_reps_per_page'	=> -1
+										'sales_reps_per_page'   => -1,
 									);
-		
-									$sales_reps = $ewd_otp_controller->sales_rep_manager->get_matching_sales_reps( $args ); 
-		
-								?>
+
+									$sales_reps = $ewd_otp_controller->sales_rep_manager->get_matching_sales_reps( $args );
+
+									?>
 		
 								<select name='ewd_otp_sales_rep'>
 		
@@ -196,7 +196,7 @@
 		
 									<?php foreach ( $sales_reps as $sales_rep ) { ?>
 		
-										<option value='<?php echo esc_attr( $sales_rep->id ); ?>' <?php echo ( (! empty( $this->order->sales_rep ) and $this->order->sales_rep == $sales_rep->id ) ? 'selected' : '' ); ?>>
+										<option value='<?php echo esc_attr( $sales_rep->id ); ?>' <?php echo ( ( ! empty( $this->order->sales_rep ) and $this->order->sales_rep == $sales_rep->id ) ? 'selected' : '' ); ?>>
 											<?php echo esc_html( $sales_rep->first_name . ' ' . $sales_rep->last_name ); ?>
 										</option>
 		
@@ -246,7 +246,7 @@
 
 			<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full ewd-otp-admin-edit-product-left-full-widget-box" id="ewd-otp-admin-edit-customer-details-widget-box">
 
-				<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Notes', 'order-tracking'); ?></div>
+				<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e( 'Notes', 'order-tracking' ); ?></div>
 				
 				<div class="ewd-otp-dashboard-new-widget-box-bottom">
 
@@ -345,19 +345,19 @@
 	
 								<?php foreach ( $this->order->status_history as $status_history ) { ?>
 	
-									<?php 
-	
+									<?php
+
 										$args = array(
-											'action' 	=> 'delete_status',
-											'status_id'	=> $status_history->id
+											'action'    => 'delete_status',
+											'status_id' => $status_history->id,
 										);
+
+										?>
 	
-									?>
-	
-									<?php $delete_url = add_query_arg( $args ); ?>
+									<?php $delete_url = wp_nonce_url( add_query_arg( $args ), 'ewd_otp_delete_status_' . absint( $this->order->id ) . '_' . absint( $status_history->id ) ); ?>
 	
 									<tr>
-										<td><a href='<?php echo esc_attr( $delete_url ); ?>'><?php _e( 'Delete?', 'order-tracking' ); ?></a></td> 
+			<td><a href='<?php echo esc_url( $delete_url ); ?>'><?php esc_html_e( 'Delete?', 'order-tracking' ); ?></a></td>
 										<td><?php echo esc_html( $status_history->status ); ?></td>
 										<td><?php echo esc_html( $status_history->location ); ?></td>
 										<td><?php echo date( $this->get_option( 'date-format' ), strtotime( $status_history->updated_fmtd ) ); ?></td>
@@ -445,7 +445,7 @@
 
 				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full" id="ewd-otp-admin-edit-order-custom-fields-widget-box">
 					
-					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('Custom Fields', 'order-tracking'); ?></div>
+					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e( 'Custom Fields', 'order-tracking' ); ?></div>
 					
 					<div class="ewd-otp-dashboard-new-widget-box-bottom">
 	
@@ -480,7 +480,7 @@
 
 				<div class="ewd-otp-dashboard-new-widget-box ewd-widget-box-full ewd-otp-admin-closeable-widget-box" id="ewd-otp-admin-edit-order-payment-widget-box">
 					
-					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e('PayPal Payment', 'order-tracking'); ?>
+					<div class="ewd-otp-dashboard-new-widget-box-top"><?php _e( 'PayPal Payment', 'order-tracking' ); ?>
 
 						<span class="ewd-otp-admin-edit-product-down-caret">&nbsp;&nbsp;&#9660;</span>
 						<span class="ewd-otp-admin-edit-product-up-caret">&nbsp;&nbsp;&#9650;</span>
@@ -560,7 +560,7 @@
 							
 				<div class="ewd-otp-dashboard-new-widget-box-top">
 
-					<?php _e('Need Help?', 'order-tracking'); ?>
+					<?php _e( 'Need Help?', 'order-tracking' ); ?>
 
 				</div>
 				

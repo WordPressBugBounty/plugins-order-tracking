@@ -111,7 +111,7 @@
 							</select>
 
 							<p>
-								<?php _e( 'What WordPress user, if any, is assigned to this sales_rep?', 'order-tracking' ); ?>
+								<?php _e( 'What WordPress user, if any, is assigned to this sales rep?', 'order-tracking' ); ?>
 							</p>
 							
 						</div>

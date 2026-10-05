@@ -47,6 +47,7 @@ class ewdotpAdminCustomFields {
 		}
 
 		$custom_fields = get_option( 'ewd-otp-custom-fields' );
+			$custom_fields = is_array( $custom_fields ) ? $custom_fields : array();
 
 		$custom_fields[] = (object) array(
 			'id'				=> 0,

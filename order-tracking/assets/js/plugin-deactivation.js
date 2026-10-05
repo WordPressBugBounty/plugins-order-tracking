@@ -36,14 +36,12 @@ jQuery(function($){
 			return;
 		}
 		var data = {
+			action: 'ewd_otp_submit_deactivation_survey',
+			nonce: ewd_otp_deactivation_data.nonce,
 			code: $form.find('.selected input[type=radio]').val(),
-			install_time: $form.data('installtime'),
-			reason: $form.find('.selected .ewd-otp-deactivate-survey-option-reason').text(),
-			details: $form.find('.selected input[type=text]').val(),
-			site: ewd_otp_deactivation_data.site_url,
-			plugin: 'Order Tracking'
+			details: $form.find('.selected input[type=text]').val()
 		}
-		var submitSurvey = $.post('https://www.etoilewebdesign.com/UPCP-Key-Check/Deactivation_Surveys.php', data);
+		var submitSurvey = $.post(ewd_otp_deactivation_data.ajax_url, data);
 		submitSurvey.always(function() {
 			location.href = $deactivateLink.attr('href');
 		});

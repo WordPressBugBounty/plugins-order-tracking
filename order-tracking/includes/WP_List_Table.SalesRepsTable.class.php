@@ -520,7 +520,7 @@ class ewdotpSalesRepsTable extends WP_List_Table {
 				<?php else : ?>
 					<input type="submit" class="hidden" value="Apply">
 				<?php endif; ?>
-				<a id="ewd-otp-table-header-search-filter" href="#"><?php esc_html_e( 'Search', 'order-tracking' ); ?></a>
+				<a id="ewd-otp-table-header-search-filter" class="button" href="#"><?php esc_html_e( 'Search', 'order-tracking' ); ?></a>
 				<div class='ewd-otp-admin-table-filter-div ewd-otp-hidden'>
 					<label class='ewd-otp-admin-table-filter-label'><?php esc_html_e( 'Sales Rep Number', 'order-tracking' ); ?></label>
 					<input type='text' name='sales_rep_number' class='ewd-otp-sales-reps-table-filter ewd-otp-sales-rep-number ewd-otp-admin-table-filter-field' value='<?php echo ( empty( $this->filter_sales_rep_number ) ? esc_attr( $this->filter_sales_rep_number ) : '' ); ?>' />

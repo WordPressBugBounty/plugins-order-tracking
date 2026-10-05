@@ -4,18 +4,22 @@
  * Class to export orders created by the plugin
  */
 
-if ( !defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
-if (!class_exists('ComposerAutoloaderInit4618f5c41cf5e27cc7908556f031e4d4')) { require_once EWD_OTP_PLUGIN_DIR . '/lib/PHPSpreadsheet/vendor/autoload.php'; }
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Csv;
 class ewdotpExport {
 
 	// Set whether a valid nonce is needed before exporting orders
 	public $nonce_check = true;
-
+	/**
+	 * Public collection scope, or an empty string for administration.
+	 *
+	 * @var string
+	 */
+	public $frontend_scope = '';
 	/**
 	 * all the messages to display
 	 * array(
@@ -24,32 +28,43 @@ class ewdotpExport {
 	 *   'success' => 'Some success',
 	 *   'warning' => 'Some warning!'
 	 * )
+	 *
 	 * @var array
 	 */
 	public $messages = array();
 
 	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'maybe_run_export' ) );
+		add_action( 'admin_menu', array( $this, 'register_install_screen' ) );
+	}
 
-		if ( isset( $_POST['ewd_otp_export'] ) ) { add_action( 'admin_menu', array( $this, 'run_export' ) ); }
-
-		add_action( 'admin_menu', array($this, 'register_install_screen' ));
+	/**
+	 * Handle submitted exports after WordPress has loaded pluggable functions.
+	 *
+	 * @return void
+	 */
+	public function maybe_run_export() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- run_export() verifies this request before producing a download.
+		if ( isset( $_POST['ewd_otp_export'] ) ) {
+			$this->run_export();
+		}
 	}
 
 	public function register_install_screen() {
 		global $ewd_otp_controller;
-		
+
 		add_submenu_page(
 			'ewd-otp-orders',
 			'Export Menu',
 			'Export',
 			$ewd_otp_controller->settings->get_setting( 'access-role' ),
 			'ewd-otp-export',
-			array($this, 'display_export_screen')
+			array( $this, 'display_export_screen' )
 		);
 
 		// This is required to enqueue style however, we are not registering/rendering this
-		require_once( EWD_OTP_PLUGIN_DIR . '/lib/simple-admin-pages/simple-admin-pages.php' );
-		$sap = sap_initialize_library(
+		require_once EWD_OTP_PLUGIN_DIR . '/lib/simple-admin-pages/simple-admin-pages.php';
+		$sap      = sap_initialize_library(
 			$args = array(
 				'version' => '2.7.4',
 				'lib_url' => EWD_OTP_PLUGIN_URL . '/lib/simple-admin-pages/',
@@ -59,11 +74,11 @@ class ewdotpExport {
 		$sap->add_page(
 			'submenu',
 			array(
-				'id'            => 'ewd-otp-export',
-				'title'         => __( 'Export', 'order-tracking' ),
-				'menu_title'    => __( 'Export', 'order-tracking' ),
-				'parent_menu'	=> 'ewd-otp-orders',
-				'description'   => ''
+				'id'          => 'ewd-otp-export',
+				'title'       => __( 'Export', 'order-tracking' ),
+				'menu_title'  => __( 'Export', 'order-tracking' ),
+				'parent_menu' => 'ewd-otp-orders',
+				'description' => '',
 			)
 		);
 	}
@@ -86,9 +101,9 @@ class ewdotpExport {
 
 						// Fetch order status
 						$order_status_list = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
-						$customer_list = $this->get_customer_list();
-						$sales_rep_list = $this->get_sales_rep_list();
-						
+						$customer_list     = $this->get_customer_list();
+						$sales_rep_list    = $this->get_sales_rep_list();
+
 						// set type being exported to orders if not set
 						$_POST['type-of-record'] = isset( $_POST['type-of-record'] ) ? $_POST['type-of-record'] : 'order';
 					?>
@@ -122,11 +137,11 @@ class ewdotpExport {
 							<th><?php _e( 'Orders by Status', 'order-tracking' ); ?></th>
 							<td>
 								<fieldset>
-									<?php foreach ($order_status_list as $record): ?>
-										<label for="type-of-record-<?php echo esc_attr( $record->status );?>" class="sap-admin-input-container">
-											<input type="checkbox" name="order-by-status[]" value="<?php echo $record->status;?>" id="type-of-record-<?php echo $record->status;?>" <?php echo isset($_POST['order-by-status']) && in_array($record->status, $_POST['order-by-status']) ? 'checked' : ''; ?>>
+									<?php foreach ( $order_status_list as $record ) : ?>
+										<label for="type-of-record-<?php echo esc_attr( $record->status ); ?>" class="sap-admin-input-container">
+											<input type="checkbox" name="order-by-status[]" value="<?php echo $record->status; ?>" id="type-of-record-<?php echo $record->status; ?>" <?php echo isset( $_POST['order-by-status'] ) && in_array( $record->status, $_POST['order-by-status'] ) ? 'checked' : ''; ?>>
 											<span class="sap-admin-checkbox"></span>
-											<span><?php echo esc_html( $record->status );?></span>
+											<span><?php echo esc_html( $record->status ); ?></span>
 										</label>
 									<?php endforeach ?>
 								</fieldset>
@@ -140,12 +155,12 @@ class ewdotpExport {
 									<label for="date-range-today" class="sap-admin-input-container">
 										<input type="radio" name="date_range" value="today" id="date-range-today" <?php echo isset( $_POST['date_range'] ) && 'today' == $_POST['date_range'] ? 'checked' : ''; ?>>
 										<span class="sap-admin-radio-button"></span>
-										<span><?php _e( sprintf( 'Today (%s)', date( get_option( 'date_format' ), strtotime( 'today' ) ) ), 'order-tracking' ); ?></span>
+										<span><?php /* translators: %s is today's date. */ printf( esc_html__( 'Today (%s)', 'order-tracking' ), esc_html( wp_date( get_option( 'date_format' ), strtotime( 'today' ) ) ) ); ?></span>
 									</label>
 									<label for="date-range-week" class="sap-admin-input-container">
 										<input type="radio" name="date_range" value="week" id="date-range-week" <?php echo isset( $_POST['date_range'] ) && 'week' == $_POST['date_range'] ? 'checked' : ''; ?>>
 										<span class="sap-admin-radio-button"></span>
-										<span><?php _e( sprintf( 'This Week (%s - %s)', date( get_option( 'date_format' ), strtotime( 'monday this week' ) ), date( get_option( 'date_format' ), strtotime( 'sunday this week' ) ) ), 'order-tracking' ); ?></span>
+										<span><?php /* translators: 1: first date of the current week, 2: last date of the current week. */ printf( esc_html__( 'This Week (%1$s - %2$s)', 'order-tracking' ), esc_html( wp_date( get_option( 'date_format' ), strtotime( 'monday this week' ) ) ), esc_html( wp_date( get_option( 'date_format' ), strtotime( 'sunday this week' ) ) ) ); ?></span>
 									</label>
 									<label for="date-range-past" class="sap-admin-input-container">
 										<input type="radio" name="date_range" value="past" id="date-range-past" <?php echo isset( $_POST['date_range'] ) && 'past' == $_POST['date_range'] ? 'checked' : ''; ?>>
@@ -153,9 +168,11 @@ class ewdotpExport {
 										<span><?php _e( 'Past', 'order-tracking' ); ?></span>
 									</label>
 									<label for="date-range-from"><?php _e( 'From', 'order-tracking' ); ?></label>
-									<input type="date" name="start_date" id="date-range-from" value="<?php echo isset( $_POST['start_date'] ) ? esc_attr__( $_POST['start_date'] ) : ''; ?>">
+									<?php // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path. ?>
+									<input type="date" name="start_date" id="date-range-from" value="<?php echo isset( $_POST['start_date'] ) ? esc_attr( sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) ) : ''; ?>">
 									<label for="date-range-to"><?php _e( 'To', 'order-tracking' ); ?></label>
-									<input type="date" name="end_date" id="date-range-to" value="<?php echo isset( $_POST['end_date'] ) ? esc_attr__( $_POST['end_date'] ) : ''; ?>">
+									<?php // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path. ?>
+									<input type="date" name="end_date" id="date-range-to" value="<?php echo isset( $_POST['end_date'] ) ? esc_attr( sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) ) : ''; ?>">
 								</fieldset>
 							</td>
 						</tr>
@@ -166,10 +183,10 @@ class ewdotpExport {
 								<fieldset>
 									<select name="order-of-customer[]" multiple>
 										<?php
-											foreach ($customer_list as $record) {
-												$selected = isset($_POST['order-of-customer']) && in_array($record->id, $_POST['order-of-customer']) ? 'selected' : '';
-												echo "<option value='{$record->id}' {$selected}>{$record->id} - {$record->name} ( {$record->email} )</option>";
-											}
+										foreach ( $customer_list as $record ) {
+											$selected = isset( $_POST['order-of-customer'] ) && in_array( $record->id, $_POST['order-of-customer'] ) ? 'selected' : '';
+											echo "<option value='{$record->id}' {$selected}>{$record->id} - {$record->name} ( {$record->email} )</option>";
+										}
 										?>
 									</select>
 								</fieldset>
@@ -182,11 +199,11 @@ class ewdotpExport {
 								<fieldset>
 									<select name="order-of-sales-rep[]" multiple>
 										<?php
-											foreach ($sales_rep_list as $record) {
-												$selected = isset($_POST['order-of-sales-rep']) && in_array($record->id, $_POST['order-of-sales-rep']) ? 'selected' : '';
-												$l_name = !empty( $record->last_name ) ? " {$record->last_name}" : '';
-												echo "<option value='{$record->id}' {$selected}>{$record->id} - {$record->first_name}{$l_name} ( {$record->email} )</option>";
-											}
+										foreach ( $sales_rep_list as $record ) {
+											$selected = isset( $_POST['order-of-sales-rep'] ) && in_array( $record->id, $_POST['order-of-sales-rep'] ) ? 'selected' : '';
+											$l_name   = ! empty( $record->last_name ) ? " {$record->last_name}" : '';
+											echo "<option value='{$record->id}' {$selected}>{$record->id} - {$record->first_name}{$l_name} ( {$record->email} )</option>";
+										}
 										?>
 									</select>
 								</fieldset>
@@ -195,6 +212,11 @@ class ewdotpExport {
 
 					</table>
 
+					<label for="ewd-otp-export-format"><?php esc_html_e( 'Format', 'order-tracking' ); ?></label>
+					<select name="format-type" id="ewd-otp-export-format">
+						<option value="csv">CSV</option>
+						<option value="xls">XLS</option>
+					</select>
 					<input type='submit' name='ewd_otp_export' value='Export to Spreadsheet' class='button button-primary'>
 					&nbsp;
 					<a href="" class='button'><?php _e( 'Clear Form', 'order-tracking' ); ?></a>
@@ -206,120 +228,173 @@ class ewdotpExport {
 				</div>
 			<?php } ?>
 		</div>
-	<?php }
+		<?php
+	}
 
 
 	public function run_export() {
+
 		global $ewd_otp_controller;
 
-		if ( $this->nonce_check and ! isset( $_POST['EWD_OTP_Export_Nonce'] ) ) {
+		if ( ( '' === $this->frontend_scope && ! current_user_can( $ewd_otp_controller->settings->get_setting( 'access-role' ) ) ) ||
+			! $ewd_otp_controller->permissions->check_permission( 'export' ) ) {
+			return;
+		}
+		if ( $this->nonce_check && ! isset( $_POST['EWD_OTP_Export_Nonce'] ) ) {
 			return;
 		}
 
-		if ( $this->nonce_check and ! wp_verify_nonce( $_POST['EWD_OTP_Export_Nonce'], 'EWD_OTP_Export' ) ) {
+		if ( $this->nonce_check && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['EWD_OTP_Export_Nonce'] ) ), 'EWD_OTP_Export' ) ) {
 			return;
 		}
 
-		// Instantiate a new PHPExcel object
-		$spreadsheet = new Spreadsheet();
-		// Set the active Excel worksheet to sheet 0
-		$spreadsheet->setActiveSheetIndex(0);
+		$records = array(
+			'header' => array(),
+			'data'   => array(),
+		);
 
-		$records = array('header' => array(), 'data' => array());
+		$record_type = '' !== $this->frontend_scope
+			? 'order'
+			: ( isset( $_POST['type-of-record'] ) ? sanitize_key( wp_unslash( $_POST['type-of-record'] ) ) : 'order' );
 
-		if ( empty( $_POST['type-of-record'] ) or 'order' == $_POST['type-of-record'] ) {
+		if ( 'order' === $record_type ) {
 			$records = $this->get_order_data();
-		}
-		elseif ( 'customer' == $_POST['type-of-record'] ) {
+		} elseif ( 'customer' === $record_type ) {
 			$records = $this->get_customer_data();
-		}
-		elseif( 'sales-rep' == $_POST['type-of-record'] ) {
+		} elseif ( 'sales-rep' === $record_type ) {
 			$records = $this->get_sales_rep_data();
 		}
 
-		if( 1 > count( $records['data'] ) ) {
-			$this->warning('No records found to export!');
+		if ( 1 > count( $records['data'] ) ) {
+			$this->warning( 'No records found to export!' );
 			return;
 		}
 
-		// Adding header
-		$row = 1; $col = 'A';
-		foreach ($records['header'] as $value) {
-			$spreadsheet->getActiveSheet()->setCellValue( $col.$row, $value );
-			$col++;
-		}
-
-		//start while loop to get data
-		$row = 2;
-		foreach ( $records['data'] as $record ) {
-			$col = 'A';
-			foreach ( $record as $value ) {
-				$spreadsheet->getActiveSheet()->setCellValue( $col.$row, $value );
-				$col++;
+		$format = isset( $_POST['format-type'] ) && 'xls' === sanitize_key( wp_unslash( $_POST['format-type'] ) ) ? 'xls' : 'csv';
+		if ( 'xls' === $format ) {
+			$runtime = ewdotpSpreadsheetRuntime::load();
+			if ( is_wp_error( $runtime ) ) {
+				$this->warning( $runtime->get_error_message() );
+				return;
 			}
-			$row++;
 		}
 
-		// Redirect output to a client’s web browser (Excel5)
-		if ( ! isset( $format_type ) == 'csv' ) {
-
+		if ( ob_get_level() ) {
 			ob_clean();
-
-			header('Content-Type: application/vnd.ms-excel');
-			header('Content-Disposition: attachment;filename="' . $records['filename'] . '.csv"');
-			header('Cache-Control: max-age=0');
-			$objWriter = new Csv($spreadsheet);
-			$objWriter->save('php://output');
 		}
-		else {
-
-			ob_clean();
-
-			header('Content-Type: application/vnd.ms-excel');
-			header('Content-Disposition: attachment;filename="' . $records['filename'] . '.xls"');
-			header('Cache-Control: max-age=0');
-			$objWriter = new Xls($spreadsheet);
-			$objWriter->save('php://output');
+		header( 'Content-Type: ' . ( 'xls' === $format ? 'application/vnd.ms-excel' : 'text/csv; charset=utf-8' ) );
+		header( 'Content-Disposition: attachment; filename="' . $records['filename'] . '.' . $format . '"' );
+		header( 'Cache-Control: max-age=0' );
+		if ( 'xls' === $format ) {
+			$spreadsheet = self::build_spreadsheet( $records );
+			$writer      = new Xls( $spreadsheet );
+			$writer->save( 'php://output' );
+			$spreadsheet->disconnectWorksheets();
+		} else {
+			$output = fopen( 'php://output', 'w' );
+			self::write_csv( $records, $output );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- php://output is a response stream, not a filesystem file.
+			fclose( $output );
 		}
-
 		die();
 	}
 
-	public function get_order_data()
-	{
+	/**
+	 * Stream CSV without PhpSpreadsheet's PHP 8.5-deprecated column iteration.
+	 *
+	 * @param array<string,mixed> $records Export data.
+	 * @param resource            $stream  Writable CSV stream.
+	 * @return void
+	 */
+	public static function write_csv( $records, $stream ) {
+		fputcsv( $stream, array_map( array( __CLASS__, 'escape_spreadsheet_value' ), $records['header'] ), ',', '"', '' );
+		foreach ( $records['data'] as $row ) {
+			fputcsv( $stream, array_map( array( __CLASS__, 'escape_spreadsheet_value' ), $row ), ',', '"', '' );
+		}
+	}
+
+	/**
+	 * Build the same spreadsheet used by the download path, including columns beyond Z.
+	 *
+	 * @param array<string,mixed> $records Export data.
+	 * @return Spreadsheet
+	 */
+	public static function build_spreadsheet( $records ) {
+		$spreadsheet = new Spreadsheet();
+		$spreadsheet->setActiveSheetIndex( 0 );
+
+		// Adding header
+		$row = 1;
+		$col = 1;
+		foreach ( $records['header'] as $value ) {
+			$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $col, $row, self::escape_spreadsheet_value( $value ) );
+			++$col;
+		}
+
+		// start while loop to get data
+		$row = 2;
+		foreach ( $records['data'] as $record ) {
+			$col = 1;
+			foreach ( $record as $value ) {
+				$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $col, $row, self::escape_spreadsheet_value( $value ) );
+				++$col;
+			}
+			++$row;
+		}
+
+		return $spreadsheet;
+	}
+
+	/**
+	 * Prevent user-controlled text from becoming an active spreadsheet formula.
+	 *
+	 * @param mixed $value Spreadsheet cell value.
+	 * @return mixed
+	 * @since 3.6.0
+	 */
+	public static function escape_spreadsheet_value( $value ) {
+
+		if ( ! is_string( $value ) || '' === $value ) {
+			return $value;
+		}
+
+		return preg_match( '/^[=+\-@\t\r]/', $value ) ? "'" . $value : $value;
+	}
+	/**
+	 * Build the safely projected order export data.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function get_order_data() {
 		global $ewd_otp_controller;
 
-		// Print out the regular order field labels
-		$order_header = array(
-			'Name',
-			'Number',
-			'Order Status',
-			'Order Status Updated (Read-Only)',
-			'Location',
-			'Display',
-			'Notes Public',
-			'Notes Private',
-			'Email',
-			'Phone Number',
-			'Customer',
-			'Sales Rep'
-		);
-
+		// Front-end exports intentionally omit private/admin identity and contact fields.
+		$order_header = '' !== $this->frontend_scope
+			? array( 'Name', 'Number', 'Order Status', 'Order Status Updated (Read-Only)', 'Location', 'Notes Public' )
+			: array( 'Name', 'Number', 'Order Status', 'Order Status Updated (Read-Only)', 'Location', 'Display', 'Notes Public', 'Notes Private', 'Email', 'Phone Number', 'Customer', 'Sales Rep' );
 		// Add custom fields to column headers
 		$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
+		if ( '' !== $this->frontend_scope ) {
+			$custom_fields = array_filter(
+				$custom_fields,
+				function ( $custom_field ) {
 
+					return ! empty( $custom_field->front_end_display );
+				}
+			);
+		}
 		foreach ( $custom_fields as $custom_field ) {
 
 			$order_header[] = $custom_field->name;
 		}
 
 		$args = array(
-			'display' 			=> true,
-			'orders_per_page' 	=> -1,
+			'display'         => true,
+			'orders_per_page' => -1,
 		);
 
 		// Order status
-		if( isset( $_POST['order-by-status'] ) && 0 < count( $_POST['order-by-status'] ) ) {
+		if ( isset( $_POST['order-by-status'] ) && 0 < count( $_POST['order-by-status'] ) ) {
 
 			$args['status'] = array_map( 'sanitize_text_field', $_POST['order-by-status'] );
 		}
@@ -329,17 +404,17 @@ class ewdotpExport {
 
 			// Used to let sales-rep and customers download their data from front-end
 			$args['after'] = $this->after;
-		}
-		elseif( isset( $_POST['date_range'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path.
+		} elseif ( isset( $_POST['date_range'] ) ) {
 
 			$args['date_range'] = sanitize_text_field( $_POST['date_range'] );
-		}
-		elseif( isset( $_POST['start_date'] ) || isset( $_POST['end_date'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path.
+		} elseif ( isset( $_POST['start_date'] ) || isset( $_POST['end_date'] ) ) {
 
 			// just to pass if in order_manager->prepare_args()
 			$args['date_range'] = 'custom';
 			$args['start_date'] = sanitize_text_field( $_POST['start_date'] );
-			$args['end_date'] = sanitize_text_field( $_POST['end_date'] );
+			$args['end_date']   = sanitize_text_field( $_POST['end_date'] );
 		}
 
 		// Order of Customer('s)
@@ -347,8 +422,8 @@ class ewdotpExport {
 
 			// Used to let sales-rep and customers download their data from front-end
 			$args['customer'] = $this->customer_id;
-		}
-		elseif( isset( $_POST['order-of-customer'] ) && 0 < count( $_POST['order-of-customer'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path.
+		} elseif ( isset( $_POST['order-of-customer'] ) && 0 < count( $_POST['order-of-customer'] ) ) {
 
 			$args['customer'] = array_map( 'sanitize_text_field', $_POST['order-of-customer'] );
 		}
@@ -358,8 +433,8 @@ class ewdotpExport {
 
 			// Used to let sales-rep and customers download their data from front-end
 			$args['sales_rep'] = $this->sales_rep_id;
-		}
-		elseif( isset( $_POST['order-of-sales-rep'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Administrative exports verify their nonce; public exports require a signed collection proof before this path.
+		} elseif ( isset( $_POST['order-of-sales-rep'] ) ) {
 
 			$args['sales_rep'] = array_map( 'sanitize_text_field', $_POST['order-of-sales-rep'] );
 		}
@@ -371,21 +446,9 @@ class ewdotpExport {
 
 		foreach ( $orders as $order ) {
 
-			$record = array(
-				$order->name,
-				$order->number,
-				$order->status,
-				$order->status_updated,
-				$order->location,
-				( $order->display ? 'Yes' : 'No' ),
-				$order->notes_public,
-				$order->notes_private,
-				$order->email,
-				$order->phone_number,
-				max( $order->customer, 0 ),
-				max( $order->sales_rep, 0 ),
-			);
-
+			$record = '' !== $this->frontend_scope
+			? array( $order->name, $order->number, $order->status, $order->status_updated, $order->location, $order->notes_public )
+				: array( $order->name, $order->number, $order->status, $order->status_updated, $order->location, ( $order->display ? 'Yes' : 'No' ), $order->notes_public, $order->notes_private, $order->email, $order->phone_number, max( $order->customer, 0 ), max( $order->sales_rep, 0 ) );
 			// Adding custom field data
 			foreach ( $custom_fields as $custom_field ) {
 
@@ -396,9 +459,9 @@ class ewdotpExport {
 		}
 
 		return array(
-			'header' 	=> $order_header,
-			'data'   	=> $data,
-			'filename'	=> 'order_export',
+			'header'   => $order_header,
+			'data'     => $data,
+			'filename' => 'order_export',
 		);
 	}
 
@@ -425,7 +488,7 @@ class ewdotpExport {
 		}
 
 		$args = array(
-			'customers_per_page'	=> -1,
+			'customers_per_page' => -1,
 		);
 
 		// fetching customers
@@ -455,9 +518,9 @@ class ewdotpExport {
 		}
 
 		return array(
-			'header' 	=> $customer_header,
-			'data'   	=> $data,
-			'filename'	=> 'customer_export',
+			'header'   => $customer_header,
+			'data'     => $data,
+			'filename' => 'customer_export',
 		);
 	}
 
@@ -484,7 +547,7 @@ class ewdotpExport {
 		}
 
 		$args = array(
-			'sales_reps_per_page'	=> -1,
+			'sales_reps_per_page' => -1,
 		);
 
 		// fetching sales reps
@@ -507,16 +570,16 @@ class ewdotpExport {
 			// Adding custom field data
 			foreach ( $custom_fields as $custom_field ) {
 
-				$record[] = $ewd_otp_controller->sales_rep_manager->get_field_value( $custom_field->id, $customer->id );
+				$record[] = $ewd_otp_controller->sales_rep_manager->get_field_value( $custom_field->id, $sales_rep->id );
 			}
 
 			$data[] = $record;
 		}
 
 		return array(
-			'header' 	=> $sales_rep_header,
-			'data'   	=> $data,
-			'filename'	=> 'sales_rep_export',
+			'header'   => $sales_rep_header,
+			'data'     => $data,
+			'filename' => 'sales_rep_export',
 		);
 	}
 
@@ -524,11 +587,11 @@ class ewdotpExport {
 		global $ewd_otp_controller;
 
 		$args = array(
-			'orderby' => 'Customer_Name',
-			'order'   => 'asc',
-			'customers_per_page' => -1
+			'orderby'            => 'Customer_Name',
+			'order'              => 'asc',
+			'customers_per_page' => -1,
 		);
-		
+
 		return $ewd_otp_controller->customer_manager->get_matching_customers( $args );
 	}
 
@@ -536,11 +599,11 @@ class ewdotpExport {
 		global $ewd_otp_controller;
 
 		$args = array(
-			'orderby' => 'Sales_Rep_First_Name',
-			'order'   => 'asc',
-			'sales_reps_per_page' => -1
+			'orderby'             => 'Sales_Rep_First_Name',
+			'order'               => 'asc',
+			'sales_reps_per_page' => -1,
 		);
-		
+
 		return $ewd_otp_controller->sales_rep_manager->get_matching_sales_reps( $args );
 	}
 
@@ -549,16 +612,16 @@ class ewdotpExport {
 		foreach ( $this->messages as $type => $msgs ) {
 
 			echo "<div class='notice notice-{$type}''>";
-				foreach ($msgs as $msg) {
-					echo "<p>{$msg}</p>";
-				}
+			foreach ( $msgs as $msg ) {
+				echo "<p>{$msg}</p>";
+			}
 			echo '</div>';
 		}
 	}
 
 	public function warning( $msg ) {
 
-		if ( !isset( $this->messages['warning'] ) ) {
+		if ( ! isset( $this->messages['warning'] ) ) {
 
 			$this->messages['warning'] = array();
 		}
@@ -568,7 +631,7 @@ class ewdotpExport {
 
 	public function error( $msg ) {
 
-		if ( !isset( $this->messages['error'] ) ) {
+		if ( ! isset( $this->messages['error'] ) ) {
 
 			$this->messages['error'] = array();
 		}
@@ -578,14 +641,11 @@ class ewdotpExport {
 
 	public function success( $msg ) {
 
-		if ( !isset( $this->messages['success'] ) ) {
+		if ( ! isset( $this->messages['success'] ) ) {
 
 			$this->messages['success'] = array();
 		}
 
 		$this->messages['success'][] = $msg;
 	}
-
 }
-
-

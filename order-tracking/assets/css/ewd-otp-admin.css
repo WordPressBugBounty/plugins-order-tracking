@@ -1233,6 +1233,28 @@ NEW FORMAT FOR CREATE AND EDIT PRODUCT FORMS
   width: calc(100% - 48px);
   margin: 0 24px;
 }
+#ewd-otp-new-edit-order-screen .ewd-otp-dashboard-new-widget-box {
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-bottom: 16px;
+  background: #fff;
+  box-shadow: -2px 2px 6px #ccc;
+}
+#ewd-otp-new-edit-order-screen .ewd-otp-dashboard-new-widget-box-top,
+#ewd-otp-new-edit-order-screen .ewd-otp-dashboard-new-widget-box-bottom {
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+  padding: 12px 16px;
+}
+#ewd-otp-new-edit-order-screen .ewd-otp-dashboard-new-widget-box-top {
+  color: #444;
+  font-weight: 600;
+}
+#ewd-otp-new-edit-order-screen .ewd-otp-dashboard-new-widget-box-bottom {
+  border-top: 1px solid #e2e2e2;
+}
 #ewd-otp-new-edit-order-screen #col-left, #ewd-otp-new-edit-order-screen #col-right {
   width: 100%;
 }
@@ -1597,8 +1619,12 @@ CUSTOMERS AND SALES REPS SCREENS
   flex-wrap: wrap;
   align-items: center;
 }
+.ewd-otp-table-header-controls-left input#doaction[name="bulk_action"] {
+	min-height: 40px;
+	padding: 0 16px;
+	line-height: 2.92307692;
+}
 #ewd-otp-table-header-search-filter {
-  display: block;
   margin: 0 0 0 16px;
 }
 

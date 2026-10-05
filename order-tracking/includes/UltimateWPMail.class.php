@@ -1,7 +1,9 @@
 <?php
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-if ( !class_exists( 'ewdotpUltimateWPMail' ) ) {
+if ( ! class_exists( 'ewdotpUltimateWPMail' ) ) {
 	/**
 	 * Class to handle Ultimate WP Mail integration for Order Tracking
 	 *
@@ -17,14 +19,16 @@ if ( !class_exists( 'ewdotpUltimateWPMail' ) ) {
 
 		/**
 		 * Adds in a section for OTP tags in Ultimate WP Mail
+		 *
 		 * @since 3.0.0
 		 */
 		public function add_element_section() {
 
-			if ( ! function_exists( 'uwpm_register_custom_element_section' ) ) { return; }
+			if ( ! function_exists( 'uwpm_register_custom_element_section' ) ) {
+				return; }
 
 			$args = array(
-				'label' => 'Order Tracking Tags'
+				'label' => 'Order Tracking Tags',
 			);
 
 			uwpm_register_custom_element_section( 'ewd_otp_uwpm_elements', $args );
@@ -32,111 +36,113 @@ if ( !class_exists( 'ewdotpUltimateWPMail' ) ) {
 
 		/**
 		 * Adds in tags for order information and a tracking link
+		 *
 		 * @since 3.0.0
 		 */
-		public function add_elements() { 
+		public function add_elements() {
 			global $ewd_otp_controller;
 
-			if ( ! function_exists( 'uwpm_register_custom_element' ) ) { return; }
-			
+			if ( ! function_exists( 'uwpm_register_custom_element' ) ) {
+				return; }
+
 			$args = array(
-				'label' 			=> 'Order Name',
+				'label'             => 'Order Name',
 				'callback_function' => 'ewd_otp_get_order_name',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_name', $args );
 
 			$args = array(
-				'label' 			=> 'Order Number',
+				'label'             => 'Order Number',
 				'callback_function' => 'ewd_otp_get_order_number',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_number', $args );
 
 			$args = array(
-				'label' 			=> 'Order Status',
+				'label'             => 'Order Status',
 				'callback_function' => 'ewd_otp_get_order_status',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_status', $args );
 
 			$args = array(
-				'label' 			=> 'Order Notes',
+				'label'             => 'Order Notes',
 				'callback_function' => 'ewd_otp_get_order_notes',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_notes', $args );
 
 			$args = array(
-				'label' 			=> 'Order Customer Notes',
+				'label'             => 'Order Customer Notes',
 				'callback_function' => 'ewd_otp_get_order_customer_notes',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_customer_notes', $args );
 
 			$args = array(
-				'label' 			=> 'Order Updated Time',
+				'label'             => 'Order Updated Time',
 				'callback_function' => 'ewd_otp_get_order_updated_time',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_updated_time', $args );
 
 			$args = array(
-				'label' 			=> 'Tracking Link',
+				'label'             => 'Tracking Link',
 				'callback_function' => 'ewd_otp_get_order_tracking_link',
-				'section' 			=> 'ewd_otp_uwpm_elements',
-				'attributes' => array(
+				'section'           => 'ewd_otp_uwpm_elements',
+				'attributes'        => array(
 					array(
-						'attribute_name' => 'ewd_otp_tracking_page_url',
+						'attribute_name'  => 'ewd_otp_tracking_page_url',
 						'attribute_label' => 'Tracking Page URL',
-						'attribute_type' => 'TextBox'
+						'attribute_type'  => 'TextBox',
 					),
 					array(
-						'attribute_name' => 'ewd_otp_tracking_link_text_label',
+						'attribute_name'  => 'ewd_otp_tracking_link_text_label',
 						'attribute_label' => '"Track Your Order!" label',
-						'attribute_type' => 'TextBox'
-					)
-				)
+						'attribute_type'  => 'TextBox',
+					),
+				),
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_tracking_link', $args );
 
 			$args = array(
-				'label' 			=> 'Customer Name',
+				'label'             => 'Customer Name',
 				'callback_function' => 'ewd_otp_get_order_customer_name',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_customer_name', $args );
 
 			$args = array(
-				'label' 			=> 'Customer ID',
+				'label'             => 'Customer ID',
 				'callback_function' => 'ewd_otp_get_order_customer_id',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_customer_id', $args );
 
 			$args = array(
-				'label' 			=> 'Sales Rep Name',
+				'label'             => 'Sales Rep Name',
 				'callback_function' => 'ewd_otp_get_order_sales_rep_name',
-				'section' 			=> 'ewd_otp_uwpm_elements'
+				'section'           => 'ewd_otp_uwpm_elements',
 			);
 
 			uwpm_register_custom_element( 'ewd_otp_order_sales_rep_name', $args );
 
-			foreach( $ewd_otp_controller->settings->get_order_custom_fields() as $custom_field ) {
+			foreach ( $ewd_otp_controller->settings->get_order_custom_fields() as $custom_field ) {
 
 				$args = array(
-					'label' 			=> $custom_field->name,
+					'label'             => $custom_field->name,
 					'callback_function' => 'ewd_otp_get_custom_field',
-					'section' 			=> 'ewd_otp_uwpm_elements'
+					'section'           => 'ewd_otp_uwpm_elements',
 				);
 
 				uwpm_register_custom_element( 'ewd_otp_' . $custom_field->slug, $args );
@@ -147,6 +153,7 @@ if ( !class_exists( 'ewdotpUltimateWPMail' ) ) {
 
 /**
  * Returns the name of the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_name( $params, $user ) {
@@ -157,6 +164,7 @@ function ewd_otp_get_order_name( $params, $user ) {
 
 /**
  * Returns the number of the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_number( $params, $user ) {
@@ -167,6 +175,7 @@ function ewd_otp_get_order_number( $params, $user ) {
 
 /**
  * Returns the external status of the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_status( $params, $user ) {
@@ -177,6 +186,7 @@ function ewd_otp_get_order_status( $params, $user ) {
 
 /**
  * Returns the public notes for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_notes( $params, $user ) {
@@ -187,6 +197,7 @@ function ewd_otp_get_order_notes( $params, $user ) {
 
 /**
  * Returns the customer notes for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_customer_notes( $params, $user ) {
@@ -197,6 +208,7 @@ function ewd_otp_get_order_customer_notes( $params, $user ) {
 
 /**
  * Returns the time the specified order was last updated
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_updated_time( $params, $user ) {
@@ -207,6 +219,7 @@ function ewd_otp_get_order_updated_time( $params, $user ) {
 
 /**
  * Returns the customer name for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_customer_name( $params, $user ) {
@@ -219,6 +232,7 @@ function ewd_otp_get_order_customer_name( $params, $user ) {
 
 /**
  * Returns the customer ID for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_customer_id( $params, $user ) {
@@ -229,6 +243,7 @@ function ewd_otp_get_order_customer_id( $params, $user ) {
 
 /**
  * Returns the sales rep ID for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_sales_rep_name( $params, $user ) {
@@ -241,60 +256,63 @@ function ewd_otp_get_order_sales_rep_name( $params, $user ) {
 
 /**
  * Returns a tracking link for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_order_tracking_link( $params, $user ) {
 	global $ewd_otp_controller;
 
-	if ( empty( $params['order_id'] ) ) { return ''; }
+	if ( empty( $params['order_id'] ) ) {
+		return ''; }
 
 	$attributes = (array) $params['attributes'];
 
 	foreach ( $attributes as $attribute_name => $attribute_value ) {
 
-		if ( $attribute_name == 'ewd_otp_tracking_link_text_label' ) { $link_text = $attribute_value; }
+		if ( 'ewd_otp_tracking_link_text_label' === $attribute_name ) {
+			$link_text = $attribute_value; }
 
 		if ( $attribute_name == 'ewd_otp_tracking_page_url' ) {
 
 			$order = new ewdotpOrder();
-			$order->load_order_from_id( $params['order_id'] ); 
+			$order->load_order_from_id( $params['order_id'] );
 
+			$tracking_token = $order->generate_tracking_token();
+			if ( '' === $tracking_token ) {
+				return '';
+			}
 			$args = array(
-				'tracking_number'	=> $order->number,
-				'order_email'		=> $order->email,
-				'tl_code'			=> ewd_random_string()
+				'tracking_number' => $order->number,
+				'tracking_token'  => $tracking_token,
 			);
 
 			$tracking_url = add_query_arg( $args, $attribute_value );
-
-			$order->tracking_link_code = $args['tl_code'];
-
-			$order->update_order();
 		}
 	}
 
-	$link_text = ! empty( $link_text ) ? $link_text : __( 'Track your order!', 'order-tracking' );
+	$link_text    = ! empty( $link_text ) ? $link_text : __( 'Track your order!', 'order-tracking' );
 	$tracking_url = ! empty( $tracking_url ) ? $tracking_url : $ewd_otp_controller->settings->get_setting( 'tracking-page-url' );
 
-	return '<a href="' . $tracking_url . '">' . $link_text . '</a>';
+	return '<a href="' . esc_url( $tracking_url ) . '">' . esc_html( $link_text ) . '</a>';
 }
-
 /**
  * Returns the value for the specified custom field for the specified order
+ *
  * @since 3.0.0
  */
 function ewd_otp_get_custom_field( $params, $user ) {
 	global $ewd_otp_controller;
-	
-	if ( empty( $params['order_id'] ) or empty( $params['slug'] ) ) { return; }
+
+	if ( empty( $params['order_id'] ) || empty( $params['slug'] ) ) {
+		return; }
 
 	$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
 
 	$field_id = 0;
 
-	foreach ( $custom_fields as $custom_field ) { 
+	foreach ( $custom_fields as $custom_field ) {
 
-		if ( 'ewd_otp_' . $custom_field->slug == $params['slug'] ) { 
+		if ( 'ewd_otp_' . $custom_field->slug == $params['slug'] ) {
 
 			return $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $params['order_id'] );
 		}

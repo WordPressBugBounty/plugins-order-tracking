@@ -4,406 +4,441 @@
  * Class to handle sending notifications when an order is submitted or updated
  */
 
-if ( !defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
-if ( !class_exists( 'ewdotpNotifications' ) ) {
-class ewdotpNotifications {
+if ( ! class_exists( 'ewdotpNotifications' ) ) {
+	class ewdotpNotifications {
 
-	public function __construct() {
-		
-		add_action( 'ewd_otp_customer_note_updated', 	array( $this, 'admin_customer_note_email' ) );
-		add_action( 'ewd_otp_insert_customer_order', 	array( $this, 'admin_customer_order_email' ) );
-		add_action( 'ewd_otp_insert_customer_order', 	array( $this, 'user_order_created_notification' ) );
+		public function __construct() {
 
-		add_action( 'ewd_otp_admin_order_inserted', 	array( $this, 'user_order_created_notification' ) );
-		add_action( 'ewd_otp_admin_order_updated', 		array( $this, 'user_status_updated_notification' ), 10, 2 );
-		add_action( 'ewd_otp_status_updated', 				array( $this, 'user_status_updated_notification' ), 10, 2 );
+			add_action( 'ewd_otp_customer_note_updated', array( $this, 'admin_customer_note_email' ) );
+			add_action( 'ewd_otp_insert_customer_order', array( $this, 'admin_customer_order_email' ) );
+			add_action( 'ewd_otp_insert_customer_order', array( $this, 'user_order_created_notification' ) );
 
-		// Sales rep notifications
-		add_action( 'ewd_otp_insert_customer_order', 	array( $this, 'sales_rep_status_updated_notification' ) );
-		add_action( 'ewd_otp_admin_order_updated', 		array( $this, 'sales_rep_status_updated_notification' ) );
-	}
+			add_action( 'ewd_otp_admin_order_inserted', array( $this, 'user_order_created_notification' ) );
+			add_action( 'ewd_otp_admin_order_updated', array( $this, 'user_status_updated_notification' ), 10, 2 );
+			add_action( 'ewd_otp_status_updated', array( $this, 'user_status_updated_notification' ), 10, 2 );
 
-
-	/**
-	 * Send an email to the site admin when an order's customer note is updated, if selected
-	 *
-	 * @since 3.0.0
-	 */
-	public function admin_customer_note_email( $order ) {
-		global $ewd_otp_controller;
-
-		$notification_id = $ewd_otp_controller->settings->get_setting( 'customer-notes-email' );
-
-		if ( ! $notification_id ) { return; }
-
-		$sms = ! is_numeric( $notification_id ) ? true : false;
-
-		$recipient = $sms ? $ewd_otp_controller->settings->get_setting( 'admin-phone-number' ) : $ewd_otp_controller->settings->get_setting( 'admin-email' );
-	
-		if ( $sms ) { 
-
-			$this->send_text( $notification_id, $recipient, $order );
-		}
-		elseif ( $notification_id < 0 ) {
-
-			$args = array(
-				'email_id'			=> $notification_id * -1,
-				'order_id'			=> $order->id,
-				'email_address'		=> $recipient
-			);
-
-			if ( function_exists( 'ewd_uwpm_send_email' ) ) { ewd_uwpm_send_email( $args ); }
-		}
-		else {
-
-			$this->send_email( $notification_id, $recipient, $order );
-		}
-	}
-
-	/**
-	 * Send an email to the site admin when a customer order is submitted, if selected
-	 *
-	 * @since 3.0.0
-	 */
-	public function admin_customer_order_email( $order ) {
-		global $ewd_otp_controller;
-
-		$notification_id = $ewd_otp_controller->settings->get_setting( 'customer-order-email' );
-
-		if ( ! $notification_id ) { return; }
-
-		$sms = ! is_numeric( $notification_id ) ? true : false;
-
-		$recipient = $sms ? $ewd_otp_controller->settings->get_setting( 'admin-phone-number' ) : $ewd_otp_controller->settings->get_setting( 'admin-email' );
-	
-		if ( $sms ) { 
-
-			$this->send_text( $notification_id, $recipient, $order );
-		}
-		elseif ( $notification_id < 0 ) {
-
-			$args = array(
-				'email_id'			=> $notification_id * -1,
-				'order_id'			=> $order->id,
-				'email_address'		=> $recipient
-			);
-
-			if ( function_exists( 'ewd_uwpm_send_email' ) ) { ewd_uwpm_send_email( $args ); }
-		}
-		else {
-
-			$this->send_email( $notification_id, $recipient, $order );
-		}
-	}
-
-	/**
-	 * Send an email to the client when an order is created, if selected
-	 *
-	 * @since 3.0.0
-	 */
-	public function user_order_created_notification( $order ) {
-		global $ewd_otp_controller;
-
-		if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) == 'never' ) { return; }
-
-		$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
-
-		foreach ( $statuses as $status ) {
-
-			if ( $status->status == $order->status ) { $notification_id = $status->email; }
+			// Sales rep notifications
+			add_action( 'ewd_otp_insert_customer_order', array( $this, 'sales_rep_status_updated_notification' ) );
+			add_action( 'ewd_otp_admin_order_updated', array( $this, 'sales_rep_status_updated_notification' ) );
 		}
 
-		if ( empty( $notification_id ) ) { return; }
 
-		$sms = ! is_numeric( $notification_id ) ? true : false;
+		/**
+		 * Send an email to the site admin when an order's customer note is updated, if selected
+		 *
+		 * @since 3.0.0
+		 */
+		public function admin_customer_note_email( $order ) {
+			global $ewd_otp_controller;
 
-		$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
+			$notification_id = $ewd_otp_controller->settings->get_setting( 'customer-notes-email' );
 
-		if ( empty( $recipients ) ) { return; }
+			if ( ! $notification_id ) {
+				return; }
 
-		foreach ( $recipients as $recipient ) {
-			
+			$sms = ! is_numeric( $notification_id ) ? true : false;
+
+			$recipient = $sms ? $ewd_otp_controller->settings->get_setting( 'admin-phone-number' ) : $ewd_otp_controller->settings->get_setting( 'admin-email' );
+
 			if ( $sms ) {
 
 				$this->send_text( $notification_id, $recipient, $order );
-			}
-			elseif ( $notification_id < 0 ) {
-	
+			} elseif ( $notification_id < 0 ) {
+
 				$args = array(
-					'email_id'			=> $notification_id * -1,
-					'order_id'			=> $order->id,
-					'email_address'		=> $recipient
+					'email_id'      => $notification_id * -1,
+					'order_id'      => $order->id,
+					'email_address' => $recipient,
 				);
-	
-				if ( function_exists( 'ewd_uwpm_send_email' ) ) { ewd_uwpm_send_email( $args ); }
-			}
-			else {
-	
+
+				if ( function_exists( 'ewd_uwpm_send_email' ) ) {
+					ewd_uwpm_send_email( $args ); }
+			} else {
+
 				$this->send_email( $notification_id, $recipient, $order );
 			}
 		}
-	}
 
-	/**
-	 * Send an email to the client when an order status is changed, if selected
-	 *
-	 * @since 3.0.0
-	 */
-	public function user_status_updated_notification( $order, $old_status ) {
-		global $ewd_otp_controller;
+		/**
+		 * Send an email to the site admin when a customer order is submitted, if selected
+		 *
+		 * @since 3.0.0
+		 */
+		public function admin_customer_order_email( $order ) {
+			global $ewd_otp_controller;
 
-		if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) == 'never' or $ewd_otp_controller->settings->get_setting( 'email-frequency' ) == 'creation' ) { return; }
+			$notification_id = $ewd_otp_controller->settings->get_setting( 'customer-order-email' );
 
-		if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) == 'status_change' and $order->status == $old_status ) { return; }
+			if ( ! $notification_id ) {
+				return; }
 
-		$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
+			$sms = ! is_numeric( $notification_id ) ? true : false;
 
-		foreach ( $statuses as $status ) {
+			$recipient = $sms ? $ewd_otp_controller->settings->get_setting( 'admin-phone-number' ) : $ewd_otp_controller->settings->get_setting( 'admin-email' );
 
-			if ( $status->status == $order->status and $status->internal != 'yes' ) { $notification_id = $status->email; }
-		}
-
-		if ( empty( $notification_id ) ) { return; }
-
-		$sms = ! is_numeric( $notification_id ) ? true : false;
-
-		$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
-
-		foreach ( $recipients as $recipient ) {
-		
 			if ( $sms ) {
 
 				$this->send_text( $notification_id, $recipient, $order );
-			}
-			elseif ( $notification_id < 0 ) {
-	
+			} elseif ( $notification_id < 0 ) {
+
 				$args = array(
-					'email_id'			=> $notification_id * -1,
-					'order_id'			=> $order->id,
-					'email_address'		=> $recipient
+					'email_id'      => $notification_id * -1,
+					'order_id'      => $order->id,
+					'email_address' => $recipient,
 				);
-	
-				if ( function_exists( 'ewd_uwpm_send_email' ) ) { ewd_uwpm_send_email( $args ); }
-			}
-			else {
-				
+
+				if ( function_exists( 'ewd_uwpm_send_email' ) ) {
+					ewd_uwpm_send_email( $args ); }
+			} else {
+
 				$this->send_email( $notification_id, $recipient, $order );
 			}
 		}
-	}
 
-	/**
-	 * Send an email to the sales rep when an order status is changed, if selected
-	 *
-	 * @since 3.0.0
-	 */
-	public function sales_rep_status_updated_notification( $order ) {
-		global $ewd_otp_controller;
+		/**
+		 * Send an email to the client when an order is created, if selected
+		 *
+		 * @since 3.0.0
+		 */
+		public function user_order_created_notification( $order ) {
+			global $ewd_otp_controller;
 
-		if ( empty( $ewd_otp_controller->settings->get_setting( 'sales-rep-status-notifications' ) ) ) { return; }
+			if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) === 'never' ) {
+				return; }
 
-		$notification_id = $ewd_otp_controller->settings->get_setting( 'sales-rep-status-email' );
+			$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
 
-		if ( empty( $notification_id ) ) { return; }
+			foreach ( $statuses as $status ) {
 
-		if ( empty( $order->sales_rep ) ) { return; }
+				if ( $status->status === $order->status ) {
+					$notification_id = $status->email; }
+			}
 
-		$sales_rep = new ewdotpSalesRep();
+			if ( empty( $notification_id ) ) {
+				return; }
 
-		$sales_rep->load_sales_rep_from_id( $order->sales_rep );
+			$sms = ! is_numeric( $notification_id ) ? true : false;
 
-		$sms = ! is_numeric( $notification_id ) ? true : false;
+			$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
 
-		if ( ( ! $sms and empty( $sales_rep->email ) ) or ( $sms and empty( $sales_rep->phone_number ) ) ) { return; }
+			if ( empty( $recipients ) ) {
+				return; }
 
-		if ( $sms ) {
+			foreach ( $recipients as $recipient ) {
 
-			$this->send_text( $notification_id, $sales_rep->phone_number, $order );
+				if ( $sms ) {
+
+					$this->send_text( $notification_id, $recipient, $order );
+				} elseif ( $notification_id < 0 ) {
+
+					$args = array(
+						'email_id'      => $notification_id * -1,
+						'order_id'      => $order->id,
+						'email_address' => $recipient,
+					);
+
+					if ( function_exists( 'ewd_uwpm_send_email' ) ) {
+						ewd_uwpm_send_email( $args ); }
+				} else {
+
+					$this->send_email( $notification_id, $recipient, $order );
+				}
+			}
 		}
-		elseif ( $notification_id < 0 ) {
-	
+
+		/**
+		 * Send an email to the client when an order status is changed, if selected
+		 *
+		 * @since 3.0.0
+		 */
+		public function user_status_updated_notification( $order, $old_status ) {
+			global $ewd_otp_controller;
+
+			if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) === 'never' || $ewd_otp_controller->settings->get_setting( 'email-frequency' ) === 'creation' ) {
+				return; }
+
+			if ( $ewd_otp_controller->settings->get_setting( 'email-frequency' ) === 'status_change' && $order->status === $old_status ) {
+				return; }
+
+			$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
+
+			foreach ( $statuses as $status ) {
+
+				if ( $status->status === $order->status && 'yes' !== $status->internal ) {
+					$notification_id = $status->email; }
+			}
+
+			if ( empty( $notification_id ) ) {
+				return; }
+
+			$sms = ! is_numeric( $notification_id ) ? true : false;
+
+			$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
+
+			foreach ( $recipients as $recipient ) {
+
+				if ( $sms ) {
+
+					$this->send_text( $notification_id, $recipient, $order );
+				} elseif ( $notification_id < 0 ) {
+
+					$args = array(
+						'email_id'      => $notification_id * -1,
+						'order_id'      => $order->id,
+						'email_address' => $recipient,
+					);
+
+					if ( function_exists( 'ewd_uwpm_send_email' ) ) {
+						ewd_uwpm_send_email( $args ); }
+				} else {
+
+					$this->send_email( $notification_id, $recipient, $order );
+				}
+			}
+		}
+
+		/**
+		 * Send an email to the sales rep when an order status is changed, if selected
+		 *
+		 * @since 3.0.0
+		 */
+		public function sales_rep_status_updated_notification( $order ) {
+			global $ewd_otp_controller;
+
+			if ( empty( $ewd_otp_controller->settings->get_setting( 'sales-rep-status-notifications' ) ) ) {
+				return; }
+
+			$notification_id = $ewd_otp_controller->settings->get_setting( 'sales-rep-status-email' );
+
+			if ( empty( $notification_id ) ) {
+				return; }
+
+			if ( empty( $order->sales_rep ) ) {
+				return; }
+
+			$sales_rep = new ewdotpSalesRep();
+
+			$sales_rep->load_sales_rep_from_id( $order->sales_rep );
+
+			$sms = ! is_numeric( $notification_id ) ? true : false;
+
+			if ( ( ! $sms && empty( $sales_rep->email ) ) || ( $sms && empty( $sales_rep->phone_number ) ) ) {
+				return; }
+
+			if ( $sms ) {
+
+				$this->send_text( $notification_id, $sales_rep->phone_number, $order );
+			} elseif ( $notification_id < 0 ) {
+
+				$args = array(
+					'email_id'      => $notification_id * -1,
+					'order_id'      => $order->id,
+					'email_address' => $sales_rep->email,
+				);
+
+				if ( function_exists( 'ewd_uwpm_send_email' ) ) {
+					ewd_uwpm_send_email( $args ); }
+			} else {
+
+				$this->send_email( $notification_id, $sales_rep->email, $order );
+			}
+		}
+
+		/**
+		 * Send an email using an admin created template
+		 *
+		 * @since 3.0.0
+		 */
+		public function send_email( $email_id, $email_address, $order ) {
+			global $ewd_otp_controller;
+
+			$email_messages = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'email-messages' ) );
+
+			foreach ( $email_messages as $email_message ) {
+
+				if ( $email_message->id !== $email_id ) {
+					continue; }
+
+				$template            = $this->get_email_template( $email_message );
+				$needs_tracking_link = false !== strpos( $template, '[tracking-link]' ) || false !== strpos( $email_message->subject, '[tracking-link]' );
+				$tracking_url        = $needs_tracking_link ? $this->get_order_tracking_link( $order ) : null;
+				if ( $needs_tracking_link && ! $tracking_url ) {
+					return false;
+				}
+				$message = $this->substitute_message_text( $template, $order, $tracking_url );
+				$subject = $this->substitute_message_text( $email_message->subject, $order, $tracking_url );
+				$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+				$mail_success = wp_mail( $email_address, $subject, $message, $headers );
+
+				return $mail_success;
+			}
+		}
+
+		/**
+		 * Send a text message using an admin created template
+		 *
+		 * @since 3.3.0
+		 */
+		public function send_text( $notification_id, $phone_number, $order ) {
+			global $ewd_otp_controller;
+
+			$sms = ! is_numeric( $notification_id ) ? true : false;
+
+			// remove the 'sms_' prefix from the notification ID, if it exists
+			$notification_id = $sms ? substr( $notification_id, 4 ) : $notification_id;
+
+			$sms_messages = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'sms-messages' ) );
+
+			foreach ( $sms_messages as $sms_message ) {
+
+				if ( $sms_message->id !== $notification_id ) {
+					continue; }
+
+				// replace tracking link ahead of time with URL, to prevent button code being inserted
+				$message = wp_strip_all_tags( $sms_message->message );
+				if ( false !== strpos( $message, '[tracking-link]' ) ) {
+					$tracking_url = $this->get_order_tracking_link( $order );
+					if ( ! $tracking_url ) {
+						return false;
+					}
+					$message = str_replace( '[tracking-link]', $tracking_url, $message );
+				}
+				$endpoint = apply_filters( 'ewd_otp_sms_endpoint', 'https://www.etoilewebdesign.com/sms-handling/api/v2/send' );
+				$response = wp_remote_post(
+					$endpoint,
+					array(
+						'timeout' => 10,
+						'headers' => array( 'Accept' => 'application/json' ),
+						'body'    => array(
+							'plugin'         => 'otp',
+							'license_key'    => get_option( 'otp-ultimate-license-key', '' ),
+							'admin_email'    => $ewd_otp_controller->settings->get_setting( 'ultimate-purchase-email' ),
+							'phone_number'   => $phone_number,
+							'message'        => $this->substitute_message_text( $message, $order ),
+							'country_code'   => $ewd_otp_controller->settings->get_setting( 'sms-country-code' ),
+							'free_version'   => EWD_OTP_VERSION,
+							'helper_version' => defined( 'EWDPH_VERSION' ) ? EWDPH_VERSION : '',
+						),
+					)
+				);
+
+				if ( is_wp_error( $response ) || 200 > wp_remote_retrieve_response_code( $response ) || 299 < wp_remote_retrieve_response_code( $response ) ) {
+					return false;
+				}
+
+				$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+				return is_array( $body ) && isset( $body['success'] ) && true === $body['success'];
+			}
+		}
+
+		/**
+		 * Replace plugin-defined tags with order information
+		 *
+		 * @since 3.0.0
+		 */
+		public function substitute_message_text( $text, $order, $tracking_url = null ) {
+
+			global $ewd_otp_controller;
+
+			if ( false !== strpos( $text, '[tracking-link]' ) && null === $tracking_url ) {
+				$tracking_url = $this->get_order_tracking_link( $order );
+			}
+			$tracking_link = $tracking_url ? "[button link='" . $tracking_url . "']" . __( 'Track your order', 'order-tracking' ) . '[/button]' : '';
+
+			$search = array(
+				'[order-name]',
+				'[order-number]',
+				'[order-status]',
+				'[order-notes]',
+				'[customer-notes]',
+				'[order-time]',
+				'[tracking-link]',
+				'[customer-name]',
+				'[customer-number]',
+				'[customer-id]',
+				'[sales-rep]',
+				'[sales-rep-number]',
+			);
+
+			$replace = array(
+				! empty( $order->name ) ? $order->name : '',
+				! empty( $order->number ) ? $order->number : '',
+				! empty( $order->external_status ) ? $order->external_status : '',
+				! empty( $order->notes_public ) ? $order->notes_public : '',
+				! empty( $order->customer_notes ) ? $order->customer_notes : '',
+				! empty( $order->status_updated_gmt )
+					? wp_date( $ewd_otp_controller->settings->get_setting( 'date-format' ), strtotime( $order->status_updated_gmt . ' UTC' ), wp_timezone() )
+						: gmdate( $ewd_otp_controller->settings->get_setting( 'date-format' ), strtotime( $order->status_updated ) ),
+				$tracking_link,
+				$ewd_otp_controller->customer_manager->get_customer_field( 'name', $order->customer ),
+				$ewd_otp_controller->customer_manager->get_customer_field( 'number', $order->customer ),
+				! empty( $order->customer ) ? $order->customer : '',
+				$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'first_name', $order->sales_rep ) . ' ' . $ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'last_name', $order->sales_rep ),
+				$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'number', $order->sales_rep ),
+			);
+
+			$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
+
+			foreach ( $custom_fields as $custom_field ) {
+
+				$value = $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $order->id );
+
+				$search[]  = '[' . $custom_field->slug . ']';
+				$replace[] = $value;
+			}
+
+			$order_text = str_replace( $search, $replace, $text );
+
+			return $this->replace_email_content( $order_text );
+		}
+
+		/**
+		 * Returns the URL code tracking an individual order
+		 *
+		 * @since 3.0.0
+		 */
+		public function get_order_tracking_link( $order ) {
+			global $ewd_otp_controller;
+
+			$tracking_token = $order->generate_tracking_token();
+			if ( '' === $tracking_token ) {
+				return false;
+			}
+
 			$args = array(
-				'email_id'			=> $notification_id * -1,
-				'order_id'			=> $order->id,
-				'email_address'		=> $sales_rep->email
+				'tracking_number' => $order->number,
+				'tracking_token'  => $tracking_token,
 			);
-	
-			if ( function_exists( 'ewd_uwpm_send_email' ) ) { ewd_uwpm_send_email( $args ); }
+			$url  = ! empty( $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) ) ? $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) : false;
+
+			return add_query_arg( $args, $url );
 		}
-		else {
-				
-			$this->send_email( $notification_id, $sales_rep->email, $order );
-		}
-	}
 
-	/**
-	 * Send an email using an admin created template
-	 *
-	 * @since 3.0.0
-	 */
-	public function send_email( $email_id, $email_address, $order ) {
-		global $ewd_otp_controller;
+		/**
+		 * Returns a template of the email message, along with admin styling for it
+		 *
+		 * @since 3.0.0
+		 */
+		public function get_email_template( $email_message ) {
+			global $ewd_otp_controller;
 
-		$email_messages = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'email-messages' ) );
+			$message_title   = $email_message->subject;
+			$message_content = $this->replace_email_content( stripslashes( $email_message->message ) );
 
-		foreach ( $email_messages as $email_message ) {
-
-			if ( $email_message->id != $email_id ) { continue; }
-
-			$message = $this->substitute_message_text( $this->get_email_template( $email_message ), $order );
-			$subject = $this->substitute_message_text( $email_message->subject, $order);
-			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
-			
-			$mail_success = wp_mail( $email_address, $subject, $message, $headers );
-
-			return $mail_success;
-		}
-	}
-
-	/**
-	 * Send a text message using an admin created template
-	 *
-	 * @since 3.3.0
-	 */
-	public function send_text( $notification_id, $phone_number, $order ) {
-		global $ewd_otp_controller;
-
-		$sms = ! is_numeric( $notification_id ) ? true : false;
-
-		// remove the 'sms_' prefix from the notification ID, if it exists
-		$notification_id = $sms ? substr( $notification_id, 4 ) : $notification_id;
-
-		$sms_messages = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'sms-messages' ) );
-
-		foreach ( $sms_messages as $sms_message ) {
-
-			if ( $sms_message->id != $notification_id ) { continue; }
-
-			// replace tracking link ahead of time with URL, to prevent button code being inserted
-			$message = str_replace( '[tracking-link]', $this->get_order_tracking_link( $order ), strip_tags( $sms_message->message ) );
-
-			$url = add_query_arg(
-				array(
-					'plugin'				=> 'otp',
-					'license_key' 	=> urlencode( get_option( 'otp-ultimate-license-key', 'no license key entered' ) ),
-					'admin_email' 	=> urlencode( $ewd_otp_controller->settings->get_setting( 'ultimate-purchase-email' ) ),
-					'phone_number' 	=> urlencode( $phone_number ),
-					'message'		=> urlencode( $this->substitute_message_text( $message, $order ) ),
-					'country_code'	=> urlencode( $ewd_otp_controller->settings->get_setting( 'sms-country-code' ) )
-				),
-				'http://www.etoilewebdesign.com/sms-handling/sms-client.php'
-			);
-
-			$opts = array( 'http' =>array( 'method' => "GET" ) );
-			$context = stream_context_create( $opts );
-			$return = json_decode( file_get_contents( $url, false, $context ) );
-
-			return isset( $return->success ) ? $return->success : false;
-		}
-	}
-
-	/**
-	 * Replace plugin-defined tags with order information
-	 *
-	 * @since 3.0.0
-	 */
-	function substitute_message_text( $text, $order ) {
-		global $ewd_otp_controller;
-	
-		$tracking_url = $this->get_order_tracking_link( $order );
-	
-		$tracking_link = "[button link='" . $tracking_url . "']" . __( 'Track your order', 'order-tracking' ) . "[/button]";
-	
-		date_default_timezone_set( get_option( 'timezone_string' ) );
-	
-		$search = array(
-			"[order-name]",
-			"[order-number]",
-			"[order-status]",
-			"[order-notes]",
-			"[customer-notes]",
-			"[order-time]",
-			"[tracking-link]",
-			"[customer-name]",
-			"[customer-number]",
-			"[customer-id]",
-			"[sales-rep]",
-			"[sales-rep-number]"
-		);
-	
-		$replace = array(
-			! empty( $order->name ) ? $order->name : '',
-			! empty( $order->number ) ? $order->number : '', 
-			! empty( $order->external_status ) ? $order->external_status : '',
-			! empty( $order->notes_public ) ? $order->notes_public : '',
-			! empty( $order->customer_notes ) ? $order->customer_notes : '',
-			date( $ewd_otp_controller->settings->get_setting( 'date-format' ), strtotime( $order->status_updated ) ),
-			$tracking_link,
-			$ewd_otp_controller->customer_manager->get_customer_field( 'name', $order->customer ),
-			$ewd_otp_controller->customer_manager->get_customer_field( 'number', $order->customer ),
-			! empty( $order->customer ) ? $order->customer : '',
-			$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'first_name', $order->sales_rep ) . ' ' . $ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'last_name', $order->sales_rep ),
-			$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'number', $order->sales_rep ),
-		);
-	
-		$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
-	
-		foreach ( $custom_fields as $custom_field ) {
-
-			$value = $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $order->id );
-		
-			$search[] = '[' . $custom_field->slug . ']';
-			$replace[] = $value;
-		}
-	
-		$order_text = str_replace( $search, $replace, $text );
-	
-		return $this->replace_email_content( $order_text );
-	}
-
-	/**
-	 * Returns the URL code tracking an individual order
-	 *
-	 * @since 3.0.0
-	 */
-	public function get_order_tracking_link( $order ) {
-		global $ewd_otp_controller;
-
-		$confirmation_code = ewd_random_string();
-
-		$order->set_tracking_link_code( $confirmation_code );
-
-		$args = array(
-			'tracking_number'			=> $order->number,
-			'email'								=> $order->email,
-			'tracking_link_code'	=> $confirmation_code
-		);
-
-		$url = ! empty( $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) ) ? $ewd_otp_controller->settings->get_setting( 'tracking-page-url' ) : false;
-	
-		return add_query_arg( $args, $url );
-	}
-
-	/**
-	 * Returns a template of the email message, along with admin styling for it
-	 *
-	 * @since 3.0.0
-	 */
-	public function get_email_template( $email_message ) {
-		global $ewd_otp_controller;
-
-		$message_title = $email_message->subject;
-		$message_content = $this->replace_email_content( stripslashes( $email_message->message ) );
-	
-		$message =   <<< EOT
+			ob_start();
+			?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
 <head>
 <meta name="viewport" content="width=device-width" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>$message_title</title>
+<title><?php echo esc_html( $message_title ); ?></title>
 	
 	
 <style type="text/css">
@@ -420,40 +455,40 @@ background-color: #f6f6f6;
 
 @media only screen and (max-width: 640px) {
 body {
-  padding: 0 !important;
+	padding: 0 !important;
 }
 h1 {
-  font-weight: 800 !important; margin: 20px 0 5px !important;
+	font-weight: 800 !important; margin: 20px 0 5px !important;
 }
 h2 {
-  font-weight: 800 !important; margin: 20px 0 5px !important;
+	font-weight: 800 !important; margin: 20px 0 5px !important;
 }
 h3 {
-  font-weight: 800 !important; margin: 20px 0 5px !important;
+	font-weight: 800 !important; margin: 20px 0 5px !important;
 }
 h4 {
-  font-weight: 800 !important; margin: 20px 0 5px !important;
+	font-weight: 800 !important; margin: 20px 0 5px !important;
 }
 h1 {
-  font-size: 22px !important;
+	font-size: 22px !important;
 }
 h2 {
-  font-size: 18px !important;
+	font-size: 18px !important;
 }
 h3 {
-  font-size: 16px !important;
+	font-size: 16px !important;
 }
 .container {
-  padding: 0 !important; width: 100% !important;
+	padding: 0 !important; width: 100% !important;
 }
 .content {
-  padding: 0 !important;
+	padding: 0 !important;
 }
 .content-wrap {
-  padding: 10px !important;
+	padding: 10px !important;
 }
 .invoice {
-  width: 100% !important;
+	width: 100% !important;
 }
 }
 </style>
@@ -466,69 +501,69 @@ h3 {
 <div class="content" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px;">
 <table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; background-color: #fff; margin: 0; border: 1px solid #e9e9e9;" bgcolor="#fff"><tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-wrap" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 20px;" valign="top">
 <meta itemprop="name" content="Please Review" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" /><table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-$message_content
+			<?php echo wp_kses_post( $message_content ); ?>
 </div>
 </td>
 <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;" valign="top"></td>
 </tr></table></body>
 </html>
 	
-EOT;
-	
-	  return $message;
-	}
+			<?php
+			$message = ob_get_clean();
 
-	/**
-	 * Replace the structure elements of an email template
-	 *
-	 * @since 3.0.0
-	 */
-	public function replace_email_content( $unprocessed_message ) {
+			return $message;
+		}
 
-		$search = array('[section]', '[/section]', '[footer]', '[/footer]', '[/button]');
-		$replace = array(
-			'<tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">',
-			'</td></tr>',
-			'</table></td></tr></table><div class="footer" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;"><table width="100%" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="aligncenter content-block" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;" align="center" valign="top">',
-			'</td></tr></table></div>',
-			'</a></td></tr>'
-		);
-		$intemediate_message = str_replace( $search, $replace, $unprocessed_message );
-		$processed_message = $this->replace_email_links( $intemediate_message );
+		/**
+		 * Replace the structure elements of an email template
+		 *
+		 * @since 3.0.0
+		 */
+		public function replace_email_content( $unprocessed_message ) {
 
-  		return $processed_message;
-	}
+			$search              = array( '[section]', '[/section]', '[footer]', '[/footer]', '[/button]' );
+			$replace             = array(
+				'<tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">',
+				'</td></tr>',
+				'</table></td></tr></table><div class="footer" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;"><table width="100%" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="aligncenter content-block" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;" align="center" valign="top">',
+				'</td></tr></table></div>',
+				'</a></td></tr>',
+			);
+			$intemediate_message = str_replace( $search, $replace, $unprocessed_message );
+			$processed_message   = $this->replace_email_links( $intemediate_message );
 
-	/**
-	 * Replace all of the button links used in the email template
-	 *
-	 * @since 3.0.0
-	 */
-	public function replace_email_links( $unprocessed_message ) {
-	
-		$pattern = "/\[button link=\'(.*?)\'\]/";
-	
-		preg_match_all( $pattern, $unprocessed_message, $matches );
-	
-		$replace = '<tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top"><a href="INSERTED_LINK" class="btn-primary" itemprop="url" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">';
-		$message = preg_replace( $pattern, $replace, $unprocessed_message );
-	
-		if ( is_array( $matches[1] ) ) {
-	
-			foreach ( $matches[1] as $link ) {
-	
-				$pos = strpos( $message, "INSERTED_LINK" );
-	
-				if ($pos !== false) {
-	
-				    $intermediate_message = substr_replace( $message, $link, $pos, 13 );
-				    $message = $intermediate_message;
+			return $processed_message;
+		}
+
+		/**
+		 * Replace all of the button links used in the email template
+		 *
+		 * @since 3.0.0
+		 */
+		public function replace_email_links( $unprocessed_message ) {
+
+			$pattern = "/\[button link=\'(.*?)\'\]/";
+
+			preg_match_all( $pattern, $unprocessed_message, $matches );
+
+			$replace = '<tr style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top"><a href="INSERTED_LINK" class="btn-primary" itemprop="url" style="font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">';
+			$message = preg_replace( $pattern, $replace, $unprocessed_message );
+
+			if ( is_array( $matches[1] ) ) {
+
+				foreach ( $matches[1] as $link ) {
+
+					$pos = strpos( $message, 'INSERTED_LINK' );
+
+					if ( $pos !== false ) {
+
+						$intermediate_message = substr_replace( $message, $link, $pos, 13 );
+						$message              = $intermediate_message;
+					}
 				}
 			}
-		}
-	
-		return $message;
-	}
-}
-} // endif;
 
+			return $message;
+		}
+	}
+} // endif;

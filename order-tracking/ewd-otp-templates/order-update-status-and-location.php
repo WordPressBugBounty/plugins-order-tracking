@@ -4,6 +4,7 @@
 		
 		<input type='hidden' name='action' value='ewd_otp_update_status' />
 		<input type='hidden' name='ewd_otp_order_id' value='<?php echo esc_attr( $this->order->id ); ?>' />
+		<?php wp_nonce_field( 'ewd_otp_update_order_' . absint( $this->order->id ), 'ewd_otp_update_order_nonce' ); ?>
 
 		<div class="ewd-order-status">
 			
@@ -21,9 +22,9 @@
 
 		$location_list = $this->get_possible_locations();
 
-		if( count( $location_list ) > 0) {
+		if ( count( $location_list ) > 0 ) {
 
-		?>
+			?>
 
 		<div class="ewd-order-location">
 
@@ -37,7 +38,7 @@
 
 		</div>
 
-		<?php
+			<?php
 
 		}
 

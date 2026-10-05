@@ -17,9 +17,15 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 
 	// Holds any matching orders based on submitted Sales Rep ID and (optionally) email
 	public $sales_rep_orders = array();
-
+	/**
+	 * Signed proof for protected collection downloads.
+	 *
+	 * @var string
+	 */
+	public $access_proof = '';
 	/**
 	 * Render the view and enqueue required stylesheets
+	 *
 	 * @since 3.0.0
 	 */
 	public function render() {
@@ -40,9 +46,9 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 		$this->add_custom_styling();
 
 		$template = $this->find_template( 'sales-rep-form' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 
 		$output = ob_get_clean();
@@ -57,7 +63,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 */
 	public function maybe_print_sales_rep_results() {
 
-		$form_submitted = isset($_POST['ewd_otp_form_type']) && 'sales_rep_form' == $_POST['ewd_otp_form_type'];
+		$form_submitted = isset( $_POST['ewd_otp_form_type'] ) && 'sales_rep_form' == $_POST['ewd_otp_form_type'];
 
 		if ( $form_submitted && empty( $this->sales_rep_orders ) ) {
 
@@ -68,12 +74,13 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 			return;
 		}
 
-		if ( empty( $this->sales_rep_orders ) ) { return; }
-		
+		if ( empty( $this->sales_rep_orders ) ) {
+			return; }
+
 		$template = $this->find_template( 'sales-rep-results' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -83,11 +90,11 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function print_sales_rep_identifier_input() {
-		
+
 		$template = $this->find_template( 'form-identifier-number' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -99,12 +106,13 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function maybe_print_sales_rep_email_input() {
 		global $ewd_otp_controller;
 
-		if ( ! $ewd_otp_controller->settings->get_setting( 'email-verification' ) ) { return; }
-		
+		if ( ! $ewd_otp_controller->settings->get_setting( 'email-verification' ) ) {
+			return; }
+
 		$template = $this->find_template( 'form-email' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -116,14 +124,16 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function maybe_print_sales_rep_first_name() {
 		global $ewd_otp_controller;
 
-		if ( ! in_array( 'sales_rep_first_name', $ewd_otp_controller->settings->get_setting( 'order-information' ) ) ) { return; }
+		if ( ! in_array( 'sales_rep_first_name', $ewd_otp_controller->settings->get_setting( 'order-information' ), true ) ) {
+			return; }
 
-		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) and ( empty( $this->sales_rep ) or empty( $this->sales_rep->first_name ) ) ) { return; }
-		
+		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) && ( empty( $this->sales_rep ) || empty( $this->sales_rep->first_name ) ) ) {
+			return; }
+
 		$template = $this->find_template( 'sales-rep-first-name' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -135,14 +145,16 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function maybe_print_sales_rep_last_name() {
 		global $ewd_otp_controller;
 
-		if ( ! in_array( 'sales_rep_last_name', $ewd_otp_controller->settings->get_setting( 'order-information' ) ) ) { return; }
+		if ( ! in_array( 'sales_rep_last_name', $ewd_otp_controller->settings->get_setting( 'order-information' ), true ) ) {
+			return; }
 
-		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) and ( empty( $this->sales_rep ) or empty( $this->sales_rep->last_name ) ) ) { return; }
-		
+		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) && ( empty( $this->sales_rep ) || empty( $this->sales_rep->last_name ) ) ) {
+			return; }
+
 		$template = $this->find_template( 'sales-rep-last-name' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -154,14 +166,16 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function maybe_print_sales_rep_email() {
 		global $ewd_otp_controller;
 
-		if ( ! in_array( 'sales_rep_email', $ewd_otp_controller->settings->get_setting( 'order-information' ) ) ) { return; }
+		if ( ! in_array( 'sales_rep_email', $ewd_otp_controller->settings->get_setting( 'order-information' ), true ) ) {
+			return; }
 
-		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) and ( empty( $this->sales_rep ) or empty( $this->sales_rep->email ) ) ) { return; }
-		
+		if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) && ( empty( $this->sales_rep ) || empty( $this->sales_rep->email ) ) ) {
+			return; }
+
 		$template = $this->find_template( 'sales-rep-email' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -177,9 +191,11 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 
 		foreach ( $custom_fields as $custom_field ) {
 
-			if ( ! $custom_field->front_end_display ) { continue; }
+			if ( ! $custom_field->front_end_display ) {
+				continue; }
 
-			if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) and ( empty( $this->sales_rep ) or empty( $this->sales_rep->custom_fields[ $custom_field->id ] ) ) ) { continue; }
+			if ( $ewd_otp_controller->settings->get_setting( 'hide-blank-fields' ) && ( empty( $this->sales_rep ) || empty( $this->sales_rep->custom_fields[ $custom_field->id ] ) ) ) {
+				continue; }
 
 			$custom_field->value = $this->sales_rep->custom_fields[ $custom_field->id ];
 
@@ -195,11 +211,11 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function print_sales_rep_orders_header() {
-		
+
 		$template = $this->find_template( 'matching-order-header' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -209,7 +225,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function print_sales_rep_orders() {
-		
+
 		$template = $this->find_template( 'matching-order' );
 
 		foreach ( $this->sales_rep_orders as $order ) {
@@ -217,7 +233,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 			$this->current_order = $order;
 
 			if ( $template ) {
-				include( $template );
+				include $template;
 			}
 		}
 	}
@@ -230,12 +246,13 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function maybe_print_sales_rep_download_button() {
 		global $ewd_otp_controller;
 
-		if ( empty( $ewd_otp_controller->settings->get_setting( 'allow-sales-rep-downloads' ) ) ) { return; }
-		
+		if ( empty( $ewd_otp_controller->settings->get_setting( 'allow-sales-rep-downloads' ) ) ) {
+			return; }
+
 		$template = $this->find_template( 'sales-rep-download-button' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -245,11 +262,11 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function print_sales_rep_form_submit() {
-		
+
 		$template = $this->find_template( 'form-submit' );
-		
+
 		if ( $template ) {
-			include( $template );
+			include $template;
 		}
 	}
 
@@ -259,7 +276,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function get_identifier_placeholder_label() {
-		
+
 		return $this->get_label( 'label-sales-rep-form-number-placeholder' );
 	}
 
@@ -269,7 +286,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function get_email_placeholder_label() {
-		
+
 		return $this->get_label( 'label-sales-rep-form-email-placeholder' );
 	}
 
@@ -279,16 +296,19 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function include_separate_tracking_link() {
-		
-		if ( empty( $this->get_option( 'disable-ajax-loading' ) ) ) { return false; }
 
-		if ( empty( $this->get_option( 'tracking-page-url' ) ) ) { return false; }
+		if ( empty( $this->get_option( 'disable-ajax-loading' ) ) ) {
+			return false; }
+
+		if ( empty( $this->get_option( 'tracking-page-url' ) ) ) {
+			return false; }
 
 		return true;
 	}
 
 	/**
 	 * Get the initial sales rep css classes
+	 *
 	 * @since 3.0.0
 	 */
 	public function get_classes( $classes = array() ) {
@@ -298,7 +318,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 			$classes,
 			array(
 				'ewd-otp-sales-rep-form-div',
-				'ewd-otp-form'
+				'ewd-otp-form',
 			)
 		);
 
@@ -312,35 +332,64 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 
 	/**
 	 * Allow some parameters to be overwritten with $_REQUEST parameters
+	 *
 	 * @since 3.0.0
 	 */
 	public function set_request_parameters() {
 		global $ewd_otp_controller;
 
-		if ( empty( $_POST['ewd_otp_form_type'] ) or $_POST['ewd_otp_form_type'] != 'sales_rep_form' ) { return; } 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+		if ( empty( $_POST['ewd_otp_form_type'] ) || 'sales_rep_form' !== $_POST['ewd_otp_form_type'] ) {
+			return; }
 
-		if ( empty( $_POST['ewd_otp_identifier_number'] ) ) { return; }
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+		if ( empty( $_POST['ewd_otp_identifier_number'] ) ) {
+			return; }
 
 		$sales_rep = new ewdotpSalesRep();
 
-		$sales_rep->load_sales_rep_from_number( sanitize_text_field( trim( $_POST['ewd_otp_identifier_number'] ) ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+		$sales_rep->load_sales_rep_from_number( trim( sanitize_text_field( wp_unslash( $_POST['ewd_otp_identifier_number'] ) ) ) );
 
-		if ( $ewd_otp_controller->settings->get_setting( 'email-verification' ) and ! $sales_rep->verify_sales_rep_email( sanitize_email( $_POST['ewd_otp_form_email'] ) ) ) { return; }
+		$proof  = array(
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+			'order_email'      => isset( $_POST['ewd_otp_form_email'] ) ? sanitize_email( wp_unslash( $_POST['ewd_otp_form_email'] ) ) : '',
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+			'tracking_token'   => isset( $_POST['tracking_token'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_token'] ) ) : '',
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
+			'collection_token' => isset( $_POST['ewd_otp_collection_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ewd_otp_collection_token'] ) ) : '',
+		);
+		$access = $ewd_otp_controller->order_access->authorize_collection( $sales_rep, 'sales_rep', $proof );
+		if ( ! $access['authorized'] ) {
+			return;
+		}
 
-		$this->sales_rep = $sales_rep;
+		$this->sales_rep    = $sales_rep;
+		$this->access_proof = $ewd_otp_controller->order_access->create_collection_proof( 'sales_rep', $sales_rep->id );
 	}
 
 	/**
 	 * If a sales rep is set, fetch their matching orders
+	 *
 	 * @since 3.0.0
 	 */
 	public function set_sales_rep_orders() {
 
-		if ( empty( $this->sales_rep->id ) ) { return; }
+		global $ewd_otp_controller;
 
+		if ( empty( $this->sales_rep->id ) ) {
+			return;
+		}
+
+		$access = $ewd_otp_controller->order_access->authorize_collection( $this->sales_rep, 'sales_rep', array( 'collection_token' => $this->access_proof ) );
+		if ( ! $access['authorized'] ) {
+			return;
+		}
+		if ( '' === $this->access_proof ) {
+			$this->access_proof = $ewd_otp_controller->order_access->create_collection_proof( 'sales_rep', $this->sales_rep->id ); }
 		$args = array(
-			'after'				=> date( 'Y-m-d H:i:s', strtotime( '-365 days' ) ),
-			'orders_per_page' 	=> -1
+			'after'           => date( 'Y-m-d H:i:s', strtotime( '-365 days' ) ),
+			'orders_per_page' => -1,
 		);
 
 		$this->sales_rep_orders = $this->sales_rep->get_sales_rep_orders( $args );
@@ -354,27 +403,28 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public function set_sales_rep_options() {
 		global $ewd_otp_controller;
 
-		$this->nonce = wp_create_nonce( basename( __FILE__ ) );
-		$this->sales_rep_form_title = ! empty( $this->order_form_title ) ? $this->order_form_title : $this->get_label( 'label-sales-rep-form-title' );
+		$this->nonce                       = wp_create_nonce( basename( __FILE__ ) );
+		$this->sales_rep_form_title        = ! empty( $this->order_form_title ) ? $this->order_form_title : $this->get_label( 'label-sales-rep-form-title' );
 		$this->sales_rep_form_instructions = ! empty( $this->order_instructions ) ? $this->order_instructions : $this->get_label( 'label-sales-rep-form-instructions' );
-		$this->order_field_text = ! empty( $this->order_field_text ) ? $this->order_field_text : $this->get_label( 'label-sales-rep-form-number' );
-		$this->email_field_text = ! empty( $this->email_field_text ) ? $this->email_field_text : $this->get_label( 'label-sales-rep-form-email' );
-		$this->submit_text = ! empty( $this->submit_text ) ? $this->submit_text : $this->get_label( 'label-sales-rep-form-button' );
+		$this->order_field_text            = ! empty( $this->order_field_text ) ? $this->order_field_text : $this->get_label( 'label-sales-rep-form-number' );
+		$this->email_field_text            = ! empty( $this->email_field_text ) ? $this->email_field_text : $this->get_label( 'label-sales-rep-form-email' );
+		$this->submit_text                 = ! empty( $this->submit_text ) ? $this->submit_text : $this->get_label( 'label-sales-rep-form-button' );
 	}
 
 	/**
 	 * Enqueue the necessary CSS and JS files
+	 *
 	 * @since 3.0.0
 	 */
 	public function enqueue_assets() {
 		global $ewd_otp_controller;
 
 		wp_enqueue_style( 'ewd-otp-css' );
-		
+
 		$args = array(
-			'nonce' 					=> wp_create_nonce( 'ewd-otp-js' ),
-			'retrieving_results' 		=> $ewd_otp_controller->settings->get_setting( 'label-retrieving-results' ),
-			'customer_notes_submit'		=> $this->get_label( 'label-order-add-note-button' )
+			'nonce'                 => wp_create_nonce( 'ewd-otp-js' ),
+			'retrieving_results'    => $ewd_otp_controller->settings->get_setting( 'label-retrieving-results' ),
+			'customer_notes_submit' => $this->get_label( 'label-order-add-note-button' ),
 		);
 
 		$ewd_otp_controller->add_front_end_php_data( 'ewd-otp-js', 'ewd_otp_php_data', $args );

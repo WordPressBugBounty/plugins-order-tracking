@@ -54,6 +54,9 @@ class ewdotpBlocks {
 				'location' => array(
 					'type' => 'string',
 				),
+				'success_redirect_page' => array(
+					'type' => 'string',
+				),
 			),
 			'render_callback' 	=> 'ewd_otp_customer_order_form_shortcode',
 		);

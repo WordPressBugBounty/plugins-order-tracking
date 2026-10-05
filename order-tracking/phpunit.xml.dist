@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+	bootstrap="tests/phpunit/bootstrap.php"
+	colors="true"
+	beStrictAboutOutputDuringTests="true"
+>
+	<testsuites>
+		<testsuite name="Order Tracking WordPress integration tests">
+			<directory suffix="Test.php">tests/phpunit</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

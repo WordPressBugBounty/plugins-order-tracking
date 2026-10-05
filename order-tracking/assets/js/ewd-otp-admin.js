@@ -34,8 +34,42 @@ jQuery(document).ready(function($){
 * ORDERS TABLE 
 ***********************************************/
 
+function ewdOtpAdminRowRequest( link, params ) {
+	var $link = jQuery( link );
+	var $row = $link.closest( 'tr' );
+	var originalText = $link.text();
+
+	if ( $link.data( 'ewd-otp-busy' ) ) { return; }
+
+	$link.data( 'ewd-otp-busy', true )
+		.attr( 'aria-disabled', 'true' )
+		.attr( 'aria-busy', 'true' )
+		.text( ewd_otp_php_admin_data.working );
+
+	jQuery.post( ajaxurl, params )
+		.done( function( response ) {
+			if ( ! response || ! response.success ) {
+				var message = response && response.data && response.data.message ? response.data.message : ewd_otp_php_admin_data.request_error;
+				window.alert( message );
+				return;
+			}
+
+			$row.fadeOut( 150, function() { jQuery( this ).remove(); } );
+		} )
+		.fail( function( xhr ) {
+			var message = xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message ? xhr.responseJSON.data.message : ewd_otp_php_admin_data.request_error;
+			window.alert( message );
+		} )
+		.always( function() {
+			$link.removeData( 'ewd-otp-busy' )
+				.removeAttr( 'aria-disabled aria-busy' )
+				.text( originalText );
+		} );
+}
+
 // REQUIRE CONFIRMATION BEFORE DELETING AN ORDER
-jQuery( '.orders #the-list .delete' ).on( 'click', function() {
+jQuery( '.orders #the-list .delete' ).on( 'click', function( event ) {
+	event.preventDefault();
 
 	var order_id = jQuery( this ).data( 'id' );
 
@@ -49,15 +83,13 @@ jQuery( '.orders #the-list .delete' ).on( 'click', function() {
 			action: 'ewd_otp_delete_order'
 		};
 
-		var data = jQuery.param( params );
-        jQuery.post(ajaxurl, data, function(response) {});
-
-        setTimeout( function() { window.location.reload( true ) }, 150 );
+		ewdOtpAdminRowRequest( this, params );
 	} 
 });
 
 // HIDE AN ORDER
-jQuery( '.orders #the-list .hide' ).on( 'click', function() {
+jQuery( '.orders #the-list .hide' ).on( 'click', function( event ) {
+	event.preventDefault();
 
 	var order_id = jQuery( this ).data( 'id' );
 
@@ -67,10 +99,7 @@ jQuery( '.orders #the-list .hide' ).on( 'click', function() {
 		action: 'ewd_otp_hide_order'
 	};
 
-	var data = jQuery.param( params );
-    jQuery.post(ajaxurl, data, function(response) {});
-
-    setTimeout( function() { window.location.reload( true ) }, 150 );
+	ewdOtpAdminRowRequest( this, params );
 });
 
 // SUBMIT FORM ON 'include_hidden_orders' CHECKBOX TOGGLE
@@ -85,7 +114,8 @@ jQuery( '.ewd-otp-admin-table-filter-div input[name="include_hidden_orders"]' ).
 ***********************************************/
 
 // REQUIRE CONFIRMATION BEFORE DELETING A CUSTOMER
-jQuery( '.customers #the-list .delete' ).on( 'click', function() {
+jQuery( '.customers #the-list .delete' ).on( 'click', function( event ) {
+	event.preventDefault();
 
 	var customer_id = jQuery( this ).data( 'id' );
 
@@ -99,10 +129,7 @@ jQuery( '.customers #the-list .delete' ).on( 'click', function() {
 			action: 'ewd_otp_delete_customer'
 		};
 
-		var data = jQuery.param( params );
-        jQuery.post(ajaxurl, data, function(response) {});
-
-        setTimeout( function() { window.location.reload( true ) }, 150 );
+		ewdOtpAdminRowRequest( this, params );
 	} 
 });
 
@@ -112,7 +139,8 @@ jQuery( '.customers #the-list .delete' ).on( 'click', function() {
 ***********************************************/
 
 // REQUIRE CONFIRMATION BEFORE DELETING A SALES REP
-jQuery( '.salesreps #the-list .delete' ).on( 'click', function() {
+jQuery( '.salesreps #the-list .delete' ).on( 'click', function( event ) {
+	event.preventDefault();
 
 	var sales_rep_id = jQuery( this ).data( 'id' );
 
@@ -126,10 +154,7 @@ jQuery( '.salesreps #the-list .delete' ).on( 'click', function() {
 			action: 'ewd_otp_delete_sales_rep'
 		};
 
-		var data = jQuery.param( params );
-        jQuery.post(ajaxurl, data, function(response) {});
-
-        setTimeout( function() { window.location.reload( true ) }, 150 );
+		ewdOtpAdminRowRequest( this, params );
 	} 
 });
 

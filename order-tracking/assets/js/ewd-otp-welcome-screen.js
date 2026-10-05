@@ -39,6 +39,42 @@ jQuery(document).ready(function() {
 		jQuery.post(ajaxurl, data, function(response) {});
 	});
 
+	jQuery('.ewd-otp-apply-workflow-template').on('click', function() {
+		var $button = jQuery(this);
+		var $message = jQuery('.ewd-otp-workflow-message');
+		if ( $button.prop('disabled') || ! window.confirm(ewd_otp_getting_started.confirm_replace) ) { return; }
+
+		$button.prop('disabled', true).attr('aria-busy', 'true');
+		$message.text('');
+
+		jQuery.post(ajaxurl, {
+			template: jQuery('#ewd-otp-workflow-template').val(),
+			confirm_replace: 1,
+			nonce: ewd_otp_getting_started.nonce,
+			action: 'ewd_otp_welcome_apply_workflow'
+		}).done(function(response) {
+			if (!response || !response.success) {
+				$message.text(response && response.data && response.data.message ? response.data.message : ewd_otp_getting_started.request_error);
+				return;
+			}
+
+			var $body = jQuery('.ewd-otp-welcome-screen-statuses-table table tbody').empty();
+			var $select = jQuery('.ewd-otp-welcome-screen-add-order-status select').empty();
+			jQuery.each(response.data.statuses, function(index, status) {
+				var $row = jQuery('<tr>', {'class': 'list-item edit-status-item'});
+				jQuery('<td>', {'class': 'status'}).append(jQuery('<input>', {type: 'text', disabled: true, value: status.status, 'class': 'ewd-otp-welcome-edit-status-input'})).appendTo($row);
+				jQuery('<td>', {'class': 'status-completed'}).append(jQuery('<input>', {type: 'text', disabled: true, value: status.percentage, 'class': 'ewd-otp-welcome-edit-status-input ewd-otp-edit-status-percentage-input'})).appendTo($row);
+				$body.append($row);
+				$select.append(jQuery('<option>', {value: status.status, text: status.status}));
+			});
+			$message.text(ewd_otp_getting_started.workflow_applied);
+		}).fail(function(xhr) {
+			$message.text(xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message ? xhr.responseJSON.data.message : ewd_otp_getting_started.request_error);
+		}).always(function() {
+			$button.prop('disabled', false).removeAttr('aria-busy');
+		});
+	});
+
 	jQuery('.ewd-otp-welcome-screen-add-tracking-page-button').on('click', function() {
 		var tracking_page_title = jQuery('.ewd-otp-welcome-screen-add-tracking-page-name input').val();
 

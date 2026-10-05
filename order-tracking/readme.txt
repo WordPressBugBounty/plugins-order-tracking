@@ -1,18 +1,18 @@
 === Order Tracking - WordPress Status Tracking Plugin ===
 Contributors: Rustaurius, EtoileWebDesign
-Donate Link: http://www.etoilewebdesign.com/plugin-donations/
+Donate Link: https://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
-Requires at least: 5.0
+Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 3.5.4
+Stable tag: 3.6.0
 License: GPLv3
-License URI:http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Order tracking, status and project management plugin. Create tickets and tracking numbers. Send email updates. Works standalone and with WooCommerce.
 
 == Description ==
 
-Add a full order tracking and management system to your site. Quickly and easily create and update orders, and then let customers view them on your site via a modern, responsive tracking form. 
+Create flexible, customer-facing tracking workflows for orders, projects, repairs, production, approvals and other status-based processes. Order Tracking works as a standalone WordPress plugin, with custom statuses, tracking forms, email notifications and configurable access controls. Premium adds WooCommerce integration and advanced order-management features.
 
 <a href='http://www.etoilewebdesign.com/order-tracking-demo/'>Status Tracking Demo</a>
 
@@ -26,9 +26,11 @@ Since the plugin can be used for the status tracking of anything, not just order
 
 * Create an unlimited number of orders
 * Set up searchable orders or ticket numbers / tracking numbers for customers. Order management made simple!
+* Choose from public, email-verified or login-required tracking access to match your customer workflow.
+* Use starter workflow templates to get common tracking processes set up more quickly.
+* Give customers a clear, responsive view of current progress and previous status updates.
 * Easily update and change the order status in the plugin admin panel.
 * Create custom statuses tailored to your business.
-* Require email verification to view order tracking.
 * Order status notifications that automatically send an alert email to a customer whenever an order is created or updated.
 * Choose what order tracking information gets displayed in the results when you place the order shortcode or block on a page.
 
@@ -66,7 +68,7 @@ Turn on the included WooCommerce tracking integration (premium) to automatically
 * WooCommerce order tracking integration in which, for every new order created via WooCommerce checkout, a new order is automatically created in the Status Tracking plugin.
 * WooCommerce tracking made easy with automatically-assigned order number (with options to add and customize a prefix and/or suffix).
 * WooCommerce order update alert and email automatically sent to the customer with this order number.
-* WooCommerce tracking updates: When an order is updated in WooCommerce, it is also automatically updated in Status Tracking, and vice versa.
+* WooCommerce tracking updates: Keep supported WooCommerce and Order Tracking status information synchronized according to your integration settings.
 * WooCommerce status notifications: An email will automatically be sent to the customer on order update / status change.
 * Set equivalent status in this plugin for existing WooCommerce statuses to make direct syncing even more powerful.
 
@@ -76,7 +78,7 @@ For even more refined order management, you can create customers and sales reps 
 
 * Add a customer tracking form to your site, which displays all of a specific customer's orders in one table, with links to each individual order's tracking page.
 * Associate a customer with a WordPress user account, so they can log in to your site (front end, not back end) and see all of their orders without having to enter any tracking information.
-* Associate a sales rep with a WordPress user acconunt, to give them access to a special admin portal where they can manage only those orders assigned to them.
+* Associate a sales rep with a WordPress user account, to give them access to a special admin portal where they can manage only those orders assigned to them.
 * You can also add a sales rep tracking form to your site, which displays all of a specific sales rep's orders in one table, with links to each individual order's tracking page. This is great if you would prefer that sales reps manage orders form the front end instead of the admin.
 * Both customers and sales reps can download / export their orders straight from the front end.
 
@@ -91,7 +93,7 @@ The premium version also comes with many other additional features to enhance yo
 * Custom fields that can be assigned to orders, customers or sales reps. Can be used to display extra information on the tracking page (such as weight, estimated delivery, price, etc.) or to gather extra info in the customer order form.
 * Add Google reCAPTCHA protection to the customer order form. 
 * Import orders from a spreadsheet. Great for adding many orders at once or bulk updating existing orders.
-* Export orders to a spreadsheet, to allow for bulk updating or transfer to a different system (e.g. CRM).
+* Export order data to a spreadsheet for bulk workflows, reporting or transfer to another system..
 
 [youtube https://www.youtube.com/watch?v=q1ohsIfHgyg]
 
@@ -148,6 +150,12 @@ Thanks to the generous contribution of many of those who use our order tracking 
 * Turkish
 * Vietnamese
 
+= External services and privacy =
+
+Order Tracking contacts external services only when the corresponding feature is configured and used. Premium activation/trial and SMS requests go to Etoile Web Design over HTTPS; license keys, trial email addresses, site URLs, recipient telephone numbers and message content are sent only as required for the selected action. Google receives the reCAPTCHA response and normal browser/map request data when those features are enabled. PayPal receives the exact IPN body for payment verification. Zendesk sends the configured ticket ID, title, optional requester email and status to the signed webhook. The deactivation survey sends nothing when Skip is chosen.
+
+The source repository records the field-by-field external-service inventory and failure behavior. Etoile Web Design plugin terms are available at https://www.etoilewebdesign.com/plugin-terms-and-conditions/.
+
 = For help and support, please see: =
 
 * Our documentation, here: [https://doc.etoilewebdesign.com/plugins/order-tracking/user/](https://doc.etoilewebdesign.com/plugins/order-tracking/user/)
@@ -188,7 +196,6 @@ For more info on installing and activating the plugin, and on the walk-through, 
 
 == Frequently Asked Questions ==
 
-
 = Is there a shortcode to display the order tracking form? =
 
 Yes, you can use the `[tracking-form]` shortcode. For more info, see [here](https://doc.etoilewebdesign.com/plugins/order-tracking/user/blocks-shortcodes/tracking-form-shortcode).
@@ -203,6 +210,14 @@ For a complete list of blocks and shortcodes, and their associated parameters/at
 
 = Is it possible to delete data of an incorrect order completely? =
 If you click the checkbox beside the incorrect order and select "Delete", that should get rid of the order.
+
+= Do I need WooCommerce to use Order Tracking? =
+
+No. Order Tracking works as a standalone status and workflow tracking plugin. WooCommerce integration is optional and available with Premium.
+
+= Does the WooCommerce integration support HPOS? =
+
+Yes. The Premium WooCommerce integration uses WooCommerce-supported order handling for HPOS compatibility. If your site has extensive WooCommerce customizations or other extensions that modify order behavior, test the plugin on a staging site before deploying it to production.
 
 = How do I change the title of “Order Form Instructions”? =
 
@@ -255,6 +270,10 @@ Number, Name, Order Status, Location, Display, Public Notes, Private Notes, Emai
 
 as well as those with the same name as a custom field (ex: "Specs").
 
+= Can I restrict who can view an order? =
+
+Yes. Order Tracking supports configurable customer-access workflows, including public tracking, email verification and login-required access. The appropriate option depends on how private you want your tracking information to be and how your customers identify themselves.
+
 = What is enabled in the premium version? =
 
 For more info about the premium version, please see here: https://doc.etoilewebdesign.com/plugins/order-tracking/user/premium/benefits
@@ -303,21 +322,19 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 == Changelog ==
 
-= 3.5.4 (2026-08-20) =
-- Compatibility with WordPress 7.1 and WooCommerce 11.0.
-
-= 3.5.3 (2026-07-29) =
-- Added a direct support option to the deactivation survey, making it easier to get help right away if you're uninstalling due to an issue.
-
-= 3.5.2 (2026-07-08) =
-- Fixing a few styling issues that were causing some content in the plugin admin to not display correctly.
-
-= 3.5.1 (2026-05-29) =
-- Update for Google Maps functionality/compatibility. To use the maps features, please make sure you have correctly entered your Google API credentials in the plugin settings.
-
-= 3.5.0 (2026-05-18) =
-- Newly redesigned admin interface.
-- Fixed issue causing trial selection to not work correctly.
-- Compatibility updates for WordPress 7.0.
+= 3.6.0 (2026-10-05) =
+- **IMPORTANT NOTE: This is a major update with several big changes. We suggest testing this update in a staging or development environment before updating your live environment. Or wait a few days before updating in the event that an issue is identified that requires a fix/new update.**
+- Strengthened order access controls with centralized authorization, login and email-verification options, and more secure tracking links.
+- Hardened external service integrations, including PayPal, SMS, reCAPTCHA and Zendesk, with safer request handling and validation.
+- Improved database reliability with full Unicode support, more predictable order number handling, consistent timestamp handling and targeted database indexes.
+- Improved spreadsheet import/export validation and safety, and updated the bundled spreadsheet-processing library.
+- Added workflow starter templates, setup diagnostics, improved tracking page accessibility and more reliable admin order actions and printing.
+- Added authenticated REST API v2 while preserving compatibility with the existing v1 API.
+- Updated the WooCommerce integration with HPOS-safe order handling, stable WooCommerce order linking and more reliable status synchronization.
 
 [See changelog for all versions](https://www.etoilewebdesign.com/changelogs/order-tracking.txt).
+
+== Upgrade Notice ==
+
+= 3.6.0 =
+This release includes significant changes to customer access, database handling, spreadsheet imports, external integrations, the REST API and WooCommerce synchronization. Back up your site and test the update on a staging site first, especially if you use the Premium Helper, WooCommerce integration, spreadsheet imports, API integrations, template overrides or extensive custom CSS.
