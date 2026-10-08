@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "test:php": "php tests/helper-compatibility.php && php tests/order-access.php && php tests/paypal-decimals.php && php tests/import-export-safety.php && php tests/woo-reversion.php",
+    "test:php": "php tests/helper-compatibility.php && php tests/order-access.php && php tests/paypal-decimals.php && php tests/import-export-safety.php && php tests/import-bootstrap-regression.php && php tests/spreadsheet-csv-regression.php && php tests/woo-reversion.php",
     "build:package": "powershell -NoProfile -ExecutionPolicy Bypass -File build/package.ps1",
     "verify:package": "powershell -NoProfile -ExecutionPolicy Bypass -File build/verify-package.ps1 -PackagePath ../release/OTP-MF-001/order-tracking-3.6.0.zip",
     "env:start": "wp-env start --config=.wp-env.tests.json --update",

@@ -421,8 +421,9 @@ class Csv extends BaseReader
         $preserveBooleanString = method_exists($valueBinder, 'getBooleanConversion') && $valueBinder->getBooleanConversion();
         while (is_array($rowData)) {
             $noOutputYet = true;
-            $columnLetter = 'A';
+            $columnIndex = 1;
             foreach ($rowData as $rowDatum) {
+                $columnLetter = Coordinate::stringFromColumnIndex($columnIndex);
                 $this->convertBoolean($rowDatum, $preserveBooleanString);
                 $numberFormatMask = $this->convertFormattedNumber($rowDatum);
                 if (($rowDatum !== '' || $this->preserveNullString) && $this->readFilter->readCell($columnLetter, $currentRow)) {
@@ -441,7 +442,7 @@ class Csv extends BaseReader
                     // Set cell value
                     $sheet->getCell($columnLetter . $outRow)->setValue($rowDatum);
                 }
-                ++$columnLetter;
+                ++$columnIndex;
             }
             $rowData = self::getCsv($fileHandle, 0, $this->delimiter ?? '', $this->enclosure, $this->escapeCharacter);
             ++$currentRow;

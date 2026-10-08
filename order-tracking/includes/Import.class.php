@@ -13,16 +13,27 @@ class ewdotpImport {
 	public $message;
 
 	public function __construct() {
+		add_action( 'admin_init', array( $this, 'maybe_run_import' ) );
 		add_action( 'admin_menu', array( $this, 'register_install_screen' ) );
+	}
 
-		$import_nonce = isset( $_POST['EWD_OTP_Import_Nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['EWD_OTP_Import_Nonce'] ) ) : '';
-		$authorized   = '' !== $import_nonce && wp_verify_nonce( $import_nonce, 'EWD_OTP_Import' );
-		if ( $authorized && isset( $_POST['ewd_otp_import_orders'] ) ) {
-			add_action( 'admin_init', array( $this, 'import_orders' ) ); }
-		if ( $authorized && isset( $_POST['ewd_otp_import_customers'] ) ) {
-			add_action( 'admin_init', array( $this, 'import_customers' ) ); }
-		if ( $authorized && isset( $_POST['ewd_otp_import_sales_reps'] ) ) {
-			add_action( 'admin_init', array( $this, 'import_sales_reps' ) ); }
+	/**
+	 * Process submitted imports after WordPress has loaded pluggable functions.
+	 *
+	 * @return void
+	 */
+	public function maybe_run_import() {
+		$handlers = array(
+			'ewd_otp_import_orders'     => 'import_orders',
+			'ewd_otp_import_customers'  => 'import_customers',
+			'ewd_otp_import_sales_reps' => 'import_sales_reps',
+		);
+		foreach ( $handlers as $marker => $handler ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Each selected import handler verifies the nonce, capability and import permission before processing uploads.
+			if ( isset( $_POST[ $marker ] ) ) {
+				$this->$handler();
+			}
+		}
 	}
 
 	public function register_install_screen() {
@@ -138,8 +149,12 @@ class ewdotpImport {
 		foreach ( $custom_fields as $custom_field ) {
 			$allowable_custom_fields[] = $custom_field->name; }
 		// List of fields that can be accepted via upload
-		$allowed_fields = array( 'Name', 'Number', 'Order Status', 'Location', 'Display', 'Notes Public', 'Notes Private', 'Email', 'Phone Number', 'Show in Admin Table', 'Sales Rep ID', 'Customer ID' );
-		$header_error   = $this->validate_sheet_headers( $sheet, $allowed_fields, $custom_fields, array( 'Number' ) );
+		$allowed_fields = array( 'Name', 'Number', 'Order Status', 'Order Status Updated (Read-Only)', 'Location', 'Display', 'Notes Public', 'Notes Private', 'Email', 'Phone Number', 'Show in Admin Table', 'Sales Rep ID', 'Customer ID' );
+		$header_aliases = array(
+			'Customer'  => 'Customer ID',
+			'Sales Rep' => 'Sales Rep ID',
+		);
+		$header_error   = $this->validate_sheet_headers( $sheet, $allowed_fields, $custom_fields, array( 'Number' ), $header_aliases );
 		if ( $header_error ) {
 			$this->set_error_notice( $header_error );
 			return; }
@@ -167,9 +182,9 @@ class ewdotpImport {
 				$email_column = $column; }
 			if ( trim( $sheet->getCellByColumnAndRow( $column, 1 )->getValue() ) === 'Phone Number' ) {
 				$phone_number_column = $column; }
-			if ( trim( $sheet->getCellByColumnAndRow( $column, 1 )->getValue() ) === 'Sales Rep ID' ) {
+			if ( in_array( trim( $sheet->getCellByColumnAndRow( $column, 1 )->getValue() ), array( 'Sales Rep ID', 'Sales Rep' ), true ) ) {
 				$sales_rep_id_column = $column; }
-			if ( trim( $sheet->getCellByColumnAndRow( $column, 1 )->getValue() ) === 'Customer ID' ) {
+			if ( in_array( trim( $sheet->getCellByColumnAndRow( $column, 1 )->getValue() ), array( 'Customer ID', 'Customer' ), true ) ) {
 				$customer_id_column = $column; }
 
 			foreach ( $custom_fields as $custom_field ) {
@@ -831,9 +846,10 @@ class ewdotpImport {
 		 * @param array  $allowed_fields  Allowed core fields.
 		 * @param array  $custom_fields   Allowed custom fields.
 		 * @param array  $required_fields Required fields.
+		 * @param array  $aliases         Header aliases mapped to canonical fields.
 		 * @return array|WP_Error
 		 */
-	private function validate_sheet_headers( $sheet, $allowed_fields, $custom_fields, $required_fields ) {
+	private function validate_sheet_headers( $sheet, $allowed_fields, $custom_fields, $required_fields, $aliases = array() ) {
 
 		$allowed = array_fill_keys( $allowed_fields, true );
 		foreach ( $custom_fields as $custom_field ) {
@@ -848,6 +864,9 @@ class ewdotpImport {
 			$header = trim( (string) $sheet->getCellByColumnAndRow( $column, 1 )->getValue() );
 			if ( '' === $header ) {
 				continue;
+			}
+			if ( isset( $aliases[ $header ] ) ) {
+				$header = $aliases[ $header ];
 			}
 			if ( isset( $seen[ $header ] ) ) {
 				$duplicates[] = $header;
@@ -962,13 +981,8 @@ class ewdotpImport {
 			$numbers[ $normalized ] = $row_number;
 
 			$entity_id = isset( $row[ $id_column ] ) ? absint( $row[ $id_column ] ) : 0;
-			$existing  = $entity_id && 'customer' === $type
-			? $ewd_otp_controller->customer_manager->get_customer_from_id( $entity_id )
-				: ( $entity_id ? $ewd_otp_controller->sales_rep_manager->get_sales_rep_from_id( $entity_id ) : false );
-			if ( $entity_id && ! $existing ) {
-				/* translators: Import row numbers, result counts, field names, and validation values replace the placeholders. */
-				return sprintf( __( 'Row %1$d references a nonexistent %2$s ID.', 'order-tracking' ), $row_number, 'customer' === $type ? __( 'customer', 'order-tracking' ) : __( 'sales representative', 'order-tracking' ) );
-			}
+			// Existing IDs select updates; missing source IDs create records with local auto-generated IDs.
+			// Keep number ownership checks so a new row cannot overwrite another entity's identity.
 
 			$number_owner = 'customer' === $type
 				? absint( $ewd_otp_controller->customer_manager->get_customer_id_from_number( $number ) )
@@ -998,6 +1012,11 @@ class ewdotpImport {
 		}
 		return null;
 	}
+	/**
+	 * Display the result of an import in the administration notices.
+	 *
+	 * @return void
+	 */
 	public function display_notice() {
 
 		if ( $this->status ) {
