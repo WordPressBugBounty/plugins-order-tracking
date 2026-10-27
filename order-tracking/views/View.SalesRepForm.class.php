@@ -14,6 +14,24 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	public $sales_rep_form_instructions;
 	public $order_field_text;
 	public $email_field_text;
+	/**
+	 * Authorized collection entity.
+	 *
+	 * @var ewdotpSalesRep|null
+	 */
+	public $sales_rep;
+	/**
+	 * Current collection row.
+	 *
+	 * @var object|null
+	 */
+	public $current_order;
+	/**
+	 * Read-only form failure message.
+	 *
+	 * @var string
+	 */
+	public $error_message = '';
 
 	// Holds any matching orders based on submitted Sales Rep ID and (optionally) email
 	public $sales_rep_orders = array();
@@ -99,14 +117,14 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 	}
 
 	/**
-	 * Print the sales rep email input, if enabled
+	 * Print collection email proof unless a linked login is required.
 	 *
 	 * @since 3.0.0
 	 */
 	public function maybe_print_sales_rep_email_input() {
 		global $ewd_otp_controller;
 
-		if ( ! $ewd_otp_controller->settings->get_setting( 'email-verification' ) ) {
+		if ( EwdotpOrderAccess::MODE_REQUIRE_LOGIN === $ewd_otp_controller->order_access->get_mode() ) {
 			return; }
 
 		$template = $this->find_template( 'form-email' );
@@ -342,6 +360,11 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 		if ( empty( $_POST['ewd_otp_form_type'] ) || 'sales_rep_form' !== $_POST['ewd_otp_form_type'] ) {
 			return; }
 
+		// A manual lookup must not inherit a preloaded entity, proof or result set.
+		$this->sales_rep        = null;
+		$this->access_proof     = '';
+		$this->sales_rep_orders = array();
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
 		if ( empty( $_POST['ewd_otp_identifier_number'] ) ) {
 			return; }
@@ -359,7 +382,7 @@ class ewdotpViewSalesRepForm extends ewdotpView {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
 			'collection_token' => isset( $_POST['ewd_otp_collection_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ewd_otp_collection_token'] ) ) : '',
 		);
-		$access = $ewd_otp_controller->order_access->authorize_collection( $sales_rep, 'sales_rep', $proof );
+		$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $sales_rep, 'sales_rep', $proof );
 		if ( ! $access['authorized'] ) {
 			return;
 		}

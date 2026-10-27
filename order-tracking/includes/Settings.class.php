@@ -822,7 +822,7 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 				array(
 					'id'          => 'email-verification',
 					'title'       => __( 'Email Verification', 'order-tracking' ),
-					'description' => __( 'Do visitors need to also enter the email address associated with an order to be able to view order information?', 'order-tracking' ),
+					'description' => __( 'Do visitors need to also enter the email address associated with an order to be able to view order information? Manual customer and sales representative number lookups require matching email or a valid collection proof even when this single-order setting is off. Automatic linked-account portals remain available. Require Login uses linked-account or staff authorization instead.', 'order-tracking' ),
 				)
 			);
 

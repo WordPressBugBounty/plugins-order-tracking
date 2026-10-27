@@ -4,7 +4,7 @@ Donate Link: https://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 3.6.1
+Stable tag: 3.6.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -321,6 +321,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 
 
 == Changelog ==
+
+= 3.6.2 (2026-10-27) =
+- Customer and sales rep tracking forms now require email validation or being logged in, in addition to the customer or sales rep ID.
 
 = 3.6.1 (2026-10-08) =
 - Fix for an issue causing an error when importing orders.

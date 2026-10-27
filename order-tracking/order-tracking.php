@@ -9,10 +9,10 @@ License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.6.1
+Version: 3.6.2
 Requires at least: 5.3
 WC requires at least: 7.1
-WC tested up to: 11.1
+WC tested up to: 11.2
 */
 
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 			define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 			define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-			define( 'EWD_OTP_VERSION', '3.6.1' );
+			define( 'EWD_OTP_VERSION', '3.6.2' );
 			define( 'EWD_OTP_HELPER_API_VERSION', 1 );
 			define( 'EWD_OTP_MAX_HELPER_API_VERSION', 1 );
 			define( 'EWD_OTP_MIN_HELPER_VERSION', '0.1.3' );

@@ -131,7 +131,7 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 
 			$customer->load_customer_from_number( sanitize_text_field( trim( $_POST['customer_number'] ) ) );
 
-			$access = $ewd_otp_controller->order_access->authorize_collection( $customer, 'customer', $_POST );
+			$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $customer, 'customer', $_POST );
 			if ( ! $access['authorized'] ) {
 				wp_send_json_error(
 					array(
@@ -192,7 +192,7 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 
 			$sales_rep->load_sales_rep_from_number( sanitize_text_field( trim( $_POST['sales_rep_number'] ) ) );
 
-			$access = $ewd_otp_controller->order_access->authorize_collection( $sales_rep, 'sales_rep', $_POST );
+			$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $sales_rep, 'sales_rep', $_POST );
 			if ( ! $access['authorized'] ) {
 				wp_send_json_error(
 					array(

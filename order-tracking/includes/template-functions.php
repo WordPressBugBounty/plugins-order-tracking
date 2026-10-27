@@ -66,23 +66,17 @@ function ewd_otp_customer_form_shortcode( $atts ) {
 		'submit_text'        => '',
 	);
 
-	$verify_email = $ewd_otp_controller->settings->get_setting( 'email-verification' );
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only form selection; the view validates the submitted collection proof.
+	$manual_lookup = isset( $_POST['ewd_otp_form_type'] ) && 'customer_form' === $_POST['ewd_otp_form_type'];
 
-	if ( ! empty( $_POST['ewd_otp_identifier_number'] ) and ( ! empty( $_POST['ewd_otp_form_type'] ) and $_POST['ewd_otp_form_type'] == 'customer_form' ) ) {
-
-		$customer_id = intval( $_POST['ewd_otp_identifier_number'] );
-	} elseif ( get_current_user_id() ) {
+	if ( ! $manual_lookup && get_current_user_id() ) {
 
 		$customer_id = $ewd_otp_controller->customer_manager->get_customer_id_from_wp_id( get_current_user_id() );
-
-		$verify_email = false;
-	} elseif ( class_exists( 'FEUP_User' ) ) {
+	} elseif ( ! $manual_lookup && class_exists( 'FEUP_User' ) ) {
 
 		$feup_user = new FEUP_User();
 
 		$customer_id = $ewd_otp_controller->customer_manager->get_customer_id_from_feup_id( $feup_user->Get_User_ID() );
-
-		$verify_email = false;
 	}
 
 	if ( ! empty( $customer_id ) ) {
@@ -91,10 +85,8 @@ function ewd_otp_customer_form_shortcode( $atts ) {
 
 		$customer->load_customer_from_id( $customer_id );
 
-		if ( ! $verify_email or $customer->verify_customer_email( sanitize_email( $_POST['ewd_otp_form_email'] ) ) ) {
-
-			$customer_atts['customer'] = $customer;
-		}
+		// The view separately authorizes automatic account-linked collections.
+		$customer_atts['customer'] = $customer;
 	}
 
 	if ( ! empty( $_POST['ewd_otp_customer_download'] ) and $ewd_otp_controller->settings->get_setting( 'allow-customer-downloads' ) ) {
@@ -165,7 +157,10 @@ function ewd_otp_sales_rep_form_shortcode( $atts ) {
 		'submit_text'        => '',
 	);
 
-	if ( get_current_user_id() ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only form selection; the view validates the submitted collection proof.
+	$manual_lookup = isset( $_POST['ewd_otp_form_type'] ) && 'sales_rep_form' === $_POST['ewd_otp_form_type'];
+
+	if ( ! $manual_lookup && get_current_user_id() ) {
 
 		$sales_rep_id = $ewd_otp_controller->sales_rep_manager->get_sales_rep_id_from_wp_id( get_current_user_id() );
 	}

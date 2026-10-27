@@ -19,6 +19,7 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		const MODE_PUBLIC        = 'public';
 		const MODE_EMAIL         = 'email_verification';
 		const MODE_REQUIRE_LOGIN = 'require_login';
+		const COLLECTION_PROOF_VERSION = 'collection-v2';
 
 		/**
 		 * Normalize the supported current and legacy proof names.
@@ -29,7 +30,7 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 			$source = is_array( $source ) ? $source : array();
 
 			$token            = $this->first_value( $source, array( 'tracking_token', 'tracking_link_code', 'tl_code', 'token' ) );
-			$email            = $this->first_value( $source, array( 'order_email', 'email' ) );
+			$email            = $this->first_value( $source, array( 'order_email', 'email', 'customer_email', 'sales_rep_email' ) );
 			$collection_token = $this->first_value( $source, array( 'collection_token', 'order_collection_token' ) );
 
 			return array(
@@ -154,7 +155,8 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 				}
 
 				$result['authorized'] = absint( isset( $entity->wp_id ) ? $entity->wp_id : 0 ) === $user_id;
-			} elseif ( self::MODE_EMAIL === $mode ) {
+			} else {
+				// Collection identifiers are not secrets: Public single-order mode still requires collection proof.
 				$user                 = $user_id ? get_userdata( $user_id ) : false;
 				$user_email           = is_object( $user ) ? $this->normalize_email( $user->user_email ) : '';
 				$entity_email         = $this->normalize_email( isset( $entity->email ) ? $entity->email : '' );
@@ -163,11 +165,36 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 					|| ( '' !== $user_email && '' !== $entity_email && $user_email === $entity_email )
 					|| ( '' !== $this->normalize_email( $proof['email'] )
 						&& $this->normalize_email( $proof['email'] ) === $entity_email );
-			} else {
-				$result['authorized'] = true;
 			}
 
 			$result['reason'] = $result['authorized'] ? 'authorized' : 'not_authorized';
+			return $result;
+		}
+
+		/**
+		 * Authorize an explicit number lookup without implicit account bypasses.
+		 *
+		 * Automatic linked-account portals use authorize_collection instead.
+		 * Require Login continues to use its linked-account/staff policy.
+		 *
+		 * @param mixed $entity  Collection entity.
+		 * @param mixed $type    Collection type.
+		 * @param mixed $proof   Submitted email or scoped collection proof.
+		 * @param mixed $user_id WordPress user ID.
+		 */
+		public function authorize_collection_lookup( $entity, $type, $proof = array(), $user_id = null ) {
+			$result = $this->authorize_collection( $entity, $type, $proof, $user_id );
+			if ( ! $result['authorized'] || self::MODE_REQUIRE_LOGIN === $result['mode'] ) {
+				return $result;
+			}
+
+			$proof        = $this->normalize_proof( $proof );
+			$email        = $this->normalize_email( $proof['email'] );
+			$entity_email = $this->normalize_email( isset( $entity->email ) ? $entity->email : '' );
+
+			$result['authorized'] = $this->verify_collection_proof( $proof['collection_token'], $type, $entity->id, $user_id )
+				|| ( '' !== $email && '' !== $entity_email && $email === $entity_email );
+			$result['reason']     = $result['authorized'] ? 'authorized' : 'invalid_email';
 			return $result;
 		}
 
@@ -180,7 +207,8 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		 */
 		public function create_collection_proof( $type, $entity_id, $user_id = null ) {
 			$user_id = null === $user_id ? get_current_user_id() : absint( $user_id );
-			$payload = implode( '|', array( $type, absint( $entity_id ), $user_id, time() + 600 ) );
+			// Invalidate proofs minted through the former number-only Public collection path.
+			$payload = implode( '|', array( self::COLLECTION_PROOF_VERSION, $type, absint( $entity_id ), $user_id, time() + 600 ) );
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- URL-safe transport encoding, not obfuscation.
 			$encoded = rtrim( strtr( base64_encode( $payload ), '+/', '-_' ), '=' );
 			return $encoded . '.' . hash_hmac( 'sha256', $encoded, wp_salt( 'auth' ) );
@@ -205,11 +233,12 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Decoding the signed URL-safe proof protocol.
 			$payload = base64_decode( $encoded, true );
 			$values  = false === $payload ? array() : explode( '|', $payload );
-			return 4 === count( $values )
-				&& (string) $type === $values[0]
-				&& absint( $entity_id ) === absint( $values[1] )
-				&& absint( $values[2] ) === $user_id
-			&& absint( $values[3] ) >= time();
+			return 5 === count( $values )
+				&& self::COLLECTION_PROOF_VERSION === $values[0]
+				&& (string) $type === $values[1]
+				&& absint( $entity_id ) === absint( $values[2] )
+				&& absint( $values[3] ) === $user_id
+				&& absint( $values[4] ) >= time();
 		}
 
 		/**
@@ -303,7 +332,7 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		 */
 		private function first_value( $source, $keys ) {
 			foreach ( $keys as $key ) {
-				if ( isset( $source[ $key ] ) && '' !== (string) $source[ $key ] ) {
+				if ( isset( $source[ $key ] ) && is_scalar( $source[ $key ] ) && '' !== (string) $source[ $key ] ) {
 					return $source[ $key ];
 				}
 			}

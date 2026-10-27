@@ -566,7 +566,7 @@ class ewdotpViewOrderForm extends ewdotpView {
 		global $ewd_otp_controller;
 
 		$this->nonce                   = wp_create_nonce( basename( __FILE__ ) );
-		$this->show_orders             = strtolower( $this->show_orders ) == 'yes' ? true : false;
+		$this->show_orders             = strtolower( (string) $this->show_orders ) == 'yes' ? true : false;
 		$this->order_form_title        = ! empty( $this->order_form_title ) ? $this->order_form_title : $this->get_label( 'label-order-form-title' );
 		$this->order_form_instructions = ! empty( $this->order_instructions ) ? $this->order_instructions : $this->get_option( 'form-instructions' );
 		$this->order_field_text        = ! empty( $this->order_field_text ) ? $this->order_field_text : $this->get_label( 'label-order-form-number' );

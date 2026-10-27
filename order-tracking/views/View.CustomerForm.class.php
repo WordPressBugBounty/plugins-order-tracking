@@ -17,6 +17,24 @@ class ewdotpViewCustomerForm extends ewdotpView {
 
 	// Pointers
 	public $sales_rep;
+	/**
+	 * Authorized collection entity.
+	 *
+	 * @var ewdotpCustomer|null
+	 */
+	public $customer;
+	/**
+	 * Current collection row.
+	 *
+	 * @var object|null
+	 */
+	public $current_order;
+	/**
+	 * Read-only form failure message.
+	 *
+	 * @var string
+	 */
+	public $error_message = '';
 
 	// Holds any matching orders based on submitted Customer ID and (optionally) email
 	public $customer_orders = array();
@@ -102,14 +120,14 @@ class ewdotpViewCustomerForm extends ewdotpView {
 	}
 
 	/**
-	 * Print the customer email input, if enabled
+	 * Print collection email proof unless a linked login is required.
 	 *
 	 * @since 3.0.0
 	 */
 	public function maybe_print_customer_email_input() {
 		global $ewd_otp_controller;
 
-		if ( ! $ewd_otp_controller->settings->get_setting( 'email-verification' ) ) {
+		if ( EwdotpOrderAccess::MODE_REQUIRE_LOGIN === $ewd_otp_controller->order_access->get_mode() ) {
 			return; }
 
 		$template = $this->find_template( 'form-email' );
@@ -324,6 +342,11 @@ class ewdotpViewCustomerForm extends ewdotpView {
 		if ( empty( $_POST['ewd_otp_form_type'] ) || 'customer_form' !== $_POST['ewd_otp_form_type'] ) {
 			return; }
 
+		// A manual lookup must not inherit a preloaded entity, proof or result set.
+		$this->customer        = null;
+		$this->access_proof    = '';
+		$this->customer_orders = array();
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
 		if ( empty( $_POST['ewd_otp_identifier_number'] ) ) {
 			return; }
@@ -341,7 +364,7 @@ class ewdotpViewCustomerForm extends ewdotpView {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a public read-only tracking lookup authorized by the centralized email or token proof policy.
 			'collection_token' => isset( $_POST['ewd_otp_collection_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ewd_otp_collection_token'] ) ) : '',
 		);
-		$access = $ewd_otp_controller->order_access->authorize_collection( $customer, 'customer', $proof );
+		$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $customer, 'customer', $proof );
 		if ( ! $access['authorized'] ) {
 			return;
 		}
