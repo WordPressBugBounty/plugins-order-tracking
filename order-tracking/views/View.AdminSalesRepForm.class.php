@@ -14,6 +14,9 @@ class ewdotpAdminSalesRepFormView extends ewdotpViewAdmin {
 	 * @since 3.0.0
 	 */
 	public function render() {
+		if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+			return '';
+		}
 		global $ewd_otp_controller;
 
 		ob_start();

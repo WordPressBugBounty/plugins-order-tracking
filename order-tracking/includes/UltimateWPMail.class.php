@@ -223,6 +223,9 @@ function ewd_otp_get_order_updated_time( $params, $user ) {
  * @since 3.0.0
  */
 function ewd_otp_get_order_customer_name( $params, $user ) {
+	if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+		return '';
+	}
 	global $ewd_otp_controller;
 
 	$customer_id = ! empty( $params['order_id'] ) ? $ewd_otp_controller->order_manager->get_order_field( 'customer', $params['order_id'] ) : '';
@@ -236,6 +239,9 @@ function ewd_otp_get_order_customer_name( $params, $user ) {
  * @since 3.0.0
  */
 function ewd_otp_get_order_customer_id( $params, $user ) {
+	if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+		return '';
+	}
 	global $ewd_otp_controller;
 
 	return ! empty( $params['order_id'] ) ? $ewd_otp_controller->order_manager->get_order_field( 'customer', $params['order_id'] ) : '';
@@ -247,6 +253,9 @@ function ewd_otp_get_order_customer_id( $params, $user ) {
  * @since 3.0.0
  */
 function ewd_otp_get_order_sales_rep_name( $params, $user ) {
+	if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+		return '';
+	}
 	global $ewd_otp_controller;
 
 	$sales_rep_id = ! empty( $params['order_id'] ) ? $ewd_otp_controller->order_manager->get_order_field( 'sales_rep', $params['order_id'] ) : '';
@@ -301,6 +310,9 @@ function ewd_otp_get_order_tracking_link( $params, $user ) {
  * @since 3.0.0
  */
 function ewd_otp_get_custom_field( $params, $user ) {
+	if ( ! ewdotpEntitlement::administer( 'custom_fields' ) ) {
+		return '';
+	}
 	global $ewd_otp_controller;
 
 	if ( empty( $params['order_id'] ) || empty( $params['slug'] ) ) {

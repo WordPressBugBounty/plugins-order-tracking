@@ -21,9 +21,6 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 			add_action( 'ewd_otp_admin_order_updated', array( $this, 'user_status_updated_notification' ), 10, 2 );
 			add_action( 'ewd_otp_status_updated', array( $this, 'user_status_updated_notification' ), 10, 2 );
 
-			// Sales rep notifications
-			add_action( 'ewd_otp_insert_customer_order', array( $this, 'sales_rep_status_updated_notification' ) );
-			add_action( 'ewd_otp_admin_order_updated', array( $this, 'sales_rep_status_updated_notification' ) );
 		}
 
 
@@ -123,7 +120,7 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 
 			$sms = ! is_numeric( $notification_id ) ? true : false;
 
-			$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
+			$recipients = explode( ',', (string) ( $sms ? $order->phone_number : $order->email ) );
 
 			if ( empty( $recipients ) ) {
 				return; }
@@ -177,7 +174,7 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 
 			$sms = ! is_numeric( $notification_id ) ? true : false;
 
-			$recipients = $sms ? explode( ',', $order->phone_number ) : explode( ',', $order->email );
+			$recipients = explode( ',', (string) ( $sms ? $order->phone_number : $order->email ) );
 
 			foreach ( $recipients as $recipient ) {
 
@@ -207,45 +204,8 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 		 * @since 3.0.0
 		 */
 		public function sales_rep_status_updated_notification( $order ) {
-			global $ewd_otp_controller;
-
-			if ( empty( $ewd_otp_controller->settings->get_setting( 'sales-rep-status-notifications' ) ) ) {
-				return; }
-
-			$notification_id = $ewd_otp_controller->settings->get_setting( 'sales-rep-status-email' );
-
-			if ( empty( $notification_id ) ) {
-				return; }
-
-			if ( empty( $order->sales_rep ) ) {
-				return; }
-
-			$sales_rep = new ewdotpSalesRep();
-
-			$sales_rep->load_sales_rep_from_id( $order->sales_rep );
-
-			$sms = ! is_numeric( $notification_id ) ? true : false;
-
-			if ( ( ! $sms && empty( $sales_rep->email ) ) || ( $sms && empty( $sales_rep->phone_number ) ) ) {
-				return; }
-
-			if ( $sms ) {
-
-				$this->send_text( $notification_id, $sales_rep->phone_number, $order );
-			} elseif ( $notification_id < 0 ) {
-
-				$args = array(
-					'email_id'      => $notification_id * -1,
-					'order_id'      => $order->id,
-					'email_address' => $sales_rep->email,
-				);
-
-				if ( function_exists( 'ewd_uwpm_send_email' ) ) {
-					ewd_uwpm_send_email( $args ); }
-			} else {
-
-				$this->send_email( $notification_id, $sales_rep->email, $order );
-			}
+			$result = ewdotpPremiumModules::call( 'sales_rep_notification', array( $order ) );
+			return is_wp_error( $result ) ? false : $result;
 		}
 
 		/**
@@ -273,6 +233,9 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 				$subject = $this->substitute_message_text( $email_message->subject, $order, $tracking_url );
 				$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
+				if ( ! apply_filters( 'ewd_otp_notification_send_allowed', true, $this, $order ) ) {
+					return false;
+				}
 				$mail_success = wp_mail( $email_address, $subject, $message, $headers );
 
 				return $mail_success;
@@ -285,56 +248,8 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 		 * @since 3.3.0
 		 */
 		public function send_text( $notification_id, $phone_number, $order ) {
-			global $ewd_otp_controller;
-
-			$sms = ! is_numeric( $notification_id ) ? true : false;
-
-			// remove the 'sms_' prefix from the notification ID, if it exists
-			$notification_id = $sms ? substr( $notification_id, 4 ) : $notification_id;
-
-			$sms_messages = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'sms-messages' ) );
-
-			foreach ( $sms_messages as $sms_message ) {
-
-				if ( $sms_message->id !== $notification_id ) {
-					continue; }
-
-				// replace tracking link ahead of time with URL, to prevent button code being inserted
-				$message = wp_strip_all_tags( $sms_message->message );
-				if ( false !== strpos( $message, '[tracking-link]' ) ) {
-					$tracking_url = $this->get_order_tracking_link( $order );
-					if ( ! $tracking_url ) {
-						return false;
-					}
-					$message = str_replace( '[tracking-link]', $tracking_url, $message );
-				}
-				$endpoint = apply_filters( 'ewd_otp_sms_endpoint', 'https://www.etoilewebdesign.com/sms-handling/api/v2/send' );
-				$response = wp_remote_post(
-					$endpoint,
-					array(
-						'timeout' => 10,
-						'headers' => array( 'Accept' => 'application/json' ),
-						'body'    => array(
-							'plugin'         => 'otp',
-							'license_key'    => get_option( 'otp-ultimate-license-key', '' ),
-							'admin_email'    => $ewd_otp_controller->settings->get_setting( 'ultimate-purchase-email' ),
-							'phone_number'   => $phone_number,
-							'message'        => $this->substitute_message_text( $message, $order ),
-							'country_code'   => $ewd_otp_controller->settings->get_setting( 'sms-country-code' ),
-							'free_version'   => EWD_OTP_VERSION,
-							'helper_version' => defined( 'EWDPH_VERSION' ) ? EWDPH_VERSION : '',
-						),
-					)
-				);
-
-				if ( is_wp_error( $response ) || 200 > wp_remote_retrieve_response_code( $response ) || 299 < wp_remote_retrieve_response_code( $response ) ) {
-					return false;
-				}
-
-				$body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				return is_array( $body ) && isset( $body['success'] ) && true === $body['success'];
-			}
+			$result = ewdotpPremiumModules::call( 'send_text', array( $notification_id, $phone_number, $order ) );
+			return is_wp_error( $result ) ? false : $result;
 		}
 
 		/**
@@ -382,12 +297,20 @@ if ( ! class_exists( 'ewdotpNotifications' ) ) {
 				$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'first_name', $order->sales_rep ) . ' ' . $ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'last_name', $order->sales_rep ),
 				$ewd_otp_controller->sales_rep_manager->get_sales_rep_field( 'number', $order->sales_rep ),
 			);
+			if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+				$replace[7] = '';
+				$replace[8] = '';
+				$replace[9] = '';
+			}
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				$replace[10] = '';
+				$replace[11] = '';
+			}
 
 			$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
 
 			foreach ( $custom_fields as $custom_field ) {
-
-				$value = $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $order->id );
+				$value = ewdotpEntitlement::administer( 'custom_fields' ) ? $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $order->id ) : '';
 
 				$search[]  = '[' . $custom_field->slug . ']';
 				$replace[] = $value;

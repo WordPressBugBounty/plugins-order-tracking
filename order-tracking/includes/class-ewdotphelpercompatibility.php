@@ -67,9 +67,8 @@ if ( ! class_exists( 'ewdotpHelperCompatibility' ) ) {
 				$helper_descriptor = ewdphOTPCompatibility::get_descriptor();
 			}
 
-			$premium_active = is_object( $ewd_otp_controller )
-				&& is_object( $ewd_otp_controller->permissions )
-				&& $ewd_otp_controller->permissions->check_permission( 'premium' );
+			// Package compatibility is independent of commercial entitlement evaluation.
+			$premium_active = true;
 
 			$result                        = self::evaluate( $helper_active, $helper_installed, $helper_descriptor, $premium_active );
 			$result['presence_state']      = $helper_active ? 'active' : ( $helper_installed ? 'installed_inactive' : 'not_installed' );

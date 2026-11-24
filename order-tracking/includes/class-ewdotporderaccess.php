@@ -1,6 +1,6 @@
 <?php
 /**
- * Central order read and public customer-note authorization policy.
+ * Central order read and protected front-end write authorization policy.
  *
  * @package OrderTracking
  * @since 3.6.0
@@ -58,7 +58,7 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		}
 
 		/**
-		 * Decide whether the supplied actor/proof can read or update customer notes.
+		 * Decide whether the supplied actor/proof can read an order.
 		 *
 		 * @param mixed $order order.
 		 * @param mixed $proof proof.
@@ -110,6 +110,28 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 			$result['authorized'] = $token_valid || $collection || $staff || $owner || $account_email || $order->verify_order_email( $proof['email'] );
 			$result['reason']     = $result['authorized'] ? 'authorized' : ( $token_supplied ? 'invalid_token' : 'invalid_email' );
 
+			return $result;
+		}
+
+		/** Front-end mutations require an ownership-verification access mode. */
+		public function front_end_changes_enabled() {
+			return self::MODE_PUBLIC !== $this->get_mode();
+		}
+
+		/**
+		 * Customer-note writes use the protected read policy, never public lookup alone.
+		 *
+		 * @param object   $order Current order.
+		 * @param array    $proof Submitted ownership proof.
+		 * @param int|null $user_id Current or explicit actor.
+		 * @return array Authorization result.
+		 */
+		public function authorize_customer_note( $order, $proof = array(), $user_id = null ) {
+			$result = $this->authorize( $order, $proof, $user_id );
+			if ( ! $this->front_end_changes_enabled() ) {
+				$result['authorized'] = false;
+				$result['reason']     = 'ownership_verification_required';
+			}
 			return $result;
 		}
 
@@ -262,6 +284,8 @@ if ( ! class_exists( 'ewdotpOrderAccess' ) ) {
 		 */
 		public function get_failure_message( $reason ) {
 			switch ( $reason ) {
+				case 'ownership_verification_required':
+					return __( 'Front-end order changes require email verification or a linked login.', 'order-tracking' );
 				case 'login_required':
 					return __( 'You must be logged in to view this order.', 'order-tracking' );
 				case 'invalid_email':

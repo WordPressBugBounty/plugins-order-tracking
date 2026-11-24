@@ -64,68 +64,6 @@
 }
 
 /*******************************************************************
-* TRACKING GRAPHIC UNRESPONSIVE FOR IE
-*******************************************************************/
-
-.ie-ewd-otp-empty-display {
-  height: 140px;
-  width: 600px;
-}
-.ie-ewd-otp-full-display {
-  height: 140px;
-  margin-top: -140px;
-}
-
-.ie-empty-graphic-Default {background:url("../images/Default.png");}
-.ie-full-graphic-Default {background:url("../images/Default_Full.png");}
-.ie-empty-graphic-Narrow {background:url("../images/Narrow.jpg");}
-.ie-full-graphic-Narrow {background:url("../images/Narrow_Full.jpg");}
-.ie-empty-graphic-Sleek {background:url("../images/Sleek.png");}
-.ie-full-graphic-Sleek {background:url("../images/Sleek_Full.png");}
-.ie-empty-graphic-Streamlined {background:url("../images/Streamlined.png");}
-.ie-full-graphic-Streamlined {background:url("../images/Streamlined_Full.png");}
-
-.ie-ewd-otp-display-length-0 {width: 110px;}
-.ie-ewd-otp-display-length-1 {width: 145px;}
-.ie-ewd-otp-display-length-2 {width: 180px;}
-.ie-ewd-otp-display-length-3 {width: 215px;}
-.ie-ewd-otp-display-length-4 {width: 250px;}
-.ie-ewd-otp-display-length-5 {width: 285px;}
-.ie-ewd-otp-display-length-6 {width: 320px;}
-.ie-ewd-otp-display-length-7 {width: 355px;}
-.ie-ewd-otp-display-length-8 {width: 390px;}
-.ie-ewd-otp-display-length-9 {width: 425px;}
-.ie-ewd-otp-display-length-10 {width: 600px;}
-
-.ie-ewd-otp-display-status {
-  width: 100px;
-  float: left;
-  margin-top: -30px;
-  margin-bottom: -30px;
-  font-weight: 600;
-}
-
-#ie-ewd-otp-initial-status {
-  margin-left: 50px;
-}
-
-#ie-ewd-otp-ending-status {
-  margin-left: 480px;
-}
-
-.ie-ewd-otp-current-status-length-0 {margin-left: 150px}
-.ie-ewd-otp-current-status-length-1 {margin-left: 150px}
-.ie-ewd-otp-current-status-length-2 {margin-left: 150px}
-.ie-ewd-otp-current-status-length-3 {margin-left: 180px}
-.ie-ewd-otp-current-status-length-4 {margin-left: 220px}
-.ie-ewd-otp-current-status-length-5 {margin-left: 250px}
-.ie-ewd-otp-current-status-length-6 {margin-left: 280px}
-.ie-ewd-otp-current-status-length-7 {margin-left: 320px}
-.ie-ewd-otp-current-status-length-8 {margin-left: 360px}
-.ie-ewd-otp-current-status-length-9 {margin-left: 380px}
-.ie-ewd-otp-current-status-length-10 {margin-left: 380px}
-
-/*******************************************************************
 * BASIC TRACKING GRAPHIC RESPONSIVE
 *******************************************************************/
 
@@ -195,62 +133,6 @@
 .ewd-otp-current-status-length-8 {position: absolute; right: calc(25% - 68px);}
 .ewd-otp-current-status-length-9 {position: absolute; right: 15%;}
 .ewd-otp-current-status-length-10 {position: absolute; right: 0}
-
-/*******************************************************************
-* NEW TRACKING GRAPHIC RESPONSIVE
-*******************************************************************/
-
-#ewd-otp-progressbar-minimalist{
-  border-style: solid;
-  border-width: 1px;
-  border: rgb(136,136,136);
-  background-color: rgb(255,255,255);
-  -webkit-box-shadow: 0px 0px 9px 1px rgb(136,136,136);
-  -moz-box-shadow: 0px 0px 9px 1px rgb(136,136,136);
-  box-shadow: 0px 0px 9px 1px rgb(136,136,136);
-  margin-bottom: 1em;
-  margin-top: 1em;
-}
-
-.minimalist {
-  height: 40px;
-  background: rgb(242,246,248);
-  background: -moz-linear-gradient(top, rgb(242,246,248) 0%, rgb(216,225,231) 50%, rgb(181,198,208) 51%, rgb(224,239,249) 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgb(242,246,248)), color-stop(50%, rgb(216,225,231)), color-stop(51%, rgb(181,198,208)), color-stop(100%, rgb(224,239,249)));
-  background: -webkit-linear-gradient(top, rgb(242,246,248) 0%, rgb(216,225,231) 50%, rgb(181,198,208) 51%, rgb(224,239,249) 100%);
-  background: -o-linear-gradient(top, rgb(242,246,248) 0%, rgb(216,225,231) 50%, rgb(181,198,208) 51%, rgb(224,239,249) 100%);
-  background: -ms-linear-gradient(top, rgb(242,246,248) 0%, rgb(216,225,231) 50%, rgb(181,198,208) 51%, rgb(224,239,249) 100%);
-  background: linear-gradient(to bottom, rgb(242,246,248) 0%, rgb(216,225,231) 50%, rgb(181,198,208) 51%, rgb(224,239,249) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
-}
-
-#ewd-otp-progressbar-round{
-  padding: 2px;
-  border-radius: 100px;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: rgb(184,184,184);
-  margin-bottom: 1em;
-  margin-top: 1em;
-}
-
-.round {
-  height: 50px;
-  border-radius: 100px;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  background: rgb(147,206,222);
-  background: -moz-linear-gradient(top, rgb(147,206,222) 0%, rgb(117,189,209) 41%, rgb(73,165,191) 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgb(147,206,222)), color-stop(41%, rgb(117,189,209)), color-stop(100%, rgb(73,165,191)));
-  background: -webkit-linear-gradient(top, rgb(147,206,222) 0%, rgb(117,189,209) 41%, rgb(73,165,191) 100%);
-  background: -o-linear-gradient(top, rgb(147,206,222) 0%, rgb(117,189,209) 41%, rgb(73,165,191) 100%);
-  background: -ms-linear-gradient(top, rgb(147,206,222) 0%, rgb(117,189,209) 41%, rgb(73,165,191) 100%);
-  background: linear-gradient(to bottom, rgb(147,206,222) 0%, rgb(117,189,209) 41%, rgb(73,165,191) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf', GradientType=0 );
-}
-
 
 @media (min-width: 481px) {
   .ewd-otp-tracking-results-field {
@@ -325,10 +207,6 @@
   display: none;
 }
 
-#ewd-otp-order-map iframe {
-  max-width: 100%;
-}
-
 @media print {
   html,
   body {
@@ -353,17 +231,6 @@
   .ewd-otp-tracking-results .ewd-otp-print-controls,
   .ewd-otp-tracking-results .ewd-otp-front-end-update-form {
     display: none !important;
-  }
-  .ewd-otp-tracking-graphic [role='progressbar'],
-  .ewd-otp-tracking-graphic [role='progressbar'] > div {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .ewd-otp-tracking-graphic [role='progressbar'] {
-    border: 1px solid #777;
-  }
-  .ewd-otp-tracking-graphic [role='progressbar'] > div {
-    background-color: #5a7f94;
   }
 }
 
@@ -401,15 +268,6 @@
   text-align: left;
   position: relative;
 }
-
-.ewd-otp-order-table-clickable-row:hover {
-  background: #f1f1f1;
-}
-
-#ewd_otp_recaptcha {
-  margin: 16px 0;
-}
-
 
 /***********************************
 **** ORDER NUMBER SEARCH WIDGET ****

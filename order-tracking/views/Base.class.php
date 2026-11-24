@@ -12,10 +12,7 @@ require_once( EWD_OTP_PLUGIN_DIR . '/views/View.Admin.class.php' );
 require_once( EWD_OTP_PLUGIN_DIR . '/views/View.AdminCustomerForm.class.php' );
 require_once( EWD_OTP_PLUGIN_DIR . '/views/View.AdminOrderForm.class.php' );
 require_once( EWD_OTP_PLUGIN_DIR . '/views/View.AdminSalesRepForm.class.php' );
-require_once( EWD_OTP_PLUGIN_DIR . '/views/View.CustomerForm.class.php' );
-require_once( EWD_OTP_PLUGIN_DIR . '/views/View.CustomerOrderForm.class.php' );
 require_once( EWD_OTP_PLUGIN_DIR . '/views/View.OrderForm.class.php' );
-require_once( EWD_OTP_PLUGIN_DIR . '/views/View.SalesRepForm.class.php' );
 
 class ewdotpBase {
 

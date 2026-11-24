@@ -38,6 +38,12 @@ class ewdotpViewOrderForm extends ewdotpView {
 	public $access_collection_token = '';
 	// Pointers
 	public $order_id;
+	/**
+	 * Lookup or action outcome shown without exposing order data.
+	 *
+	 * @var string
+	 */
+	public $update_message = '';
 	public $order;
 	public $customer;
 	public $sales_rep;
@@ -134,6 +140,10 @@ class ewdotpViewOrderForm extends ewdotpView {
 	 */
 	public function print_order_custom_fields() {
 		global $ewd_otp_controller;
+		// Retained values are Free read-only history, but only after the normal lookup authorized an order.
+		if ( empty( $this->order ) || empty( $this->order->id ) ) {
+			return;
+		}
 
 		$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
 
@@ -179,15 +189,13 @@ class ewdotpViewOrderForm extends ewdotpView {
 		if ( ! in_array( 'order_graphic', $ewd_otp_controller->settings->get_setting( 'order-information' ), true ) ) {
 			return; }
 
-		if ( in_array( $ewd_otp_controller->settings->get_setting( 'tracking-graphic' ), array( 'default', 'streamlined', 'sleek' ) ) ) {
-
-			$template = $this->find_template( 'order-graphic-image' );
-		} else {
-			$template = $this->find_template( 'order-graphic-progress' ); }
-
-		if ( $template ) {
-			include $template;
+		if ( 'default' !== $ewd_otp_controller->settings->get_setting( 'tracking-graphic' ) ) {
+			$result = ewdotpPremiumModules::call( 'graphic_render', array( $this ) );
+			if ( ! is_wp_error( $result ) ) {
+				return;
+			}
 		}
+		$this->render_template( 'order-graphic-image' );
 	}
 
 	/**
@@ -196,19 +204,7 @@ class ewdotpViewOrderForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function maybe_print_order_payment() {
-		global $ewd_otp_controller;
-
-		if ( empty( $ewd_otp_controller->settings->get_setting( 'allow-order-payments' ) ) ) {
-			return; }
-
-		if ( empty( $this->order ) || empty( $this->order->payment_price ) ) {
-			return; }
-
-		$template = $this->find_template( 'order-payment' );
-
-		if ( $template ) {
-			include $template;
-		}
+		ewdotpPremiumModules::call( 'payment_render', array( $this ) );
 	}
 
 	/**
@@ -217,19 +213,12 @@ class ewdotpViewOrderForm extends ewdotpView {
 	 * @since 3.0.0
 	 */
 	public function maybe_print_order_map() {
-		global $ewd_otp_controller;
+		ewdotpPremiumModules::call( 'map_render', array( $this ) );
+	}
 
-		if ( ! in_array( 'order_map', $ewd_otp_controller->settings->get_setting( 'order-information' ), true ) ) {
-			return; }
-
-		if ( empty( $this->order ) || empty( $this->order->current_location->latitude ) || empty( $this->order->current_location->longitude ) ) {
-			return; }
-
-		$template = $this->find_template( 'order-map' );
-
-		if ( $template ) {
-			include $template;
-		}
+	/** Let the compatible owner render optional order details; Free stays neutral. */
+	public function maybe_print_order_shipments() {
+		ewdotpPremiumModules::call( 'shipments_render', array( $this ) );
 	}
 
 	/**
@@ -269,6 +258,9 @@ class ewdotpViewOrderForm extends ewdotpView {
 	 */
 	public function maybe_print_order_update_location_and_status() {
 		global $ewd_otp_controller;
+		if ( ! $ewd_otp_controller->order_access->front_end_changes_enabled() ) {
+			return;
+		}
 
 		$current_user_cannot    = ! current_user_can( $ewd_otp_controller->settings->get_setting( 'access-role' ) );
 		$order_has_no_sales_rep = 1 > intval( $this->order->sales_rep );
@@ -283,6 +275,20 @@ class ewdotpViewOrderForm extends ewdotpView {
 		if ( $template ) {
 			include $template;
 		}
+	}
+
+	/** Match the note form to the server's current protected-write policy. */
+	public function can_update_customer_notes() {
+		global $ewd_otp_controller;
+		$access = $ewd_otp_controller->order_access->authorize_customer_note(
+			$this->order,
+			array(
+				'order_email'      => $this->access_email,
+				'tracking_token'   => $this->access_token,
+				'collection_token' => $this->access_collection_token,
+			)
+		);
+		return $access['authorized'];
 	}
 
 	/**
@@ -594,5 +600,6 @@ class ewdotpViewOrderForm extends ewdotpView {
 		$ewd_otp_controller->add_front_end_php_data( 'ewd-otp-js', 'ewd_otp_php_data', $args );
 
 		wp_enqueue_script( 'ewd-otp-js' );
+		do_action( 'ewd_otp_view_assets', $this );
 	}
 }

@@ -396,6 +396,9 @@ class ewdotpCustomersTable extends WP_List_Table {
 	 * @since 3.0.0
 	 */
 	public function process_bulk_action() {
+			if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+				return;
+			}
 		global $ewd_otp_controller;
 
 		$ids    = isset( $_POST['customers'] ) ? array_map('sanitize_text_field', $_POST['customers'] ) : false;

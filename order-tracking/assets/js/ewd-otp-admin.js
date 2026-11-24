@@ -162,27 +162,6 @@ jQuery( '.salesreps #the-list .delete' ).on( 'click', function( event ) {
 * EXPORT PAGE
 ***********************************************/
 
-jQuery( '.ewd-otp-export-filters input[name="type-of-record"]' ).on( 'change', function() {
-
-	var record_type = jQuery( this ).val();
-
-	if ( record_type == 'order' ) {
-
-		jQuery( 'tr.by-status' ).removeClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.date-range' ).removeClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.customer-list' ).removeClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.sales-rep-list' ).removeClass( 'ewd-otp-hidden' );
-	}
-	else {
-
-		jQuery( 'tr.by-status' ).addClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.date-range' ).addClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.customer-list' ).addClass( 'ewd-otp-hidden' );
-		jQuery( 'tr.sales-rep-list' ).addClass( 'ewd-otp-hidden' );
-	}
-
-} );
-
 /***********************************************
 * CUSTOM FIELDS TABLE 
 ***********************************************/

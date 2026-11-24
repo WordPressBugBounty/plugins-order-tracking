@@ -11,9 +11,14 @@ if ( ! class_exists( 'ewdotpBackwardsCompatibility' ) ) {
 class ewdotpBackwardsCompatibility {
 
 	public function __construct() {
-		
-		if ( empty( get_option( 'ewd-otp-settings' ) ) and get_option( 'EWD_OTP_Full_Version' ) ) { $this->run_backwards_compat(); }
-		elseif ( ! get_option( 'ewd-otp-permission-level' ) ) { update_option( 'ewd-otp-permission-level', 1 ); }
+			$origin = get_option( 'ewd-otp-release-n-origin-v1', array() );
+			$legacy = is_array( $origin ) && isset( $origin['legacy'] ) && true === $origin['legacy'];
+			// A fresh Helper-created "No" mirror is not evidence of the pre-3.0 schema.
+			if ( $legacy && empty( get_option( 'ewd-otp-settings' ) ) && get_option( 'EWD_OTP_Full_Version' ) ) {
+				$this->run_backwards_compat();
+			} elseif ( ! get_option( 'ewd-otp-permission-level' ) ) {
+				update_option( 'ewd-otp-permission-level', 1 );
+				}
 	}
 
 	public function run_backwards_compat() {

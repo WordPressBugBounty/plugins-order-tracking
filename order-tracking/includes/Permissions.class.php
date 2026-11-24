@@ -62,14 +62,12 @@ class ewdotpPermissions {
 
 	public function check_permission( $permission_type = '' ) {
 
-		if ( ! $this->permission_level ) { $this->get_permission_level(); }
-		
-		return ( array_key_exists( $permission_type, $this->plugin_permissions ) ? ( $this->permission_level >= $this->plugin_permissions[$permission_type] ? true : false ) : false );
+			return array_key_exists( $permission_type, $this->plugin_permissions ) && ewdotpEntitlement::allows( $permission_type );
 	}
 
 	public function update_permissions() {
 
-		$this->permission_level = get_option( 'ewd-otp-permission-level' );
+			$this->get_permission_level();
 	}
 }
 

@@ -4,7 +4,7 @@ Donate Link: https://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 3.6.2
+Stable tag: 3.7.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -153,6 +153,8 @@ Thanks to the generous contribution of many of those who use our order tracking 
 = External services and privacy =
 
 Order Tracking contacts external services only when the corresponding feature is configured and used. Premium activation/trial and SMS requests go to Etoile Web Design over HTTPS; license keys, trial email addresses, site URLs, recipient telephone numbers and message content are sent only as required for the selected action. Google receives the reCAPTCHA response and normal browser/map request data when those features are enabled. PayPal receives the exact IPN body for payment verification. Zendesk sends the configured ticket ID, title, optional requester email and status to the signed webhook. The deactivation survey sends nothing when Skip is chosen.
+
+In 3.7.0, administrator-supplied OTP licenses are activated and periodically verified at https://www.etoilewebdesign.com/key-check/license-check/v1/index.php using HTTPS JSON containing the key, OTP identifier and canonical site URL. Helper normally checks every 24 hours and retries temporary failures hourly; ordinary tracking and permission reads make no licensing requests. Premium runtime rights are lifetime; Ultimate requires authoritative expiry. Trial and original-tier legacy allowances last at most seven days. License loss retains data, privacy restrictions and settings, while suspending paid operations. A separately valid Premium license may retain its own rights after Ultimate expiry. Local/development/staging and unknown operational environments suspend production sends and new payment initiation. See the paired release guide before a commercial pilot; directory publication is held.
 
 The source repository records the field-by-field external-service inventory and failure behavior. Etoile Web Design plugin terms are available at https://www.etoilewebdesign.com/plugin-terms-and-conditions/.
 
@@ -319,28 +321,16 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 28. Enabling payments for orders
 29. The styling options to control fonts, colours, spacing, etc.
 
-
 == Changelog ==
 
-= 3.6.2 (2026-10-27) =
-- Customer and sales rep tracking forms now require email validation or being logged in, in addition to the customer or sales rep ID.
-
-= 3.6.1 (2026-10-08) =
-- Fix for an issue causing an error when importing orders.
-
-= 3.6.0 (2026-10-05) =
-- **IMPORTANT NOTE: This is a major update with several big changes. We suggest testing this update in a staging or development environment before updating your live environment. Or wait a few days before updating in the event that an issue is identified that requires a fix/new update.**
-- Strengthened order access controls with centralized authorization, login and email-verification options, and more secure tracking links.
-- Hardened external service integrations, including PayPal, SMS, reCAPTCHA and Zendesk, with safer request handling and validation.
-- Improved database reliability with full Unicode support, more predictable order number handling, consistent timestamp handling and targeted database indexes.
-- Improved spreadsheet import/export validation and safety, and updated the bundled spreadsheet-processing library.
-- Added workflow starter templates, setup diagnostics, improved tracking page accessibility and more reliable admin order actions and printing.
-- Added authenticated REST API v2 while preserving compatibility with the existing v1 API.
-- Updated the WooCommerce integration with HPOS-safe order handling, stable WooCommerce order linking and more reliable status synchronization.
+= 3.7.0 (2026-11-24) =
+- **If you are using the premium version, please make sure to also update the EWD Premium Helper plugin to version 0.3.0 at the same time.**
+- Several updates have been made to separate and streamline the functionality of the premium version via the EWD Premium Helper plugin.
+- Security updates including requiring email authentication or login to update customer note on front end, stronger email/account/proof checks for the customer and sales rep forms and added verification before a front-end customer order is submitted.
 
 [See changelog for all versions](https://www.etoilewebdesign.com/changelogs/order-tracking.txt).
 
 == Upgrade Notice ==
 
-= 3.6.0 =
-This release includes significant changes to customer access, database handling, spreadsheet imports, external integrations, the REST API and WooCommerce synchronization. Back up your site and test the update on a staging site first, especially if you use the Premium Helper, WooCommerce integration, spreadsheet imports, API integrations, template overrides or extensive custom CSS.
+= 3.7.0 =
+Several updates have been made to separate and streamline the functionality of the premium version via the EWD Premium Helper plugin. If you are using the premium version, please make sure to also update the EWD Premium Helper plugin to version 0.3.0 at the same time.

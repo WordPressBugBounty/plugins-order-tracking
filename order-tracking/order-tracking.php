@@ -9,10 +9,10 @@ License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Terms and Conditions: https://www.etoilewebdesign.com/plugin-terms-and-conditions/
 Text Domain: order-tracking
-Version: 3.6.2
+Version: 3.7.0
 Requires at least: 5.3
 WC requires at least: 7.1
-WC tested up to: 11.2
+WC tested up to: 11.3
 */
 
 
@@ -94,10 +94,32 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			define( 'EWD_OTP_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 			define( 'EWD_OTP_PLUGIN_FNAME', plugin_basename( __FILE__ ) );
 			define( 'EWD_OTP_TEMPLATE_DIR', 'ewd-otp-templates' );
-			define( 'EWD_OTP_VERSION', '3.6.2' );
-			define( 'EWD_OTP_HELPER_API_VERSION', 1 );
-			define( 'EWD_OTP_MAX_HELPER_API_VERSION', 1 );
-			define( 'EWD_OTP_MIN_HELPER_VERSION', '0.1.3' );
+			define( 'EWD_OTP_VERSION', '3.7.0' );
+			define( 'EWD_OTP_HELPER_API_VERSION', 3 );
+			define( 'EWD_OTP_MAX_HELPER_API_VERSION', 3 );
+			define( 'EWD_OTP_MIN_HELPER_VERSION', '0.3.0' );
+			// Capture before defaults/conversions/ReviewAsk can manufacture installation evidence.
+			if ( false === get_option( 'ewd-otp-release-n-origin-v1', false ) ) {
+				$installed_value = get_option( 'ewd-otp-installation-time', get_option( 'EWD_OTP_Install_Time', 0 ) );
+				$installed       = is_int( $installed_value ) || ( is_string( $installed_value ) && ctype_digit( $installed_value ) ) ? (int) $installed_value : 0;
+				$installed       = $installed > 0 && $installed <= time() ? $installed : 0;
+				$level           = get_option( 'ewd-otp-permission-level', 'Yes' === get_option( 'EWD_OTP_Full_Version' ) ? 2 : 1 );
+				$level           = is_array( $level ) && 1 === count( $level ) ? reset( $level ) : $level;
+				$level           = in_array( $level, array( 1, 2, 3, '1', '2', '3' ), true ) ? (int) $level : 1;
+				$legacy          = $installed > 0 || null !== get_option( 'ewd-otp-settings', null ) || null !== get_option( 'ewd-otp-permission-level', null ) || null !== get_option( 'EWD_OTP_Full_Version', null ) || null !== get_option( 'EWD_OTP_License_Key', null );
+				add_option(
+					'ewd-otp-release-n-origin-v1',
+					array(
+						'version'           => 1,
+						'legacy'            => $legacy,
+						'level'             => $legacy ? $level : 1,
+						'installation_time' => $installed,
+						'captured_at'       => time(),
+					),
+					'',
+					false
+				);
+			}
 		}
 
 		/**
@@ -121,10 +143,8 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Dashboard.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpdatabasemigration.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/DeactivationSurvey.class.php';
-			require_once EWD_OTP_PLUGIN_DIR . '/includes/Export.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Helper.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotphelpercompatibility.php';
-			require_once EWD_OTP_PLUGIN_DIR . '/includes/Import.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/InstallationWalkthrough.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Notifications.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Order.class.php';
@@ -132,17 +152,17 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/OrderManager.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotppaypal.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Permissions.class.php';
-			require_once EWD_OTP_PLUGIN_DIR . '/includes/Phone.class.php';
+			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpentitlement.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/ReviewAsk.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/SalesRep.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/SalesRepManager.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/Settings.class.php';
-			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpspreadsheetruntime.php';
+			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotppremiummodules.php';
+			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpunavailablepremiummodule.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/template-functions.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/UltimateWPMail.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/WooCommerce.class.php';
 			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpworkflowtemplates.php';
-			require_once EWD_OTP_PLUGIN_DIR . '/includes/class-ewdotpzendesk.php';
 		}
 
 		/**
@@ -164,7 +184,7 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			$this->admin_orders         = new ewdotpAdminOrders();
 			$this->admin_sales_reps     = new ewdotpAdminSalesReps();
 			$this->customer_manager     = new ewdotpCustomerManager();
-			$this->exports              = new ewdotpExport();
+			$this->exports              = new ewdotpUnavailablePremiumModule();
 			$this->helper_compatibility = new ewdotpHelperCompatibility();
 			$this->order_manager        = new ewdotpOrderManager();
 			$this->permissions          = new ewdotpPermissions();
@@ -174,24 +194,26 @@ if ( ! class_exists( 'ewdotpInit' ) ) {
 			$this->order_access         = new ewdotpOrderAccess();
 			$this->paypal               = new ewdotpPayPal();
 			$this->database_migration   = new ewdotpDatabaseMigration();
-			if ( $this->settings->get_setting( 'woocommerce-integration' ) ) {
+			if ( $this->settings->get_raw_setting( 'woocommerce-integration' ) || $this->settings->get_raw_setting( 'woocommerce-replace-statuses' ) ) {
 
 				$this->woocommerce = new ewdotpWooCommerce();
 			}
 
-			if ( $this->settings->get_setting( 'zendesk-integration' ) ) {
-
-				$this->zendesk = new ewdotpZendesk();
-			}
+			add_action( 'init', array( $this, 'setup_paid_integrations' ), 6 );
 
 			new ewdotpAJAX();
 			new ewdotpBlocks();
-			new ewdotpImport();
 			new ewdotpNotifications();
-			new ewdotpPhone();
 			new ewdotpUltimateWPMail();
 
 			new ewdotpAboutUs();
+		}
+
+		/** Set up paid integrations after provider initialization; callbacks also check access. */
+		public function setup_paid_integrations() {
+			if ( ! $this->zendesk && class_exists( 'ewdotpZendesk' ) && $this->settings->get_setting( 'zendesk-integration' ) && ewdotpEntitlement::allows( 'zendesk' ) ) {
+				$this->zendesk = new ewdotpZendesk();
+			}
 		}
 
 		/**

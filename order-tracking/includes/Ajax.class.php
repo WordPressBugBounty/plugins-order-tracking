@@ -120,59 +120,11 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 		 * @since 3.0.0
 		 */
 		public function get_customer_orders() {
-			global $ewd_otp_controller;
-
-			// Authenticate request
-			if ( ! check_ajax_referer( 'ewd-otp-js', 'nonce' ) ) {
-				ewdotpHelper::admin_nopriv_ajax();
+			$result = ewdotpPremiumModules::call( 'customer_orders_ajax' );
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( array( 'output' => $result->get_error_message() ), 403 );
 			}
-
-			$customer = new ewdotpCustomer();
-
-			$customer->load_customer_from_number( sanitize_text_field( trim( $_POST['customer_number'] ) ) );
-
-			$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $customer, 'customer', $_POST );
-			if ( ! $access['authorized'] ) {
-				wp_send_json_error(
-					array(
-						'output' => $ewd_otp_controller->order_access->get_failure_message( $access['reason'] ),
-					)
-				);
-			}
-
-			$args = array(
-				'customer'     => $customer,
-				'access_proof' => $ewd_otp_controller->order_access->create_collection_proof( 'customer', $customer->id ),
-			);
-
-			$customer_view = new ewdotpViewCustomerForm( $args );
-
-			$customer_view->set_customer_orders();
-
-			ob_start();
-
-			$customer_view->maybe_print_customer_results();
-
-			$output = ob_get_clean();
-
-			if ( ! $output ) {
-
-				$customer_view->error_message = __( 'No orders were found associated with the submitted customer number', 'order-tracking' );
-
-				ob_start();
-
-				$customer_view->print_error_message();
-
-				$output = ob_get_clean();
-			}
-
-			wp_send_json_success(
-				array(
-					'output' => $output,
-				)
-			);
-
-			die();
+			return $result;
 		}
 
 		/**
@@ -181,63 +133,15 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 		 * @since 3.0.0
 		 */
 		public function get_sales_rep_orders() {
-			global $ewd_otp_controller;
-
-			// Authenticate request
-			if ( ! check_ajax_referer( 'ewd-otp-js', 'nonce' ) ) {
-				ewdotpHelper::admin_nopriv_ajax();
+			$result = ewdotpPremiumModules::call( 'sales_rep_orders_ajax' );
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( array( 'output' => $result->get_error_message() ), 403 );
 			}
-
-			$sales_rep = new ewdotpSalesRep();
-
-			$sales_rep->load_sales_rep_from_number( sanitize_text_field( trim( $_POST['sales_rep_number'] ) ) );
-
-			$access = $ewd_otp_controller->order_access->authorize_collection_lookup( $sales_rep, 'sales_rep', $_POST );
-			if ( ! $access['authorized'] ) {
-				wp_send_json_error(
-					array(
-						'output' => $ewd_otp_controller->order_access->get_failure_message( $access['reason'] ),
-					)
-				);
-			}
-
-			$args = array(
-				'sales_rep'    => $sales_rep,
-				'access_proof' => $ewd_otp_controller->order_access->create_collection_proof( 'sales_rep', $sales_rep->id ),
-			);
-
-			$sales_rep_view = new ewdotpViewSalesRepForm( $args );
-
-			$sales_rep_view->set_sales_rep_orders();
-
-			ob_start();
-
-			$sales_rep_view->maybe_print_sales_rep_results();
-
-			$output = ob_get_clean();
-
-			if ( ! $output ) {
-
-				$sales_rep_view->error_message = __( 'No orders were found associated with the submitted sales rep number.', 'order-tracking' );
-
-				ob_start();
-
-				$sales_rep_view->print_error_message();
-
-				$output = ob_get_clean();
-			}
-
-			wp_send_json_success(
-				array(
-					'output' => $output,
-				)
-			);
-
-			die();
+			return $result;
 		}
 
 		/**
-		 * Updates the customer note for an order
+		 * Updates the customer note for an order.
 		 *
 		 * @since 3.0.0
 		 */
@@ -262,7 +166,7 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 				wp_send_json_error( array( 'output' => __( 'The order could not be verified.', 'order-tracking' ) ) );
 			}
 
-			$access = $ewd_otp_controller->order_access->authorize( $order, $proof );
+			$access = $ewd_otp_controller->order_access->authorize_customer_note( $order, $proof );
 
 			if ( ! $access['authorized'] ) {
 				wp_send_json_error(
@@ -374,6 +278,9 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 		 * @since 3.0.0
 		 */
 		public function admin_delete_customer() {
+			if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Customer administration is currently unavailable.', 'order-tracking' ) ), 403 );
+			}
 			global $ewd_otp_controller;
 
 			// Authenticate request
@@ -408,6 +315,9 @@ if ( ! class_exists( 'ewdotpAJAX' ) ) {
 		 * @since 3.0.0
 		 */
 		public function admin_delete_sales_rep() {
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Sales representative administration is currently unavailable.', 'order-tracking' ) ), 403 );
+			}
 			global $ewd_otp_controller;
 
 			// Authenticate request

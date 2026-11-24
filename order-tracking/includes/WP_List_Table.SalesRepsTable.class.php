@@ -411,6 +411,9 @@ class ewdotpSalesRepsTable extends WP_List_Table {
 	 * @since 3.0.0
 	 */
 	public function process_bulk_action() {
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				return;
+			}
 		global $ewd_otp_controller;
 
 		$ids    = isset( $_POST['sales_reps'] ) ? $_POST['sales_reps'] : false;

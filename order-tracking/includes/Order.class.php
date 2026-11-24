@@ -82,7 +82,7 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public function load_order( $db_order ) {
+		public function load_order( $db_order, $field_values = null ) {
 			global $ewd_otp_controller;
 
 			if ( ! is_object( $db_order ) ) {
@@ -131,7 +131,7 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 			$this->custom_fields = array();
 			foreach ( $custom_fields as $custom_field ) {
 
-				$this->custom_fields[ $custom_field->id ] = $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $this->id );
+				$this->custom_fields[ $custom_field->id ] = is_array( $field_values ) ? ( array_key_exists( $custom_field->id, $field_values ) ? $field_values[ $custom_field->id ] : null ) : $ewd_otp_controller->order_manager->get_field_value( $custom_field->id, $this->id );
 			}
 
 			$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
@@ -286,21 +286,17 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 		 * @since 3.0.0
 		 */
 		public function process_client_order_submission() {
-			global $ewd_otp_controller;
-
-			$this->validate_submission();
-			if ( $this->is_valid_submission() === false ) {
+			$result = ewdotpPremiumModules::call( 'client_order_submission', array( $this ) );
+			if ( is_wp_error( $result ) ) {
+				$this->validation_errors = array(
+					array(
+						'field'   => 'access',
+						'message' => $result->get_error_message(),
+					),
+				);
 				return false;
 			}
-
-			if ( ! $this->insert_order() ) {
-				return false; }
-			if ( ! empty( $this->status ) ) {
-				$this->insert_order_status(); }
-
-			do_action( 'ewd_otp_insert_customer_order', $this );
-
-			return true;
+			return $result;
 		}
 
 		/**
@@ -309,128 +305,17 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 		 * @since 3.0.0
 		 */
 		public function validate_submission() {
-			global $ewd_otp_controller;
-
-			$this->validation_errors = array();
-
-			// reCAPTCHA
-			if ( $ewd_otp_controller->settings->get_setting( 'use-captcha' ) == 'recaptcha' ) {
-
-				if ( ! isset( $_POST['g-recaptcha-response'] ) ) {
-
-					$this->validation_errors[] = array(
-						'field'     => 'recaptcha',
-						'error_msg' => 'No reCAPTCHA code',
-						'message'   => __( 'Please fill out the reCAPTCHA box  before submitting.', 'order-tracking' ),
-					);
-
-				} else {
-
-					$secret_key = $ewd_otp_controller->settings->get_setting( 'captcha-secret-key' );
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The AJAX controller verifies the ewd-otp-js nonce before constructing and validating this submission.
-					$captcha       = sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) );
-					$http_response = wp_remote_post(
-						'https://www.google.com/recaptcha/api/siteverify',
-						array(
-							'timeout' => 10,
-							'body'    => array(
-								'secret'   => $secret_key,
-								'response' => $captcha,
-							),
-						)
-					);
-					$response_code = is_wp_error( $http_response ) ? 0 : wp_remote_retrieve_response_code( $http_response );
-					$response      = 200 === $response_code ? json_decode( wp_remote_retrieve_body( $http_response ), true ) : null;
-
-					if ( ! is_array( $response ) || empty( $response['success'] ) ) {
-
-						$message                   = __( 'Please fill out the reCAPTCHA box again and re-submit. If the problem continues, please contact the site administrator.', 'order-tracking' );
-						$this->validation_errors[] = array(
-							'field'     => 'recaptcha',
-							'error_msg' => 'Invalid reCAPTCHA verification',
-							'message'   => $message,
-						);
-					}
-				}
-			}
-
-			// Order Basics
-			$this->number = $this->generate_unique_order_number(
-				$ewd_otp_controller->settings->get_setting( 'customer-order-number-prefix' ),
-				$ewd_otp_controller->settings->get_setting( 'customer-order-number-suffix' )
-			);
-			if ( '' === $this->number ) {
-				$this->validation_errors[] = array(
-					'field'     => 'order_number',
-					'error_msg' => 'Order number generation failed',
-					'message'   => __( 'A unique order number could not be generated. Please try again.', 'order-tracking' ),
+			$result = ewdotpPremiumModules::call( 'client_order_validation', array( $this ) );
+			if ( is_wp_error( $result ) ) {
+				$this->validation_errors = array(
+					array(
+						'field'   => 'access',
+						'message' => $result->get_error_message(),
+					),
 				);
+				return false;
 			}
-			$this->name           = empty( $_POST['ewd_otp_order_name'] ) ? '' : sanitize_text_field( $_POST['ewd_otp_order_name'] );
-			$this->email          = empty( $_POST['ewd_otp_order_email'] ) ? '' : sanitize_text_field( $_POST['ewd_otp_order_email'] );
-			$this->location       = empty( $_POST['ewd_otp_location'] ) ? '' : sanitize_text_field( $_POST['ewd_otp_location'] );
-			$this->customer_notes = empty( $_POST['ewd_otp_customer_notes'] ) ? '' : sanitize_textarea_field( $_POST['ewd_otp_customer_notes'] );
-
-			$this->external_status = $this->status = $ewd_otp_controller->settings->get_setting( 'default-customer-order-form-status' );
-			$this->display         = true;
-
-			if ( empty( $this->status ) ) {
-
-				$statuses = ewd_otp_decode_infinite_table_setting( $ewd_otp_controller->settings->get_setting( 'statuses' ) );
-
-				$status = reset( $statuses );
-
-				$this->external_status = $this->status = $status->status;
-			}
-
-			// Customer
-			$user = wp_get_current_user();
-
-			if ( $user ) {
-
-				$this->customer = $ewd_otp_controller->customer_manager->get_customer_id_from_wp_id( $user->ID );
-			} elseif ( function_exists( 'FEUP_User' ) ) {
-
-				$feup_user = new FEUP_User();
-
-				if ( $feup_user->Is_Logged_In() ) {
-
-					$this->customer = $ewd_otp_controller->customer_manager->get_customer_id_from_feup_id( $feup_user->Get_User_ID() );
-				}
-			}
-
-			if ( empty( $this->customer ) and ! empty( $this->email ) and $ewd_otp_controller->settings->get_setting( 'allow-assign-orders-to-customers' ) ) {
-
-				$this->customer = $ewd_otp_controller->customer_manager->get_customer_id_from_email( $this->email );
-			}
-
-			// Sales Rep
-			if ( ! empty( $this->customer ) ) {
-
-				$this->sales_rep = $ewd_otp_controller->customer_manager->get_customer_field( 'Sales_Rep_ID', $this->customer );
-			}
-
-			if ( empty( $this->sales_rep ) ) {
-
-				$this->sales_rep = empty( $_POST['ewd_otp_sales_rep'] ) ? $ewd_otp_controller->settings->get_setting( 'default-sales-rep' ) : intval( $_POST['ewd_otp_sales_rep'] );
-			}
-
-			$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
-
-			foreach ( $custom_fields as $custom_field ) {
-
-				$input_name = 'ewd_otp_custom_field_' . $custom_field->id;
-
-				if ( 'checkbox' === $custom_field->type ) {
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The AJAX controller verifies the ewd-otp-js nonce before constructing and validating this submission.
-					$this->custom_fields[ $custom_field->id ] = ( empty( $_POST[ $input_name ] ) || ! is_array( $_POST[ $input_name ] ) ) ? array() : sanitize_text_field( implode( ',', array_map( 'sanitize_text_field', wp_unslash( $_POST[ $input_name ] ) ) ) ); } elseif ( 'textarea' === $custom_field->type ) {
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The AJAX controller verifies the ewd-otp-js nonce before constructing and validating this submission.
-					$this->custom_fields[ $custom_field->id ] = empty( $_POST[ $input_name ] ) ? false : sanitize_textarea_field( wp_unslash( $_POST[ $input_name ] ) ); } else {
-						// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The AJAX controller verifies the ewd-otp-js nonce before constructing and validating this submission.
-						$this->custom_fields[ $custom_field->id ] = empty( $_POST[ $input_name ] ) ? false : sanitize_text_field( wp_unslash( $_POST[ $input_name ] ) ); }
-			}
-
-			do_action( 'ewd_otp_validate_order_submission', $this );
+			return $result;
 		}
 
 		/**
@@ -480,6 +365,19 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 		 */
 		public function validate_admin_submission() {
 			global $ewd_otp_controller;
+			$retained_custom_fields = $this->custom_fields;
+			$retained     = array();
+			$field_rights = array(
+				'customer'              => 'customers',
+				'sales_rep'             => 'sales_reps',
+				'location'              => 'locations',
+				'payment_price'         => 'payments',
+				'payment_completed'     => 'payments',
+				'paypal_receipt_number' => 'payments',
+			);
+			foreach ( $field_rights as $field => $capability ) {
+				$retained[ $field ] = $this->$field;
+			}
 
 			$this->validation_errors = array();
 
@@ -529,14 +427,12 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 			$this->customer  = empty( $_POST['ewd_otp_customer'] ) ? 0 : sanitize_text_field( $_POST['ewd_otp_customer'] );
 			$this->sales_rep = empty( $_POST['ewd_otp_sales_rep'] ) ? 0 : sanitize_text_field( $_POST['ewd_otp_sales_rep'] );
 
-			$this->payment_price         = empty( $_POST['ewd_otp_payment_price'] ) ? '' : sanitize_text_field( $_POST['ewd_otp_payment_price'] );
-			$this->payment_completed     = ( ! empty( $_POST['ewd_otp_payment_completed'] ) and $_POST['ewd_otp_payment_completed'] == 'yes' ) ? true : false;
-			$this->paypal_receipt_number = empty( $_POST['ewd_otp_paypal_receipt_number'] ) ? '' : sanitize_text_field( $_POST['ewd_otp_paypal_receipt_number'] );
-
 			$custom_fields = $ewd_otp_controller->settings->get_order_custom_fields();
 
 			foreach ( $custom_fields as $custom_field ) {
-
+				if ( ! ewdotpEntitlement::administer( 'custom_fields' ) ) {
+					continue;
+				}
 				$input_name = 'ewd-otp-custom-field-' . $custom_field->id;
 
 				if ( 'checkbox' === $custom_field->type ) {
@@ -547,6 +443,16 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 			}
 
 			do_action( 'ewd_otp_validate_order_submission', $this );
+			if ( ! ewdotpEntitlement::administer( 'custom_fields' ) ) {
+				$this->custom_fields = $retained_custom_fields;
+			}
+			foreach ( $retained as $field => $value ) {
+				$capability = $field_rights[ $field ];
+				$allowed    = in_array( $capability, array( 'customers', 'sales_reps' ), true ) ? ewdotpEntitlement::administer( $capability ) : ewdotpEntitlement::allows( $capability );
+				if ( ! $allowed ) {
+					$this->$field = $value;
+				}
+			}
 		}
 
 		/**
@@ -831,7 +737,7 @@ if ( ! class_exists( 'ewdotpOrder' ) ) {
 		 * @return string
 		 * @since 3.6.0
 		 */
-		private function generate_unique_order_number( $prefix, $suffix ) {
+		public function generate_unique_order_number( $prefix, $suffix ) {
 
 			global $ewd_otp_controller;
 

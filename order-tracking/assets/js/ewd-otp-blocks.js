@@ -1,12 +1,15 @@
+function ewdOtpPaidEdit( name, props ) {
+	var edit = window.ewdOtpPaidBlocks && window.ewdOtpPaidBlocks[name];
+	return typeof edit === 'function' ? edit(props) : wp.element.createElement( 'p', {}, wp.i18n.__( 'This block requires the compatible Premium Helper and current permission. Saved content is retained.', 'order-tracking' ) );
+}
+
 var el = wp.element.createElement,
 	registerBlockType = wp.blocks.registerBlockType,
 	ServerSideRender = wp.serverSideRender,
 	TextControl = wp.components.TextControl,
 	SelectControl = wp.components.SelectControl,
 	InspectorControls = wp.blockEditor.InspectorControls,
-	Localize = wp.i18n.__,
-	ewdOtpBlocks = ewd_otp_blocks,
-	existingLocations = ewdOtpBlocks.locationOptions;
+	Localize = wp.i18n.__;
 
 registerBlockType( 'order-tracking/ewd-otp-display-tracking-form-block', {
 	title: Localize( 'Tracking Form', 'order-tracking' ),
@@ -28,7 +31,7 @@ registerBlockType( 'order-tracking/ewd-otp-display-tracking-form-block', {
 				} )
 			),
 		);
-		returnString.push( el( ServerSideRender, { 
+		returnString.push( el( ServerSideRender, {
 			block: 'order-tracking/ewd-otp-display-tracking-form-block',
 			attributes: props.attributes
 		} ) );
@@ -45,14 +48,7 @@ registerBlockType( 'order-tracking/ewd-otp-display-customer-form-block', {
 	icon: 'clipboard',
 	category: 'ewd-otp-blocks',
 
-	edit: function( props ) {
-		var returnString = [];
-		returnString.push( el( ServerSideRender, { 
-			block: 'order-tracking/ewd-otp-display-customer-form-block',
-			attributes: props.attributes
-		} ) );
-		return returnString;
-	},
+	edit: function( props ) { return ewdOtpPaidEdit( 'order-tracking/ewd-otp-display-customer-form-block', props ); },
 
 	save: function() {
 		return null;
@@ -64,14 +60,7 @@ registerBlockType( 'order-tracking/ewd-otp-display-sales-rep-form-block', {
 	icon: 'clipboard',
 	category: 'ewd-otp-blocks',
 
-	edit: function( props ) {
-		var returnString = [];
-		returnString.push( el( ServerSideRender, { 
-			block: 'order-tracking/ewd-otp-display-sales-rep-form-block',
-			attributes: props.attributes
-		} ) );
-		return returnString;
-	},
+	edit: function( props ) { return ewdOtpPaidEdit( 'order-tracking/ewd-otp-display-sales-rep-form-block', props ); },
 
 	save: function() {
 		return null;
@@ -87,29 +76,7 @@ registerBlockType( 'order-tracking/ewd-otp-display-customer-order-form-block', {
 		success_redirect_page: { type: 'string' }
 	},
 
-	edit: function( props ) {
-		var returnString = [];
-		returnString.push(
-			el( InspectorControls, {},
-				el( SelectControl, {
-					label: Localize( 'Starting Location', 'order-tracking' ),
-					value: props.attributes.location,
-					options: existingLocations,
-					onChange: ( value ) => { props.setAttributes( { location: value } ); },
-				} ),
-				el( TextControl, {
-					label: Localize( 'Redirect URL', 'order-tracking' ),
-					value: props.attributes.success_redirect_page,
-					onChange: ( value ) => { props.setAttributes( { success_redirect_page: value } ); },
-				} )
-			),
-		);
-		returnString.push( el( ServerSideRender, { 
-			block: 'order-tracking/ewd-otp-display-customer-order-form-block',
-			attributes: props.attributes
-		} ) );
-		return returnString;
-	},
+	edit: function( props ) { return ewdOtpPaidEdit( 'order-tracking/ewd-otp-display-customer-order-form-block', props ); },
 
 	save: function() {
 		return null;
@@ -135,7 +102,7 @@ registerBlockType( 'order-tracking/ewd-otp-order-number-search-block', {
 				} )
 			),
 		);
-		returnString.push( el( ServerSideRender, { 
+		returnString.push( el( ServerSideRender, {
 			block: 'order-tracking/ewd-otp-order-number-search-block',
 			attributes: props.attributes
 		} ) );

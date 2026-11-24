@@ -94,7 +94,7 @@ class ewdotpAdminSalesReps {
 		$this->sales_reps_table = new ewdotpSalesRepsTable();
 		$this->sales_reps_table->prepare_items();
 
-		$permission = ( $ewd_otp_controller->permissions->check_permission( 'sales_reps' ) or get_option( 'ewd-otp-installation-time' ) < 1664742505 ) ? true : false;
+			$permission = ewdotpEntitlement::administer( 'sales_reps' );
 		?>
 
 		<div class="wrap">
@@ -136,6 +136,9 @@ class ewdotpAdminSalesReps {
 	 * @since 3.0.0
 	 */
 	public function show_sales_rep_orders_page() {
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				return;
+			}
 
 		$sales_rep = new ewdotpSalesRep();
 
@@ -180,6 +183,9 @@ class ewdotpAdminSalesReps {
 	 * @since 3.0.0
 	 */
 	public function add_edit_sales_rep() {
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				return;
+			}
 		global $ewd_otp_controller;
 
 		$sales_rep_id = ! empty( $_POST['ewd_otp_sales_rep_id'] ) ? intval( $_POST['ewd_otp_sales_rep_id'] ) :

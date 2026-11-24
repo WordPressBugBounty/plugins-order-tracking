@@ -47,46 +47,6 @@ jQuery( document ).ready( function() {
 			} );
 	});
 
-	jQuery( '.ewd-otp-customer-form' ).on( 'submit', function( event ) {
-
-		if ( jQuery( this ).parent().parent().hasClass( 'ewd-otp-disable-ajax' ) ) { return; }
-
-		event.preventDefault();
-
-		var $form = jQuery( this );
-		var $results = ewd_otp_results_for( $form );
-		var requestNumber = ewd_otp_begin_request( $form, $results );
-
-		var params = {
-			customer_number: $form.find( 'input[name="ewd_otp_identifier_number"]' ).val(),
-			customer_email: $form.find( 'input[name="ewd_otp_form_email"]' ).val(),
-			action: 'ewd_otp_get_customer_orders',
-			nonce: ewd_otp_php_data.nonce
-		};
-
-		ewd_otp_ajax_request( $form, $results, requestNumber, params, ewd_otp_enable_individual_results_click );
-	});
-
-	jQuery( '.ewd-otp-sales-rep-form' ).on( 'submit', function( event ) {
-
-		if ( jQuery( this ).parent().parent().hasClass( 'ewd-otp-disable-ajax' ) ) { return; }
-
-		event.preventDefault();
-
-		var $form = jQuery( this );
-		var $results = ewd_otp_results_for( $form );
-		var requestNumber = ewd_otp_begin_request( $form, $results );
-
-		var params = {
-			sales_rep_number: $form.find( 'input[name="ewd_otp_identifier_number"]' ).val(),
-			sales_rep_email: $form.find( 'input[name="ewd_otp_form_email"]' ).val(),
-			action: 'ewd_otp_get_sales_rep_orders',
-			nonce: ewd_otp_php_data.nonce
-		};
-
-		ewd_otp_ajax_request( $form, $results, requestNumber, params, ewd_otp_enable_individual_results_click );
-	});
-
 	var ewd_otp_print_source = null;
 	function ewd_otp_prepare_print() {
 		if ( document.querySelector( 'body > .ewd-otp-print-root' ) ) { return; }
@@ -108,67 +68,9 @@ jQuery( document ).ready( function() {
 		window.print();
 	});
 
-    /*var minDate = jQuery('.ewd-otp-customer-order-datepicker').attr('min');
-    var maxDate = jQuery('.ewd-otp-customer-order-datepicker').attr('max');
-    jQuery('.ewd-otp-customer-order-datepicker').datepicker({
-        dateFormat : "yy-mm-dd",
-        minDate: minDate,
-        maxDate: maxDate
-    });*/
-
-    jQuery( '#customer_order input[type="submit"]' ).on( 'click', function() {
-
-    	jQuery( '#customer_order input[type="checkbox"]' ).each( function() {
-
-    		if ( ! jQuery( this ).prop( 'required' ) ) { return; }
-
-    		var checkbox_group = jQuery( '#customer_order input:checkbox[name="' + jQuery( this ).attr( 'name' ) + '"]' );
-    		if ( checkbox_group.is( ':checked' ) ) { checkbox_group.prop( 'required', false ); }
-    	})
-    });
-
     ewd_otp_enable_note_click();
 
-    ewd_otp_enable_individual_results_click();
 });
-
-function ewd_otp_enable_individual_results_click() {
-
-	jQuery( '.ewd-otp-tracking-table-order' ).each( function() {
-
-		if ( jQuery( this ).parent().parent().hasClass( 'ewd-otp-disable-ajax' ) ) { return; }
-
-		jQuery( this ).css( 'cursor', 'pointer' );
-		jQuery( this ).addClass( 'ewd-otp-order-table-clickable-row' );
-	});
-
-	jQuery( '.ewd-otp-tracking-table-order' ).off( 'click.ewdotp' ).on( 'click.ewdotp', function( event ) {
-
-		if ( jQuery( this ).parent().parent().hasClass( 'ewd-otp-disable-ajax' ) ) { return; }
-
-		event.preventDefault();
-
-		var order_number = jQuery( this ).data( 'order_number' );
-		var collection_token = jQuery( this ).data( 'order_proof' );
-		var $owner = jQuery( this ).closest( '.ewd-otp-form' );
-		var $results = $owner.find( '.ewd-otp-tracking-results' ).first();
-		var requestNumber = ewd_otp_begin_request( $owner, $results );
-
-		var params = {
-			order_number: order_number,
-			collection_token: collection_token,
-			customer_notes_label: ewd_otp_php_data.customer_notes_submit,
-			action: 'ewd_otp_get_order',
-			nonce: ewd_otp_php_data.nonce
-		};
-
-		ewd_otp_ajax_request( $owner, $results, requestNumber, params, function() {
-			ewd_otp_resizeimage();
-			ewd_otp_enable_note_click();
-		});
-
-	});
-}
 
 function ewd_otp_results_for( $form ) {
 	return $form.closest( '.ewd-otp-form' ).find( '.ewd-otp-tracking-results' ).first();
@@ -259,7 +161,7 @@ function ewd_otp_resizeimage() {
 
 	var graphic_div = jQuery( '.ewd-otp-tracking-graphic' );
 
-	if ( graphic_div.hasClass( 'ewd-otp-default' ) || graphic_div.hasClass( 'ewd-otp-streamlined' ) || graphic_div.hasClass( 'ewd-otp-sleek' ) ) {
+	if ( jQuery( '.ewd-otp-empty-display > img' ).length ) {
 
 		var img_empty = jQuery( '.ewd-otp-empty-display > img' );
 		var img_full = jQuery( '.ewd-otp-full-display > img' );

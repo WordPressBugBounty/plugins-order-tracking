@@ -21,409 +21,12 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 
 		public $notification_options = array();
 
-		public $country_phone_array = array(
-			// 'AD' => array( 'name' => 'ANDORRA', 'code' => '376' ),
-			// 'AE' => array( 'name' => 'UNITED ARAB EMIRATES', 'code' => '971' ),
-			// 'AF' => array( 'name' => 'AFGHANISTAN', 'code' => '93' ),
-			// 'AG' => array( 'name' => 'ANTIGUA AND BARBUDA', 'code' => '1268' ),
-			// 'AI' => array( 'name' => 'ANGUILLA', 'code' => '1264' ),
-			// 'AL' => array( 'name' => 'ALBANIA', 'code' => '355' ),
-			// 'AM' => array( 'name' => 'ARMENIA', 'code' => '374' ),
-			// 'AN' => array( 'name' => 'NETHERLANDS ANTILLES', 'code' => '599' ),
-			// 'AO' => array( 'name' => 'ANGOLA', 'code' => '244' ),
-			// 'AQ' => array( 'name' => 'ANTARCTICA', 'code' => '672' ),
-						'AR' => array(
-							'name' => 'ARGENTINA',
-							'code' => '54',
-						),
-			// 'AS' => array( 'name' => 'AMERICAN SAMOA', 'code' => '1684' ),
-						'AT' => array(
-							'name' => 'AUSTRIA',
-							'code' => '43',
-						),
-			'AU'             => array(
-				'name' => 'AUSTRALIA',
-				'code' => '61',
-			),
-			// 'AW' => array( 'name' => 'ARUBA', 'code' => '297' ),
-			// 'AZ' => array( 'name' => 'AZERBAIJAN', 'code' => '994' ),
-			// 'BA' => array( 'name' => 'BOSNIA AND HERZEGOVINA', 'code' => '387' ),
-			// 'BB' => array( 'name' => 'BARBADOS', 'code' => '1246' ),
-			// 'BD' => array( 'name' => 'BANGLADESH', 'code' => '880' ),
-						'BE' => array(
-							'name' => 'BELGIUM',
-							'code' => '32',
-						),
-			// 'BF' => array( 'name' => 'BURKINA FASO', 'code' => '226' ),
-						'BG' => array(
-							'name' => 'BULGARIA',
-							'code' => '359',
-						),
-			// 'BH' => array( 'name' => 'BAHRAIN', 'code' => '973' ),
-			// 'BI' => array( 'name' => 'BURUNDI', 'code' => '257' ),
-			// 'BJ' => array( 'name' => 'BENIN', 'code' => '229' ),
-			// 'BL' => array( 'name' => 'SAINT BARTHELEMY', 'code' => '590' ),
-			// 'BM' => array( 'name' => 'BERMUDA', 'code' => '1441' ),
-			// 'BN' => array( 'name' => 'BRUNEI DARUSSALAM', 'code' => '673' ),
-			// 'BO' => array( 'name' => 'BOLIVIA', 'code' => '591' ),
-						'BR' => array(
-							'name' => 'BRAZIL',
-							'code' => '55',
-						),
-			// 'BS' => array( 'name' => 'BAHAMAS', 'code' => '1242' ),
-			// 'BT' => array( 'name' => 'BHUTAN', 'code' => '975' ),
-			// 'BW' => array( 'name' => 'BOTSWANA', 'code' => '267' ),
-			// 'BY' => array( 'name' => 'BELARUS', 'code' => '375' ),
-			// 'BZ' => array( 'name' => 'BELIZE', 'code' => '501' ),
-						'CA' => array(
-							'name' => 'CANADA',
-							'code' => '1',
-						),
-			// 'CC' => array( 'name' => 'COCOS (KEELING) ISLANDS', 'code' => '61' ),
-			// 'CD' => array( 'name' => 'CONGO, THE DEMOCRATIC REPUBLIC OF THE', 'code' => '243' ),
-			// 'CF' => array( 'name' => 'CENTRAL AFRICAN REPUBLIC', 'code' => '236' ),
-			// 'CG' => array( 'name' => 'CONGO', 'code' => '242' ),
-						'CH' => array(
-							'name' => 'SWITZERLAND',
-							'code' => '41',
-						),
-			// 'CI' => array( 'name' => 'COTE D IVOIRE', 'code' => '225' ),
-			// 'CK' => array( 'name' => 'COOK ISLANDS', 'code' => '682' ),
-			// 'CL' => array( 'name' => 'CHILE', 'code' => '56' ),
-			// 'CM' => array( 'name' => 'CAMEROON', 'code' => '237' ),
-						'CN' => array(
-							'name' => 'CHINA',
-							'code' => '86',
-						),
-			// 'CO' => array( 'name' => 'COLOMBIA', 'code' => '57' ),
-			// 'CR' => array( 'name' => 'COSTA RICA', 'code' => '506' ),
-			// 'CU' => array( 'name' => 'CUBA', 'code' => '53' ),
-			// 'CV' => array( 'name' => 'CAPE VERDE', 'code' => '238' ),
-			// 'CX' => array( 'name' => 'CHRISTMAS ISLAND', 'code' => '61' ),
-			// 'CY' => array( 'name' => 'CYPRUS', 'code' => '357' ),
-						'CZ' => array(
-							'name' => 'CZECH REPUBLIC',
-							'code' => '420',
-						),
-			'DE'             => array(
-				'name' => 'GERMANY',
-				'code' => '49',
-			),
-			// 'DJ' => array( 'name' => 'DJIBOUTI', 'code' => '253' ),
-						'DK' => array(
-							'name' => 'DENMARK',
-							'code' => '45',
-						),
-			// 'DM' => array( 'name' => 'DOMINICA', 'code' => '1767' ),
-			// 'DO' => array( 'name' => 'DOMINICAN REPUBLIC', 'code' => '1809' ),
-			// 'DZ' => array( 'name' => 'ALGERIA', 'code' => '213' ),
-			// 'EC' => array( 'name' => 'ECUADOR', 'code' => '593' ),
-						'EE' => array(
-							'name' => 'ESTONIA',
-							'code' => '372',
-						),
-			// 'EG' => array( 'name' => 'EGYPT', 'code' => '20' ),
-			// 'ER' => array( 'name' => 'ERITREA', 'code' => '291' ),
-						'ES' => array(
-							'name' => 'SPAIN',
-							'code' => '34',
-						),
-			// 'ET' => array( 'name' => 'ETHIOPIA', 'code' => '251' ),
-						'FI' => array(
-							'name' => 'FINLAND',
-							'code' => '358',
-						),
-			// 'FJ' => array( 'name' => 'FIJI', 'code' => '679' ),
-			// 'FK' => array( 'name' => 'FALKLAND ISLANDS (MALVINAS)', 'code' => '500' ),
-			// 'FM' => array( 'name' => 'MICRONESIA, FEDERATED STATES OF', 'code' => '691' ),
-			// 'FO' => array( 'name' => 'FAROE ISLANDS', 'code' => '298' ),
-						'FR' => array(
-							'name' => 'FRANCE',
-							'code' => '33',
-						),
-			// 'GA' => array( 'name' => 'GABON', 'code' => '241' ),
-						'GB' => array(
-							'name' => 'UNITED KINGDOM',
-							'code' => '44',
-						),
-			// 'GD' => array( 'name' => 'GRENADA', 'code' => '1473' ),
-			// 'GE' => array( 'name' => 'GEORGIA', 'code' => '995' ),
-			// 'GH' => array( 'name' => 'GHANA', 'code' => '233' ),
-			// 'GI' => array( 'name' => 'GIBRALTAR', 'code' => '350' ),
-						'GL' => array(
-							'name' => 'GREENLAND',
-							'code' => '299',
-						),
-			// 'GM' => array( 'name' => 'GAMBIA', 'code' => '220' ),
-			// 'GN' => array( 'name' => 'GUINEA', 'code' => '224' ),
-			// 'GQ' => array( 'name' => 'EQUATORIAL GUINEA', 'code' => '240' ),
-						'GR' => array(
-							'name' => 'GREECE',
-							'code' => '30',
-						),
-			// 'GT' => array( 'name' => 'GUATEMALA', 'code' => '502' ),
-			// 'GU' => array( 'name' => 'GUAM', 'code' => '1671' ),
-			// 'GW' => array( 'name' => 'GUINEA-BISSAU', 'code' => '245' ),
-			// 'GY' => array( 'name' => 'GUYANA', 'code' => '592' ),
-						'HK' => array(
-							'name' => 'HONG KONG',
-							'code' => '852',
-						),
-			// 'HN' => array( 'name' => 'HONDURAS', 'code' => '504' ),
-						'HR' => array(
-							'name' => 'CROATIA',
-							'code' => '385',
-						),
-			// 'HT' => array( 'name' => 'HAITI', 'code' => '509' ),
-						'HU' => array(
-							'name' => 'HUNGARY',
-							'code' => '36',
-						),
-			'ID'             => array(
-				'name' => 'INDONESIA',
-				'code' => '62',
-			),
-			'IE'             => array(
-				'name' => 'IRELAND',
-				'code' => '353',
-			),
-			'IL'             => array(
-				'name' => 'ISRAEL',
-				'code' => '972',
-			),
-			// 'IM' => array( 'name' => 'ISLE OF MAN', 'code' => '44' ),
-						'IN' => array(
-							'name' => 'INDIA',
-							'code' => '91',
-						),
-			// 'IQ' => array( 'name' => 'IRAQ', 'code' => '964' ),
-			// 'IR' => array( 'name' => 'IRAN, ISLAMIC REPUBLIC OF', 'code' => '98' ),
-						'IS' => array(
-							'name' => 'ICELAND',
-							'code' => '354',
-						),
-			'IT'             => array(
-				'name' => 'ITALY',
-				'code' => '39',
-			),
-			// 'JM' => array( 'name' => 'JAMAICA', 'code' => '1876' ),
-			// 'JO' => array( 'name' => 'JORDAN', 'code' => '962' ),
-						'JP' => array(
-							'name' => 'JAPAN',
-							'code' => '81',
-						),
-			// 'KE' => array( 'name' => 'KENYA', 'code' => '254' ),
-			// 'KG' => array( 'name' => 'KYRGYZSTAN', 'code' => '996' ),
-			// 'KH' => array( 'name' => 'CAMBODIA', 'code' => '855' ),
-			// 'KI' => array( 'name' => 'KIRIBATI', 'code' => '686' ),
-			// 'KM' => array( 'name' => 'COMOROS', 'code' => '269' ),
-			// 'KN' => array( 'name' => 'SAINT KITTS AND NEVIS', 'code' => '1869' ),
-			// 'KP' => array( 'name' => 'KOREA DEMOCRATIC PEOPLES REPUBLIC OF', 'code' => '850' ),
-						'KR' => array(
-							'name' => 'KOREA REPUBLIC OF',
-							'code' => '82',
-						),
-			// 'KW' => array( 'name' => 'KUWAIT', 'code' => '965' ),
-			// 'KY' => array( 'name' => 'CAYMAN ISLANDS', 'code' => '1345' ),
-			// 'KZ' => array( 'name' => 'KAZAKSTAN', 'code' => '7' ),
-			// 'LA' => array( 'name' => 'LAO PEOPLES DEMOCRATIC REPUBLIC', 'code' => '856' ),
-			// 'LB' => array( 'name' => 'LEBANON', 'code' => '961' ),
-			// 'LC' => array( 'name' => 'SAINT LUCIA', 'code' => '1758' ),
-						'LI' => array(
-							'name' => 'LIECHTENSTEIN',
-							'code' => '423',
-						),
-			// 'LK' => array( 'name' => 'SRI LANKA', 'code' => '94' ),
-			// 'LR' => array( 'name' => 'LIBERIA', 'code' => '231' ),
-			// 'LS' => array( 'name' => 'LESOTHO', 'code' => '266' ),
-						'LT' => array(
-							'name' => 'LITHUANIA',
-							'code' => '370',
-						),
-			'LU'             => array(
-				'name' => 'LUXEMBOURG',
-				'code' => '352',
-			),
-			'LV'             => array(
-				'name' => 'LATVIA',
-				'code' => '371',
-			),
-			// 'LY' => array( 'name' => 'LIBYAN ARAB JAMAHIRIYA', 'code' => '218' ),
-			// 'MA' => array( 'name' => 'MOROCCO', 'code' => '212' ),
-			// 'MC' => array( 'name' => 'MONACO', 'code' => '377' ),
-			// 'MD' => array( 'name' => 'MOLDOVA, REPUBLIC OF', 'code' => '373' ),
-						'ME' => array(
-							'name' => 'MONTENEGRO',
-							'code' => '382',
-						),
-			// 'MF' => array( 'name' => 'SAINT MARTIN', 'code' => '1599' ),
-			// 'MG' => array( 'name' => 'MADAGASCAR', 'code' => '261' ),
-			// 'MH' => array( 'name' => 'MARSHALL ISLANDS', 'code' => '692' ),
-			// 'MK' => array( 'name' => 'MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF', 'code' => '389' ),
-			// 'ML' => array( 'name' => 'MALI', 'code' => '223' ),
-			// 'MM' => array( 'name' => 'MYANMAR', 'code' => '95' ),
-			// 'MN' => array( 'name' => 'MONGOLIA', 'code' => '976' ),
-			// 'MO' => array( 'name' => 'MACAU', 'code' => '853' ),
-			// 'MP' => array( 'name' => 'NORTHERN MARIANA ISLANDS', 'code' => '1670' ),
-			// 'MR' => array( 'name' => 'MAURITANIA', 'code' => '222' ),
-			// 'MS' => array( 'name' => 'MONTSERRAT', 'code' => '1664' ),
-			// 'MT' => array( 'name' => 'MALTA', 'code' => '356' ),
-			// 'MU' => array( 'name' => 'MAURITIUS', 'code' => '230' ),
-			// 'MV' => array( 'name' => 'MALDIVES', 'code' => '960' ),
-			// 'MW' => array( 'name' => 'MALAWI', 'code' => '265' ),
-						'MX' => array(
-							'name' => 'MEXICO',
-							'code' => '52',
-						),
-			'MY'             => array(
-				'name' => 'MALAYSIA',
-				'code' => '60',
-			),
-			// 'MZ' => array( 'name' => 'MOZAMBIQUE', 'code' => '258' ),
-			// 'NA' => array( 'name' => 'NAMIBIA', 'code' => '264' ),
-			// 'NC' => array( 'name' => 'NEW CALEDONIA', 'code' => '687' ),
-			// 'NE' => array( 'name' => 'NIGER', 'code' => '227' ),
-			// 'NG' => array( 'name' => 'NIGERIA', 'code' => '234' ),
-			// 'NI' => array( 'name' => 'NICARAGUA', 'code' => '505' ),
-						'NL' => array(
-							'name' => 'NETHERLANDS',
-							'code' => '31',
-						),
-			'NO'             => array(
-				'name' => 'NORWAY',
-				'code' => '47',
-			),
-			// 'NP' => array( 'name' => 'NEPAL', 'code' => '977' ),
-			// 'NR' => array( 'name' => 'NAURU', 'code' => '674' ),
-			// 'NU' => array( 'name' => 'NIUE', 'code' => '683' ),
-						'NZ' => array(
-							'name' => 'NEW ZEALAND',
-							'code' => '64',
-						),
-			// 'OM' => array( 'name' => 'OMAN', 'code' => '968' ),
-			// 'PA' => array( 'name' => 'PANAMA', 'code' => '507' ),
-			// 'PE' => array( 'name' => 'PERU', 'code' => '51' ),
-			// 'PF' => array( 'name' => 'FRENCH POLYNESIA', 'code' => '689' ),
-			// 'PG' => array( 'name' => 'PAPUA NEW GUINEA', 'code' => '675' ),
-			// 'PH' => array( 'name' => 'PHILIPPINES', 'code' => '63' ),
-			// 'PK' => array( 'name' => 'PAKISTAN', 'code' => '92' ),
-						'PL' => array(
-							'name' => 'POLAND',
-							'code' => '48',
-						),
-			// 'PM' => array( 'name' => 'SAINT PIERRE AND MIQUELON', 'code' => '508' ),
-			// 'PN' => array( 'name' => 'PITCAIRN', 'code' => '870' ),
-						'PR' => array(
-							'name' => 'PUERTO RICO',
-							'code' => '1',
-						),
-			'PT'             => array(
-				'name' => 'PORTUGAL',
-				'code' => '351',
-			),
-			// 'PW' => array( 'name' => 'PALAU', 'code' => '680' ),
-			// 'PY' => array( 'name' => 'PARAGUAY', 'code' => '595' ),
-			// 'QA' => array( 'name' => 'QATAR', 'code' => '974' ),
-						'RO' => array(
-							'name' => 'ROMANIA',
-							'code' => '40',
-						),
-			'RS'             => array(
-				'name' => 'SERBIA',
-				'code' => '381',
-			),
-			'RU'             => array(
-				'name' => 'RUSSIAN FEDERATION',
-				'code' => '7',
-			),
-			// 'RW' => array( 'name' => 'RWANDA', 'code' => '250' ),
-			// 'SA' => array( 'name' => 'SAUDI ARABIA', 'code' => '966' ),
-			// 'SB' => array( 'name' => 'SOLOMON ISLANDS', 'code' => '677' ),
-			// 'SC' => array( 'name' => 'SEYCHELLES', 'code' => '248' ),
-			// 'SD' => array( 'name' => 'SUDAN', 'code' => '249' ),
-						'SE' => array(
-							'name' => 'SWEDEN',
-							'code' => '46',
-						),
-			'SG'             => array(
-				'name' => 'SINGAPORE',
-				'code' => '65',
-			),
-			// 'SH' => array( 'name' => 'SAINT HELENA', 'code' => '290' ),
-						'SI' => array(
-							'name' => 'SLOVENIA',
-							'code' => '386',
-						),
-			'SK'             => array(
-				'name' => 'SLOVAKIA',
-				'code' => '421',
-			),
-			// 'SL' => array( 'name' => 'SIERRA LEONE', 'code' => '232' ),
-			// 'SM' => array( 'name' => 'SAN MARINO', 'code' => '378' ),
-			// 'SN' => array( 'name' => 'SENEGAL', 'code' => '221' ),
-			// 'SO' => array( 'name' => 'SOMALIA', 'code' => '252' ),
-			// 'SR' => array( 'name' => 'SURINAME', 'code' => '597' ),
-			// 'ST' => array( 'name' => 'SAO TOME AND PRINCIPE', 'code' => '239' ),
-			// 'SV' => array( 'name' => 'EL SALVADOR', 'code' => '503' ),
-			// 'SY' => array( 'name' => 'SYRIAN ARAB REPUBLIC', 'code' => '963' ),
-			// 'SZ' => array( 'name' => 'SWAZILAND', 'code' => '268' ),
-			// 'TC' => array( 'name' => 'TURKS AND CAICOS ISLANDS', 'code' => '1649' ),
-			// 'TD' => array( 'name' => 'CHAD', 'code' => '235' ),
-			// 'TG' => array( 'name' => 'TOGO', 'code' => '228' ),
-						'TH' => array(
-							'name' => 'THAILAND',
-							'code' => '66',
-						),
-			// 'TJ' => array( 'name' => 'TAJIKISTAN', 'code' => '992' ),
-			// 'TK' => array( 'name' => 'TOKELAU', 'code' => '690' ),
-			// 'TL' => array( 'name' => 'TIMOR-LESTE', 'code' => '670' ),
-			// 'TM' => array( 'name' => 'TURKMENISTAN', 'code' => '993' ),
-			// 'TN' => array( 'name' => 'TUNISIA', 'code' => '216' ),
-			// 'TO' => array( 'name' => 'TONGA', 'code' => '676' ),
-			// 'TR' => array( 'name' => 'TURKEY', 'code' => '90' ),
-			// 'TT' => array( 'name' => 'TRINIDAD AND TOBAGO', 'code' => '1868' ),
-			// 'TV' => array( 'name' => 'TUVALU', 'code' => '688' ),
-						'TW' => array(
-							'name' => 'TAIWAN',
-							'code' => '886',
-						),
-			// 'TZ' => array( 'name' => 'TANZANIA, UNITED REPUBLIC OF', 'code' => '255' ),
-						'UA' => array(
-							'name' => 'UKRAINE',
-							'code' => '380',
-						),
-			// 'UG' => array( 'name' => 'UGANDA', 'code' => '256' ),
-						'US' => array(
-							'name' => 'UNITED STATES',
-							'code' => '1',
-						),
-			'UY'             => array(
-				'name' => 'URUGUAY',
-				'code' => '598',
-			),
-			// 'UZ' => array( 'name' => 'UZBEKISTAN', 'code' => '998' ),
-			// 'VA' => array( 'name' => 'HOLY SEE (VATICAN CITY STATE)', 'code' => '39' ),
-			// 'VC' => array( 'name' => 'SAINT VINCENT AND THE GRENADINES', 'code' => '1784' ),
-			// 'VE' => array( 'name' => 'VENEZUELA', 'code' => '58' ),
-			// 'VG' => array( 'name' => 'VIRGIN ISLANDS, BRITISH', 'code' => '1284' ),
-			// 'VI' => array( 'name' => 'VIRGIN ISLANDS, U.S.', 'code' => '1340' ),
-						'VN' => array(
-							'name' => 'VIETNAM',
-							'code' => '84',
-						),
-			// 'VU' => array( 'name' => 'VANUATU', 'code' => '678' ),
-			// 'WF' => array( 'name' => 'WALLIS AND FUTUNA', 'code' => '681' ),
-			// 'WS' => array( 'name' => 'SAMOA', 'code' => '685' ),
-			// 'XK' => array( 'name' => 'KOSOVO', 'code' => '381' ),
-			// 'YE' => array( 'name' => 'YEMEN', 'code' => '967' ),
-			// 'YT' => array( 'name' => 'MAYOTTE', 'code' => '262' ),
-						'ZA' => array(
-							'name' => 'SOUTH AFRICA',
-							'code' => '27',
-						),
-		// 'ZM' => array( 'name' => 'ZAMBIA', 'code' => '260' ),
-		// 'ZW' => array( 'name' => 'ZIMBABWE', 'code' => '263' )
-		);
+		/**
+		 * Legacy public slot populated only by the owning paid module.
+		 *
+		 * @var array
+		 */
+		public $country_phone_array = array();
 
 		/**
 		 * Default values for settings
@@ -440,6 +43,7 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		public $settings = array();
 
 		public function __construct() {
+			add_filter( 'pre_update_option_ewd-otp-settings', array( $this, 'protect_settings_request' ), 10, 2 );
 
 			add_action( 'init', array( $this, 'set_defaults' ) );
 			add_action( 'init', array( $this, 'repair_empty_statuses' ), 10 );
@@ -474,7 +78,6 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 				'access-role'                    => 'manage_options',
 				'tracking-graphic'               => 'default',
 
-				'google-maps-api-key'            => '',
 
 				'woocommerce-integration'        => true,
 				'woocommerce-replace-statuses'   => true,
@@ -488,11 +91,9 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 				'woocommerce-refunded-status'    => __( 'Refunded', 'order-tracking' ),
 
 				'admin-email'                    => get_option( 'admin_email' ),
-				'ultimate-purchase-email'        => get_option( 'admin_email' ),
 				'email-messages'                 => array(),
 
 				'label-retrieving-results'       => __( 'Retrieving Results...', 'order-tracking' ),
-				'label-customer-order-thank-you' => __( 'Thank you. Your order number is:', 'order-tracking' ),
 			);
 
 			$this->defaults = apply_filters( 'ewd_otp_defaults', $this->defaults, $this );
@@ -505,36 +106,6 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		 */
 		public function set_field_options() {
 			global $ewd_otp_controller;
-
-			$this->currency_options = array(
-				'AUD' => __( 'Australian Dollar', 'order-tracking' ),
-				'BRL' => __( 'Brazilian Real', 'order-tracking' ),
-				'CAD' => __( 'Canadian Dollar', 'order-tracking' ),
-				'CZK' => __( 'Czech Koruna', 'order-tracking' ),
-				'DKK' => __( 'Danish Krone', 'order-tracking' ),
-				'EUR' => __( 'Euro', 'order-tracking' ),
-				'HKD' => __( 'Hong Kong Dollar', 'order-tracking' ),
-				'HUF' => __( 'Hungarian Forint', 'order-tracking' ),
-				'ILS' => __( 'Israeli New Sheqel', 'order-tracking' ),
-				'JPY' => __( 'Japanese Yen', 'order-tracking' ),
-				'MYR' => __( 'Malaysian Ringgit', 'order-tracking' ),
-				'MXN' => __( 'Mexican Peso', 'order-tracking' ),
-				'NOK' => __( 'Norwegian Krone', 'order-tracking' ),
-				'NZD' => __( 'New Zealand Dollar', 'order-tracking' ),
-				'PHP' => __( 'Philippine Peso', 'order-tracking' ),
-				'PLN' => __( 'Polish Zloty', 'order-tracking' ),
-				'GBP' => __( 'Pound Sterling', 'order-tracking' ),
-				'RUB' => __( 'Russian Ruble', 'order-tracking' ),
-				'SGD' => __( 'Singapore Dollar', 'order-tracking' ),
-				'SEK' => __( 'Swedish Krona', 'order-tracking' ),
-				'CHF' => __( 'Swiss Franc', 'order-tracking' ),
-				'TWD' => __( 'Taiwan New Dollar', 'order-tracking' ),
-				'THB' => __( 'Thai Baht', 'order-tracking' ),
-				'TRY' => __( 'Turkish Lira', 'order-tracking' ),
-				'USD' => __( 'U.S. Dollar', 'order-tracking' ),
-			);
-
-			$this->currency_options = apply_filters( 'ewd_otp_currency_options', $this->currency_options, $this );
 
 			$this->order_information_options = array(
 				'order_number'         => __( 'Order Number', 'order-tracking' ),
@@ -604,6 +175,7 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 			}
 
 			$this->sales_rep_options = apply_filters( 'ewd_otp_sales_rep_options', $this->sales_rep_options, $this );
+			do_action( 'ewd_otp_field_options', $this );
 		}
 
 		/**
@@ -612,6 +184,40 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		 * @since 3.0.0
 		 */
 		public function get_setting( $setting ) {
+			$value = $this->get_raw_setting( $setting );
+			if ( 'order-information' === $setting && is_array( $value ) ) {
+				$contact_fields = array(
+					'customers'  => array( 'customer_name', 'customer_email' ),
+					'sales_reps' => array( 'sales_rep_first_name', 'sales_rep_last_name', 'sales_rep_email' ),
+				);
+				foreach ( $contact_fields as $feature => $fields ) {
+					if ( array_intersect( $value, $fields ) && ! ewdotpEntitlement::administer( $feature ) ) {
+						$value = array_values( array_diff( $value, $fields ) );
+					}
+				}
+			}
+			$capability = self::setting_capability( $setting );
+			// Historical definitions/privacy/settlement evidence are shared integrity data.
+			$retained = array( 'locations', 'woocommerce-integration', 'woocommerce-replace-statuses', 'woocommerce-disable-status-revert', 'paypal-email-address', 'pricing-currency-code', 'zendesk-signing-secret', 'zendesk-status-mappings', 'ultimate-purchase-email', 'sms-country-code', 'admin-phone-number', 'sms-messages' );
+			if ( '' !== $capability && ! in_array( $setting, $retained, true ) && ( null === $value || '' === $value ) ) {
+				return '';
+			}
+			if ( '' === $capability || in_array( $setting, $retained, true ) || ewdotpEntitlement::allows( $capability ) ) {
+				return $value;
+			}
+			if ( 'labelling' === $capability && array_key_exists( $setting, $this->defaults ) ) {
+				return $this->defaults[ $setting ];
+			}
+			return 'tracking-graphic' === $setting ? 'default' : ( is_array( $value ) ? array() : ( is_bool( $value ) ? false : '' ) );
+		}
+
+		/**
+		 * Read retained configuration for safety, settlement and administrator recovery.
+		 *
+		 * @param string $setting Setting name.
+		 * @return mixed
+		 */
+		public function get_raw_setting( $setting ) {
 
 			if ( empty( $this->settings ) ) {
 				$stored_settings = get_option( 'ewd-otp-settings', array() );
@@ -635,6 +241,78 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		}
 
 		/**
+		 * Classify paid fields without treating shared privacy/statuses as paid switches.
+		 *
+		 * @param string $setting Setting name.
+		 * @return string
+		 */
+		public static function setting_capability( $setting ) {
+			$prefixes = array(
+				'styling-'     => 'styling',
+				'label-'       => 'labelling',
+				'woocommerce-' => 'woocommerce',
+				'zendesk-'     => 'zendesk',
+			);
+			foreach ( $prefixes as $prefix => $capability ) {
+				if ( 0 === strpos( $setting, $prefix ) ) {
+					return in_array( $setting, array( 'woocommerce-replace-statuses', 'woocommerce-disable-status-revert' ), true ) ? '' : $capability;
+				}
+			}
+			$groups = array(
+				'premium'         => array( 'tracking-graphic', 'customer-notes-email' ),
+				'customers'       => array( 'allow-customer-downloads', 'allow-assign-orders-to-customers' ),
+				'sales_reps'      => array( 'allow-sales-rep-downloads', 'sales-rep-status-notifications', 'sales-rep-status-email' ),
+				'customer_orders' => array( 'customer-order-email', 'default-customer-order-form-status', 'allow-sales-rep-selection', 'customer-order-number-prefix', 'customer-order-number-suffix', 'default-sales-rep', 'use-captcha', 'captcha-site-key', 'captcha-secret-key' ),
+				'locations'       => array( 'locations' ),
+				'payments'        => array( 'allow-order-payments', 'default-payment-status', 'paypal-email-address', 'pricing-currency-code', 'thank-you-url' ),
+				'sms'             => array( 'ultimate-purchase-email', 'sms-country-code', 'admin-phone-number', 'sms-messages' ),
+			);
+			foreach ( $groups as $capability => $fields ) {
+				if ( in_array( $setting, $fields, true ) ) {
+					return $capability;
+				}
+			}
+			return '';
+		}
+
+		/**
+		 * Keep unavailable paid configuration unchanged, including direct settings posts.
+		 *
+		 * @param mixed $value Proposed sanitized settings.
+		 * @param mixed $old Existing settings.
+		 * @return array
+		 */
+		public function preserve_unavailable_settings( $value, $old ) {
+			$value = is_array( $value ) ? $value : array();
+			$old   = is_array( $old ) ? $old : array();
+			foreach ( array_unique( array_merge( array_keys( $value ), array_keys( $old ) ) ) as $setting ) {
+				$capability = self::setting_capability( $setting );
+				if ( '' === $capability || ewdotpEntitlement::allows( $capability ) ) {
+					continue;
+				}
+				if ( array_key_exists( $setting, $old ) ) {
+					$value[ $setting ] = $old[ $setting ];
+				} else {
+					unset( $value[ $setting ] );
+				}
+			}
+			return $value;
+		}
+
+		/**
+		 * Guard Settings API writes, leaving trusted upgrade conversion lossless.
+		 *
+		 * @param mixed $value Proposed settings.
+		 * @param mixed $old Retained settings.
+		 * @return mixed
+		 */
+		public function protect_settings_request( $value, $old ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WordPress options.php authenticates the registered setting group before this option filter.
+			$is_settings_post = isset( $_POST['option_page'] ) && 'ewd-otp-settings' === $_POST['option_page'];
+			return $is_settings_post ? $this->preserve_unavailable_settings( $value, $old ) : $value;
+		}
+
+		/**
 		 * Set a setting to a particular value
 		 *
 		 * @since 3.0.0
@@ -652,7 +330,7 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		 * @since 3.0.0
 		 */
 		public function save_settings() {
-
+			$this->settings = $this->preserve_unavailable_settings( $this->settings, get_option( 'ewd-otp-settings', array() ) );
 			update_option( 'ewd-otp-settings', $this->settings );
 		}
 
@@ -823,24 +501,6 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 					'id'          => 'email-verification',
 					'title'       => __( 'Email Verification', 'order-tracking' ),
 					'description' => __( 'Do visitors need to also enter the email address associated with an order to be able to view order information? Manual customer and sales representative number lookups require matching email or a valid collection proof even when this single-order setting is off. Automatic linked-account portals remain available. Require Login uses linked-account or staff authorization instead.', 'order-tracking' ),
-				)
-			);
-
-			$sap->add_setting(
-				'ewd-otp-settings',
-				'ewd-otp-general',
-				'text',
-				array(
-					'id'                   => 'google-maps-api-key',
-					'title'                => __( 'Google Maps API Key', 'order-tracking' ),
-					'description'          => sprintf(
-							/* translators: 1: opening link tag, 2: closing link tag. */
-						__( 'If you\'re displaying a map of your order location (using the "Tracking Map" checkbox of the "Order Information" setting above), Google requires an API key to use their maps. %1$sGet an API key%2$s.', 'order-tracking' ),
-						'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">',
-						'</a>'
-					),
-					'conditional_on'       => 'order-information',
-					'conditional_on_value' => 'order_map',
 				)
 			);
 
@@ -1493,7 +1153,8 @@ if ( ! class_exists( 'ewdotpSettings' ) ) {
 		}
 
 		/**
-		 * Load the custom fields related to orders
+		 * Load retained order definitions, including read-only historical display after license loss.
+		 * This is not an editing grant; administration and creation retain their capability/cohort guards.
 		 *
 		 * @since 3.0.0
 		 */

@@ -93,7 +93,9 @@ if ( ! class_exists( 'ewdotpPayPal' ) ) {
 
 			$order->payment_completed     = true;
 			$order->paypal_receipt_number = $transaction_id;
-			do_action( 'ewd_otp_order_paid', $order );
+			// Only a newly authenticated and durably claimed receipt reaches this seam.
+			// Helper owns current paid completion; denied work is not queued for replay.
+			do_action( 'ewd_otp_payment_receipt_recorded', $order );
 			return true;
 		}
 

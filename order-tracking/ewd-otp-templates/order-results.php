@@ -15,7 +15,7 @@
 	<?php $this->maybe_print_order_graphic(); ?>
 
 	<?php if ( $this->get_order_number_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -31,7 +31,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_name_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -47,7 +47,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_notes_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -63,7 +63,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_customer_notes_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -79,7 +79,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_customer_name_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -95,7 +95,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_customer_email_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -111,7 +111,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_sales_rep_first_name_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -127,7 +127,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_sales_rep_last_name_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -143,7 +143,7 @@
 	<?php } ?>
 
 	<?php if ( $this->get_order_sales_rep_email_display() ) { ?>
-		
+
 		<div class='ewd-otp-tracking-results-field'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -166,14 +166,16 @@
 
 	<?php $this->maybe_print_order_map(); ?>
 
+	<?php $this->maybe_print_order_shipments(); ?>
+
 	<?php $this->print_order_statuses_header(); ?>
 
 	<?php $this->print_order_statuses(); ?>
 
 	<?php $this->maybe_print_order_update_location_and_status(); ?>
 
-	<?php if ( $this->get_order_customer_notes_display() ) { ?>
-		
+	<?php if ( $this->get_order_customer_notes_display() && $this->can_update_customer_notes() ) { ?>
+
 		<div class='ewd-otp-tracking-results-field ewd-otp-print-controls'>
 
 			<div class='ewd-otp-tracking-results-label'>
@@ -181,7 +183,7 @@
 			</div>
 
 			<div id='ewd-otp-customer-notes' class='ewd-otp-tracking-results-value'>
-				
+
 				<form action='#' method='post' id='ewd-otp-customer-notes-form'>
 
 					<input type='hidden' name='ewd_otp_order_id' value='<?php echo esc_attr( $this->order->id ); ?>' />
@@ -190,7 +192,7 @@
 					<input type='hidden' name='ewd_otp_tracking_token' value='<?php echo esc_attr( $this->access_token ); ?>' />
 					<input type='hidden' name='ewd_otp_collection_token' value='<?php echo esc_attr( $this->access_collection_token ); ?>' />
 					<textarea name='ewd_otp_customer_notes'><?php echo esc_html( $this->order->customer_notes ); ?></textarea>
-					
+
 					<input class='ewd-otp-submit' type='submit' name='ewd_otp_customer_notes_submit' value='<?php echo esc_attr( $this->customer_notes_submit ); ?>' />
 
 				</form>

@@ -148,6 +148,93 @@ if ( ! class_exists( 'ewdotpOrderManager' ) ) {
 		}
 
 		/**
+		 * Read current row associations without hydrating fields or order models.
+		 *
+		 * @param int[] $ids Order IDs; each SQL statement is bounded to 200 IDs.
+		 * @return array|false Associations by ID, or false on a database error.
+		 */
+		public function get_order_associations( $ids ) {
+			global $wpdb;
+			$output = array();
+			foreach ( array_chunk( array_unique( array_filter( array_map( 'absint', $ids ) ) ), 200 ) as $chunk ) {
+				$slots = implode( ',', array_fill( 0, count( $chunk ), '%d' ) );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Fresh OTP-owned table read; generated %d slots bind every ID. Cached associations cannot authorize output.
+				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT Order_ID AS id, Customer_ID AS customer, Sales_Rep_ID AS sales_rep FROM {$this->orders_table_name} WHERE Order_ID IN ($slots)", $chunk ) );
+				if ( ! is_array( $rows ) || $wpdb->last_error ) {
+					return false;
+				}
+				foreach ( $rows as $row ) {
+					$output[ (int) $row->id ] = array(
+						'customer'  => (int) $row->customer,
+						'sales_rep' => (int) $row->sales_rep,
+					);
+				}
+			}
+			return $output;
+		}
+
+		/**
+		 * Fresh generic model reads with batched custom fields, without a result cap.
+		 *
+		 * @param int[] $ids Order IDs; query chunks never truncate the requested set.
+		 * @return ewdotpOrder[] Models keyed by ID; missing rows are omitted.
+		 */
+		public function get_orders_from_ids( $ids ) {
+			global $wpdb;
+			$output = array();
+			foreach ( array_chunk( array_unique( array_filter( array_map( 'absint', $ids ) ) ), 200 ) as $chunk ) {
+				$slots = implode( ',', array_fill( 0, count( $chunk ), '%d' ) );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Fresh OTP-owned table read; generated %d slots bind every ID. No cached authorization state.
+				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$this->orders_table_name} WHERE Order_ID IN ($slots)", $chunk ) );
+				if ( ! is_array( $rows ) || $wpdb->last_error ) {
+					return array();
+				}
+				foreach ( $this->hydrate_orders( $rows ) as $order ) {
+					$output[ (int) $order->id ] = $order;
+				}
+			}
+			return $output;
+		}
+
+		/**
+		 * Hydrate a queried set with one metadata read per chunk, not per field/row.
+		 *
+		 * @param object[] $rows Existing order records, in the requested sort order.
+		 * @return ewdotpOrder[] Hydrated models in the same order.
+		 */
+		private function hydrate_orders( $rows ) {
+			global $wpdb, $ewd_otp_controller;
+			$output    = array();
+			$fields    = $ewd_otp_controller->settings->get_order_custom_fields();
+			$field_ids = array_map( 'absint', wp_list_pluck( $fields, 'id' ) );
+			foreach ( array_chunk( $rows, 200 ) as $chunk ) {
+				$values = array();
+				if ( $fields ) {
+					$ids         = array_map( 'absint', wp_list_pluck( $chunk, 'Order_ID' ) );
+					$slots       = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+					$field_slots = implode( ',', array_fill( 0, count( $field_ids ), '%d' ) );
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Fresh OTP-owned metadata read; generated %d slots bind every ID and preserve latest-row semantics.
+					$meta = $wpdb->get_results( $wpdb->prepare( "SELECT Order_ID AS id, Field_ID AS field_id, Meta_Value AS value FROM {$this->meta_table_name} WHERE Order_ID IN ($slots) AND Field_ID IN ($field_slots) ORDER BY Meta_ID DESC", array_merge( $ids, $field_ids ) ) );
+					if ( ! is_array( $meta ) || $wpdb->last_error ) {
+						return array();
+					}
+					foreach ( $meta as $item ) {
+						if ( ! isset( $values[ $item->id ] ) || ! array_key_exists( $item->field_id, $values[ $item->id ] ) ) {
+							$values[ $item->id ][ $item->field_id ] = $item->value;
+						}
+					}
+				}
+				foreach ( $chunk as $row ) {
+					$order = new ewdotpOrder();
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Fixed legacy database column.
+					$order->load_order( $row, isset( $values[ $row->Order_ID ] ) ? $values[ $row->Order_ID ] : array() );
+					$output[] = $order;
+				}
+			}
+			return $output;
+		}
+
+		/**
 		 * Returns a single order given its Zendesk ID
 		 *
 		 * @since 3.0.0
@@ -210,6 +297,18 @@ if ( ! class_exists( 'ewdotpOrderManager' ) ) {
 			$this->run_query();
 
 			return $this->orders;
+		}
+
+		/**
+		 * Bounded v1 compatibility read with the original case-sensitive substring semantics.
+		 *
+		 * @param array $args Validated collection arguments.
+		 * @param array $filters Literal, case-sensitive substrings.
+		 * @return array
+		 */
+		public function get_bounded_v1_orders( $args, $filters ) {
+			$args['v1_literal_search'] = $filters;
+			return $this->get_matching_orders( $args );
 		}
 
 		/**
@@ -456,6 +555,16 @@ if ( ! class_exists( 'ewdotpOrderManager' ) ) {
 				$query_string .= ' AND Order_Phone_Number LIKE %s';
 				$query_args[]  = '%' . $wpdb->esc_like( $args['phone_search'] ) . '%';
 			}
+			foreach ( array(
+				'email'        => 'Order_Email',
+				'phone_number' => 'Order_Phone_Number',
+				'name'         => 'Order_Name',
+			) as $field => $column ) {
+				if ( isset( $args['v1_literal_search'][ $field ] ) && false !== $args['v1_literal_search'][ $field ] ) {
+					$query_string .= " AND LOCATE(BINARY %s, BINARY $column)>0";
+					$query_args[]  = $args['v1_literal_search'][ $field ];
+				}
+			}
 			if ( ! empty( $args['customer'] ) ) {
 
 				if ( is_array( $args['customer'] ) ) {
@@ -544,14 +653,7 @@ if ( ! class_exists( 'ewdotpOrderManager' ) ) {
 
 			$db_orders = $wpdb->get_results( $wpdb->prepare( $query_string, $query_args ) );
 
-			foreach ( $db_orders as $db_order ) {
-
-				$order = new ewdotpOrder();
-
-				$order->load_order( $db_order );
-
-				$this->orders[] = $order;
-			}
+			$this->orders = is_array( $db_orders ) ? $this->hydrate_orders( $db_orders ) : array();
 		}
 
 		/**

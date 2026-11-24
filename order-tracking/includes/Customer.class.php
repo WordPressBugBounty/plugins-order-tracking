@@ -120,6 +120,9 @@ if ( ! class_exists( 'ewdotpCustomer' ) ) {
 		 * @since 3.0.0
 		 */
 		public function process_admin_customer_submission() {
+			if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+				return false;
+			}
 			global $ewd_otp_controller;
 
 			$this->validate_admin_submission();

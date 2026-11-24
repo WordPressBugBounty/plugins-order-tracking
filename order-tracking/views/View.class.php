@@ -76,11 +76,18 @@ class ewdotpView extends ewdotpBase {
 	 * @param string template Type of template to load (eg - reviews, review)
 	 */
 	function find_template( $template ) {
+		if ( ! is_string( $template ) || ! preg_match( '/^[a-z0-9_-]+$/D', $template ) ) {
+			return false;
+		}
+		$default_directory = apply_filters( 'ewd_otp_template_default_directory', EWD_OTP_PLUGIN_DIR . '/' . EWD_OTP_TEMPLATE_DIR . '/', $template, $this );
+		if ( ! is_string( $default_directory ) ) {
+			$default_directory = EWD_OTP_PLUGIN_DIR . '/' . EWD_OTP_TEMPLATE_DIR . '/';
+		}
 
 		$this->template_dirs = array(
 			get_stylesheet_directory() . '/' . EWD_OTP_TEMPLATE_DIR . '/',
 			get_template_directory() . '/' . EWD_OTP_TEMPLATE_DIR . '/',
-			EWD_OTP_PLUGIN_DIR . '/' . EWD_OTP_TEMPLATE_DIR . '/',
+			$default_directory,
 		);
 
 		$this->template_dirs = apply_filters( 'ewd_otp_template_directories', $this->template_dirs );
@@ -92,6 +99,27 @@ class ewdotpView extends ewdotpBase {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Include a selected template in the shared view context after owner checks.
+	 *
+	 * @param string $template Fixed template basename, never a request path.
+	 * @param array  $template_data Explicit local data for the selected owner.
+	 * @param array  $template_context Stable owner operation metadata, not an access grant.
+	 * @return void
+	 */
+	public function render_template( $template, $template_data = array(), $template_context = array() ) {
+		$template_data    = is_array( $template_data ) ? $template_data : array();
+		$template_context = is_array( $template_context ) ? $template_context : array();
+		if ( true !== apply_filters( 'ewd_otp_template_render_allowed', true, $template, $this, $template_context ) ) {
+			return;
+		}
+		$file                              = $this->find_template( $template );
+		$template_context['template_file'] = $file;
+		if ( $file && true === apply_filters( 'ewd_otp_template_render_allowed', true, $template, $this, $template_context ) ) {
+			include $file;
+		}
 	}
 
 	/**
@@ -159,14 +187,15 @@ class ewdotpView extends ewdotpBase {
 			return; }
 
 		if ( 'file' === $this->custom_field->type ) {
-			$template = $this->find_template( 'custom-field-file' ); } elseif ( 'image' === $this->custom_field->type ) {
-			$template = $this->find_template( 'custom-field-image' ); } elseif ( 'link' === $this->custom_field->type ) {
-				$template = $this->find_template( 'custom-field-link' ); } else {
-				$template = $this->find_template( 'custom-field-default' ); }
-
-				if ( $template ) {
-					include $template;
-				}
+			$template = 'custom-field-file';
+		} elseif ( 'image' === $this->custom_field->type ) {
+			$template = 'custom-field-image';
+		} elseif ( 'link' === $this->custom_field->type ) {
+			$template = 'custom-field-link';
+		} else {
+			$template = 'custom-field-default';
+		}
+		$this->render_template( $template );
 	}
 
 	/**
@@ -176,6 +205,7 @@ class ewdotpView extends ewdotpBase {
 	 */
 	public function get_order_fields() {
 		global $ewd_otp_controller;
+		// Product-approved read-only history exception; this does not grant field editing or collection access.
 
 		return $ewd_otp_controller->settings->get_order_custom_fields();
 	}
@@ -469,12 +499,10 @@ class ewdotpView extends ewdotpBase {
 	}
 
 	public function get_label( $label_name ) {
-		global $ewd_otp_controller;
-
 		if ( empty( $this->label_defaults ) ) {
 			$this->set_label_defaults(); }
-
-		return ! empty( $ewd_otp_controller->settings->get_setting( $label_name ) ) ? $ewd_otp_controller->settings->get_setting( $label_name ) : $this->label_defaults[ $label_name ];
+		$default = isset( $this->label_defaults[ $label_name ] ) ? $this->label_defaults[ $label_name ] : '';
+		return apply_filters( 'ewd_otp_view_label', $default, $label_name, $this );
 	}
 
 	public function set_label_defaults() {
@@ -487,20 +515,6 @@ class ewdotpView extends ewdotpBase {
 			'label-order-form-email-placeholder'      => '',
 			'label-order-form-button'                 => __( 'Track', 'order-tracking' ),
 			'label-retrieving-results'                => __( 'Retrieving results...', 'order-tracking' ),
-			'label-customer-form-title'               => __( 'Track Your Orders', 'order-tracking' ),
-			'label-customer-form-instructions'        => __( 'Enter your customer number in the form below to track your orders.', 'order-tracking' ),
-			'label-customer-form-number'              => __( 'Customer Number', 'order-tracking' ),
-			'label-customer-form-number-placeholder'  => '',
-			'label-customer-form-email'               => __( 'Customer Email', 'order-tracking' ),
-			'label-customer-form-email-placeholder'   => '',
-			'label-customer-form-button'              => __( 'Find Customer', 'order-tracking' ),
-			'label-sales-rep-form-title'              => __( 'Track Your Orders', 'order-tracking' ),
-			'label-sales-rep-form-instructions'       => __( 'Enter your sales rep number in the form below to track your orders.', 'order-tracking' ),
-			'label-sales-rep-form-number'             => __( 'Sales Rep Number', 'order-tracking' ),
-			'label-sales-rep-form-number-placeholder' => __( 'Sales Rep Number', 'order-tracking' ),
-			'label-sales-rep-form-email'              => __( 'Sales Rep Email', 'order-tracking' ),
-			'label-sales-rep-form-email-placeholder'  => __( 'Sales Rep Email', 'order-tracking' ),
-			'label-sales-rep-form-button'             => __( 'Find Sales Rep', 'order-tracking' ),
 			'label-order-information'                 => __( 'Order Information', 'order-tracking' ),
 			'label-order-number'                      => __( 'Order Number', 'order-tracking' ),
 			'label-order-name'                        => __( 'Order Name', 'order-tracking' ),
@@ -513,81 +527,26 @@ class ewdotpView extends ewdotpBase {
 			'label-order-print-button'                => __( 'Print', 'order-tracking' ),
 			'label-order-add-note-button'             => __( 'Add Note', 'order-tracking' ),
 			'label-order-update-status'               => __( 'Update Status', 'order-tracking' ),
-			'label-customer-display-number'           => __( 'Customer Number', 'order-tracking' ),
-			'label-customer-display-name'             => __( 'Customer Name', 'order-tracking' ),
-			'label-customer-display-email'            => __( 'Customer Email', 'order-tracking' ),
-			'label-customer-display-download'         => __( 'Download All Orders', 'order-tracking' ),
-			'label-sales-rep-display-number'          => __( 'Sales Rep Number', 'order-tracking' ),
-			'label-sales-rep-display-first-name'      => __( 'Sales Rep First Name', 'order-tracking' ),
-			'label-sales-rep-display-last-name'       => __( 'Sales Rep Last Name', 'order-tracking' ),
-			'label-sales-rep-display-email'           => __( 'Sales Rep Email', 'order-tracking' ),
-			'label-sales-rep-display-download'        => __( 'Download All Orders', 'order-tracking' ),
-			'label-customer-order-name'               => __( 'Order Name', 'order-tracking' ),
-			'label-customer-order-email'              => __( 'Order Email Address', 'order-tracking' ),
-			'label-customer-order-phone'              => __( 'Order Phone Number', 'order-tracking' ),
-			'label-customer-order-notes'              => __( 'Customer Notes', 'order-tracking' ),
-			'label-customer-order-button'             => __( 'Send Order', 'order-tracking' ),
-			'label-customer-order-thank-you'          => __( 'Thank you. Your order number is:', 'order-tracking' ),
-			'label-customer-order-email-instructions' => __( 'The email address to send order updates to, if the site administrator has selected that option.', 'order-tracking' ),
-			'label-customer-order-phone-instructions' => __( 'The phone number to send order updates to, if the site administrator has selected that option.', 'order-tracking' ),
+			'label-customer-display-number'       => __( 'Customer Number', 'order-tracking' ),
+			'label-customer-display-name'         => __( 'Customer Name', 'order-tracking' ),
+			'label-customer-display-email'        => __( 'Customer Email', 'order-tracking' ),
+			'label-sales-rep-display-number'      => __( 'Sales Rep Number', 'order-tracking' ),
+			'label-sales-rep-display-first-name'  => __( 'Sales Rep First Name', 'order-tracking' ),
+			'label-sales-rep-display-last-name'   => __( 'Sales Rep Last Name', 'order-tracking' ),
+			'label-sales-rep-display-email'       => __( 'Sales Rep Email', 'order-tracking' ),
 		);
+
+		$this->label_defaults = apply_filters( 'ewd_otp_view_label_defaults', $this->label_defaults, $this );
 	}
 
 	public function add_custom_styling() {
 		global $ewd_otp_controller;
-
-		$css = '';
-
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-title-font' ) !== '' ) {
-			$css .= '.ewd-otp-order-tracking-form-div h3 { font-family: ' . $ewd_otp_controller->settings->get_setting( 'styling-title-font' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-title-font-size' ) !== '' ) {
-			$css .= '.ewd-otp-order-tracking-form-div h3 { font-size: ' . $ewd_otp_controller->settings->get_setting( 'styling-title-font-size' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-title-font-color' ) !== '' ) {
-			$css .= '.ewd-otp-order-tracking-form-div h3 { color: ' . $ewd_otp_controller->settings->get_setting( 'styling-title-font-color' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-title-margin' ) !== '' ) {
-			$css .= '.ewd-otp-order-tracking-form-div h3 { margin: ' . $ewd_otp_controller->settings->get_setting( 'styling-title-margin' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-title-padding' ) !== '' ) {
-			$css .= '.ewd-otp-order-tracking-form-div h3 { padding: ' . $ewd_otp_controller->settings->get_setting( 'styling-title-padding' ) . ' !important; }'; }
-
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-label-font' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-label { font-family: ' . $ewd_otp_controller->settings->get_setting( 'styling-label-font' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-label-font-size' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-label { font-size: ' . $ewd_otp_controller->settings->get_setting( 'styling-label-font-size' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-label-font-color' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-label { color: ' . $ewd_otp_controller->settings->get_setting( 'styling-label-font-color' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-label-margin' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-label { margin: ' . $ewd_otp_controller->settings->get_setting( 'styling-label-margin' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-label-padding' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-label { padding: ' . $ewd_otp_controller->settings->get_setting( 'styling-label-padding' ) . ' !important; }'; }
-
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-content-font' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-value { font-family: ' . $ewd_otp_controller->settings->get_setting( 'styling-content-font' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-content-font-size' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-value { font-size: ' . $ewd_otp_controller->settings->get_setting( 'styling-content-font-size' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-content-font-color' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-value { color: ' . $ewd_otp_controller->settings->get_setting( 'styling-content-font-color' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-content-margin' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-value { margin: ' . $ewd_otp_controller->settings->get_setting( 'styling-content-margin' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-content-padding' ) !== '' ) {
-			$css .= '.ewd-otp-tracking-results-value { padding: ' . $ewd_otp_controller->settings->get_setting( 'styling-content-padding' ) . ' !important; }'; }
-
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-button-font-color' ) !== '' ) {
-			$css .= '.ewd-otp-submit { color: ' . $ewd_otp_controller->settings->get_setting( 'styling-button-font-color' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-button-background-color' ) !== '' ) {
-			$css .= '.ewd-otp-submit { background-color: ' . $ewd_otp_controller->settings->get_setting( 'styling-button-background-color' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-button-border' ) !== '' ) {
-			$css .= '.ewd-otp-submit { border: ' . $ewd_otp_controller->settings->get_setting( 'styling-button-border' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-button-margin' ) !== '' ) {
-			$css .= '.ewd-otp-submit { margin: ' . $ewd_otp_controller->settings->get_setting( 'styling-button-margin' ) . ' !important; }'; }
-		if ( $ewd_otp_controller->settings->get_setting( 'styling-button-padding' ) !== '' ) {
-			$css .= '.ewd-otp-submit { padding: ' . $ewd_otp_controller->settings->get_setting( 'styling-button-padding' ) . ' !important; }'; }
-
+		$css  = apply_filters( 'ewd_otp_premium_styling', '', $this );
+		$css  = is_string( $css ) ? $css : '';
 		$css .= $ewd_otp_controller->settings->get_setting( 'custom-css' );
-
-		if ( ! empty( $css ) ) {
-			echo '<style>';
-				echo $css;
-			echo '</style>';
+		if ( '' !== $css ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Preserve the Free stylesheet contract; remove HTML tags without encoding CSS selectors/quotes.
+			echo '<style>' . wp_strip_all_tags( $css ) . '</style>';
 		}
 	}
 }

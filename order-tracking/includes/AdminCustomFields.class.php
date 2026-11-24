@@ -39,7 +39,7 @@ class ewdotpAdminCustomFields {
 	public function show_admin_custom_fields_page() {
 		global $ewd_otp_controller;
 
-		$permission = ( $ewd_otp_controller->permissions->check_permission( 'custom_fields' ) or get_option( 'ewd-otp-installation-time' ) < 1664742505 ) ? true : false;
+			$permission = ewdotpEntitlement::administer( 'custom_fields' );
 
 		if ( ! empty( $_POST['ewd-otp-custom-fields-submit'] ) ) {
 
@@ -74,6 +74,7 @@ class ewdotpAdminCustomFields {
 				<?php do_action( 'ewd_otp_custom_fields_table_top' ); ?>
 	
 				<form id="ewd-otp-custom-fields-table" method="POST" action="">
+					<?php wp_nonce_field( 'ewd-otp-custom-fields' ); ?>
 	
 					<fieldset class="ewd-otp-warning-tip">
 						<div class="ewd-otp-shortcode-reminder">
@@ -229,6 +230,11 @@ class ewdotpAdminCustomFields {
 	 * @since 3.0.0
 	 */
 	public function save_custom_fields() {
+			global $ewd_otp_controller;
+			if ( ! isset( $_POST['ewd-otp-custom-fields-submit'] ) || ! ewdotpEntitlement::administer( 'custom_fields' ) || ! current_user_can( $ewd_otp_controller->settings->get_setting( 'access-role' ) ) ) {
+				return;
+			}
+			check_admin_referer( 'ewd-otp-custom-fields' );
 
 		$custom_fields = ! empty( $_POST['ewd-otp-custom-field-save-values'] ) ? json_decode( stripslashes( sanitize_text_field( $_POST['ewd-otp-custom-field-save-values'] ) ) ) : '';
 

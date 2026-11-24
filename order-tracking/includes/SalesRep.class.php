@@ -145,6 +145,9 @@ if ( ! class_exists( 'ewdotpSalesRep' ) ) {
 		 * @since 3.0.0
 		 */
 		public function process_admin_sales_rep_submission() {
+			if ( ! ewdotpEntitlement::administer( 'sales_reps' ) ) {
+				return false;
+			}
 			global $ewd_otp_controller;
 
 			$this->validate_admin_submission();

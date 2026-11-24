@@ -16,17 +16,25 @@ class ewdotpDashboard {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_to_menu' ), 99 );
 	}
 
+		/** Neutral dashboard extension; the compatible owner supplies license controls. */
+		public function display_entitlement_card() {
+			echo wp_kses(
+				apply_filters( 'ewd_otp_dashboard_entitlement_card', '' ),
+				apply_filters( 'ewd_dashboard_top_kses_allowed_tags', wp_kses_allowed_html( 'post' ) )
+			);
+		}
+
 	public function add_dashboard_to_menu() {
 		global $ewd_otp_controller;
 		global $submenu;
 
-		add_submenu_page( 
-			'ewd-otp-orders', 
-			'Dashboard', 
-			'Dashboard', 
-			$ewd_otp_controller->settings->get_setting( 'access-role' ), 
-			'ewd-otp-dashboard', 
-			array($this, 'display_dashboard_screen') 
+		add_submenu_page(
+			'ewd-otp-orders',
+			'Dashboard',
+			'Dashboard',
+			$ewd_otp_controller->settings->get_setting( 'access-role' ),
+			'ewd-otp-dashboard',
+			array($this, 'display_dashboard_screen')
 		);
 
 		// Create a new sub-menu in the order that we want
@@ -34,26 +42,26 @@ class ewdotpDashboard {
 		$menu_item_count = 3;
 
 		if ( ! isset( $submenu['ewd-otp-orders'] ) or  ! is_array($submenu['ewd-otp-orders']) ) { return; }
-		
+
 		foreach ( $submenu['ewd-otp-orders'] as $key => $sub_item	 ) {
-			
+
 			if ( $sub_item[0] == 'Dashboard' ) { $new_submenu[0] = $sub_item; }
 			elseif ( $sub_item[0] == 'Settings' ) { $new_submenu[ sizeof($submenu) + 1 ] = $sub_item; }
 			else {
 
 				if ( $sub_item[0] == 'Tracking' ) { $sub_item[0] = 'Orders'; }
-				
+
 				$new_submenu[$menu_item_count] = $sub_item;
 				$menu_item_count++;
 			}
 		}
 
 		ksort($new_submenu);
-		
+
 		$submenu['ewd-otp-orders'] = $new_submenu;
 	}
 
-	public function display_dashboard_screen() { 
+	public function display_dashboard_screen() {
 		global $ewd_otp_controller;
 
 		$permission = $ewd_otp_controller->permissions->check_permission( 'premium' );
@@ -66,7 +74,8 @@ class ewdotpDashboard {
 		?>
 
 		<div id="ewd-otp-dashboard-content-area">
-		
+			<?php $this->display_entitlement_card(); ?>
+
 			<?php if ( ! $permission or get_option("EWD_OTP_Trial_Happening") == "Yes" ) {
 				$premium_info = '<div class="ewd-otp-dashboard-visit-our-site">';
 				$premium_info .= sprintf( __( '<a href="%s" target="_blank">Visit our website</a> to learn how to upgrade to premium.'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/' );
@@ -117,7 +126,7 @@ class ewdotpDashboard {
 					</div>
 				</li>
 			</ul>
-	
+
 			<div class="ewd-otp-dashboard-catalogs">
 				<div class="ewd-otp-dashboard-catalogs-title"><?php _e('Orders', 'order-tracking'); ?></div>
 				<table class='ewd-otp-overview-table wp-list-table widefat fixed striped posts'>
@@ -167,7 +176,7 @@ class ewdotpDashboard {
 							</div>
 							<div class="ewd-otp-dashboard-new-footer-one-buttons">
 								<a class="ewd-otp-dashboard-new-upgrade-button" href="https://www.etoilewebdesign.com/license-payment/?Selected=OTP&Quantity=1&utm_source=otp_dashboard&utm_content=footer_upgrade" target="_blank">UPGRADE NOW</a>
-								<?php if ( ! get_option("EWD_OTP_Trial_Happening") and ! get_option( "EWD_OTPU_Trial_Happening" ) ) { 
+								<?php if ( ! get_option("EWD_OTP_Trial_Happening") and ! get_option( "EWD_OTPU_Trial_Happening" ) ) {
 									$trial_info = sprintf( __( '<div class="ewd-otp-dashboard-visit-site-to-learn-about-trial"><a href="%s" target="_blank">Visit our website</a> to learn how to get a free 7-day trial of the premium or ultimate versions.</div>'), 'https://www.etoilewebdesign.com/premium-upgrade-instructions/?utm_source=otp_dashboard&utm_content=sidebar_visit_our_site_link' );
 
 									$version_select_modal = '<div class="ewd-otp-trial-version-select-modal ewd-otp-hidden">';
@@ -198,7 +207,7 @@ class ewdotpDashboard {
 						</div>
 					<?php } ?>
 				</div>
-			<?php } ?>	
+			<?php } ?>
 
 			<div class="ewd-otp-dashboard-testimonials-and-other-plugins">
 
@@ -266,7 +275,7 @@ class ewdotpDashboard {
 			<?php } ?>
 
 		</div> <!-- ewd-otp-dashboard-content-area -->
-		
+
 		<div id="ewd-otp-dashboard-new-footer-two">
 			<div class="ewd-otp-dashboard-new-footer-two-inside">
 				<img src="<?php echo plugins_url( '../assets/img/ewd-logo-white.png', __FILE__ ); ?>" class="ewd-otp-dashboard-new-footer-two-icon">
@@ -288,7 +297,7 @@ class ewdotpDashboard {
 				</ul>
 			</div>
 		</div> <!-- ewd-otp-dashboard-new-footer-two -->
-		
+
 	<?php }
 
 	public function display_notice() {

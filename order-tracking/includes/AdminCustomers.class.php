@@ -76,7 +76,7 @@ class ewdotpAdminCustomers {
 		$this->customers_table = new ewdotpCustomersTable();
 		$this->customers_table->prepare_items();
 
-		$permission = ( $ewd_otp_controller->permissions->check_permission( 'customers' ) or get_option( 'ewd-otp-installation-time' ) < 1664742505 ) ? true : false;
+			$permission = ewdotpEntitlement::administer( 'customers' );
 		?>
 
 		<div class="wrap">
@@ -118,6 +118,9 @@ class ewdotpAdminCustomers {
 	 * @since 3.0.0
 	 */
 	public function add_edit_customer() {
+			if ( ! ewdotpEntitlement::administer( 'customers' ) ) {
+				return;
+			}
 		global $ewd_otp_controller;
 
 		$customer_id = ! empty( $_POST['ewd_otp_customer_id'] ) ? intval( $_POST['ewd_otp_customer_id'] ) :

@@ -1,16 +1,16 @@
 <?php
 global $ewd_otp_controller;
-$graphic_type = $ewd_otp_controller->settings->get_setting( 'tracking-graphic' );
+$graphic_type = 'default';
 ?>
 
 <div class='ewd-otp-tracking-graphic ewd-otp-<?php echo esc_attr( $graphic_type ); ?>'>
 
 	<div class='ewd-otp-empty-display'>
-		<img src='<?php echo EWD_OTP_PLUGIN_URL . '/assets/img/' . $this->get_option( 'tracking-graphic' ) . '.png'; ?>' style='width: 100%'/>
+		<img src='<?php echo esc_url( EWD_OTP_PLUGIN_URL . '/assets/img/default.png' ); ?>' style='width: 100%'/>
 	</div>
 
 	<div class='ewd-otp-full-display' style='width:<?php echo esc_attr( $this->order->current_status->percentage ); ?>%'>
-		<img src='<?php echo EWD_OTP_PLUGIN_URL . '/assets/img/' . $this->get_option( 'tracking-graphic' ) . '_full.png'; ?>' style='width: 100%; max-width: initial;'/>
+		<img src='<?php echo esc_url( EWD_OTP_PLUGIN_URL . '/assets/img/default_full.png' ); ?>' style='width: 100%; max-width: initial;'/>
 	</div>
 
 	<div class='ewd-otp-statuses'>

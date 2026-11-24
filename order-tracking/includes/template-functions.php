@@ -55,85 +55,8 @@ add_shortcode( 'tracking-form', 'ewd_otp_tracking_form_shortcode' );
  * @since 3.0.0
  */
 function ewd_otp_customer_form_shortcode( $atts ) {
-	global $ewd_otp_controller;
-
-	// Define shortcode attributes
-	$customer_atts = array(
-		'order_form_title'   => '',
-		'order_field_text'   => '',
-		'email_field_text'   => '',
-		'order_instructions' => '',
-		'submit_text'        => '',
-	);
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only form selection; the view validates the submitted collection proof.
-	$manual_lookup = isset( $_POST['ewd_otp_form_type'] ) && 'customer_form' === $_POST['ewd_otp_form_type'];
-
-	if ( ! $manual_lookup && get_current_user_id() ) {
-
-		$customer_id = $ewd_otp_controller->customer_manager->get_customer_id_from_wp_id( get_current_user_id() );
-	} elseif ( ! $manual_lookup && class_exists( 'FEUP_User' ) ) {
-
-		$feup_user = new FEUP_User();
-
-		$customer_id = $ewd_otp_controller->customer_manager->get_customer_id_from_feup_id( $feup_user->Get_User_ID() );
-	}
-
-	if ( ! empty( $customer_id ) ) {
-
-		$customer = new ewdotpCustomer();
-
-		$customer->load_customer_from_id( $customer_id );
-
-		// The view separately authorizes automatic account-linked collections.
-		$customer_atts['customer'] = $customer;
-	}
-
-	if ( ! empty( $_POST['ewd_otp_customer_download'] ) and $ewd_otp_controller->settings->get_setting( 'allow-customer-downloads' ) ) {
-
-		$customer_id = intval( $_POST['ewd_otp_customer_id'] );
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Collection downloads require the signed collection proof validated immediately below.
-		$collection_token = isset( $_POST['ewd_otp_collection_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ewd_otp_collection_token'] ) ) : '';
-		$customer         = new ewdotpCustomer();
-
-		$customer->load_customer_from_id( $customer_id );
-
-		$access = $ewd_otp_controller->order_access->authorize_collection( $customer, 'customer', array( 'collection_token' => $collection_token ), null, true );
-		if ( $access['authorized'] ) {
-
-			$ewd_otp_controller->exports->nonce_check    = false;
-			$ewd_otp_controller->exports->frontend_scope = 'customer';
-			$ewd_otp_controller->exports->customer_id    = $customer_id;
-			$ewd_otp_controller->exports->after          = date( 'Y-m-d H:i:s', strtotime( '-365 days' ) );
-
-			$ewd_otp_controller->exports->run_export();
-		}
-	}
-
-	// Create filter so addons can modify the accepted attributes
-	$customer_atts = apply_filters( 'ewd_otp_customer_form_shortcode_atts', $customer_atts );
-
-	// Extract the shortcode attributes
-	$args = shortcode_atts( $customer_atts, $atts );
-
-	// Render booking form
-	ewd_otp_load_view_files();
-
-	// Possibly update order status and location from the front-end
-	$update = ewd_otp_possibly_update_order();
-
-	if ( $update ) {
-
-		$args['update_message'] = $update;
-	}
-
-	$customer_form = new ewdotpViewCustomerForm( $args );
-
-	$customer_form->set_request_parameters();
-
-	$output = $customer_form->render();
-
-	return $output;
+	$result = ewdotpPremiumModules::call( 'customer_shortcode', array( $atts ) );
+	return is_wp_error( $result ) ? '' : $result;
 }
 add_shortcode( 'customer-form', 'ewd_otp_customer_form_shortcode' );
 
@@ -143,82 +66,8 @@ add_shortcode( 'customer-form', 'ewd_otp_customer_form_shortcode' );
  * @since 3.0.0
  */
 function ewd_otp_sales_rep_form_shortcode( $atts ) {
-	global $ewd_otp_controller;
-
-	if ( ! $ewd_otp_controller->permissions->check_permission( 'sales_reps' ) ) {
-		return; }
-
-	// Define shortcode attributes
-	$sales_rep_atts = array(
-		'order_form_title'   => '',
-		'order_field_text'   => '',
-		'email_field_text'   => '',
-		'order_instructions' => '',
-		'submit_text'        => '',
-	);
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only form selection; the view validates the submitted collection proof.
-	$manual_lookup = isset( $_POST['ewd_otp_form_type'] ) && 'sales_rep_form' === $_POST['ewd_otp_form_type'];
-
-	if ( ! $manual_lookup && get_current_user_id() ) {
-
-		$sales_rep_id = $ewd_otp_controller->sales_rep_manager->get_sales_rep_id_from_wp_id( get_current_user_id() );
-	}
-
-	if ( ! empty( $sales_rep_id ) ) {
-
-		$sales_rep = new ewdotpSalesRep();
-
-		$sales_rep->load_sales_rep_from_id( $sales_rep_id );
-
-		$sales_rep_atts['sales_rep'] = $sales_rep;
-	}
-
-	if ( ! empty( $_POST['ewd_otp_sales_rep_download'] ) and $ewd_otp_controller->settings->get_setting( 'allow-sales-rep-downloads' ) ) {
-
-		$sales_rep_id = intval( $_POST['ewd_otp_sales_rep_id'] );
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Collection downloads require the signed collection proof validated immediately below.
-		$collection_token = isset( $_POST['ewd_otp_collection_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ewd_otp_collection_token'] ) ) : '';
-		$sales_rep        = new ewdotpSalesRep();
-
-		$sales_rep->load_sales_rep_from_id( $sales_rep_id );
-
-		$access = $ewd_otp_controller->order_access->authorize_collection( $sales_rep, 'sales_rep', array( 'collection_token' => $collection_token ), null, true );
-		if ( $access['authorized'] ) {
-
-			$ewd_otp_controller->exports->nonce_check    = false;
-			$ewd_otp_controller->exports->frontend_scope = 'sales_rep';
-			$ewd_otp_controller->exports->sales_rep_id   = $sales_rep_id;
-			$ewd_otp_controller->exports->after          = date( 'Y-m-d H:i:s', strtotime( '-365 days' ) );
-
-			$ewd_otp_controller->exports->run_export();
-		}
-	}
-
-	// Create filter so addons can modify the accepted attributes
-	$sales_rep_atts = apply_filters( 'ewd_otp_sales_rep_form_shortcode_atts', $sales_rep_atts );
-
-	// Extract the shortcode attributes
-	$args = shortcode_atts( $sales_rep_atts, $atts );
-
-	// Render booking form
-	ewd_otp_load_view_files();
-
-	// Possibly update order status and location from the front-end
-	$update = ewd_otp_possibly_update_order();
-
-	if ( $update ) {
-
-		$args['update_message'] = $update;
-	}
-
-	$sales_rep_form = new ewdotpViewSalesRepForm( $args );
-
-	$sales_rep_form->set_request_parameters();
-
-	$output = $sales_rep_form->render();
-
-	return $output;
+	$result = ewdotpPremiumModules::call( 'sales_rep_shortcode', array( $atts ) );
+	return is_wp_error( $result ) ? '' : $result;
 }
 add_shortcode( 'sales-rep-form', 'ewd_otp_sales_rep_form_shortcode' );
 
@@ -228,63 +77,8 @@ add_shortcode( 'sales-rep-form', 'ewd_otp_sales_rep_form_shortcode' );
  * @since 3.0.0
  */
 function ewd_otp_customer_order_form_shortcode( $atts ) {
-	global $ewd_otp_controller;
-
-	if ( ! $ewd_otp_controller->permissions->check_permission( 'customer_orders' ) ) {
-		return; }
-
-	// Define shortcode attributes
-	$customer_order_atts = array(
-		'location'                  => '',
-		'customer_name_field_text'  => '',
-		'customer_email_field_text' => '',
-		'customer_notes_field_text' => '',
-		'success_redirect_page'     => '',
-		'submit_text'               => '',
-	);
-
-	// Create filter so addons can modify the accepted attributes
-	$customer_order_atts = apply_filters( 'ewd_otp_customer_order_form_shortcode_atts', $customer_order_atts );
-
-	// Extract the shortcode attributes
-	$args = shortcode_atts( $customer_order_atts, $atts );
-
-	// Handle order submission
-	if ( isset( $_POST['ewd_otp_form_type'] ) and $_POST['ewd_otp_form_type'] == 'customer_order_form' ) {
-
-		$args['order_submitted'] = true;
-
-		$order  = new ewdotpOrder();
-		$status = $order->process_client_order_submission();
-
-		if ( ! $status ) {
-
-			$args['update_message'] = '';
-
-			foreach ( $order->validation_errors as $validation_error ) {
-
-				$args['update_message'] .= '<br />' . $validation_error['message'];
-			}
-		} else {
-
-			$args['update_message'] = $ewd_otp_controller->settings->get_setting( 'label-customer-order-thank-you' ) . ' ' . $order->number;
-
-			if ( ! empty( $args['success_redirect_page'] ) ) {
-				header( 'location:' . esc_url_raw( $args['success_redirect_page'] ) );
-				exit(); }
-		}
-	}
-
-	// Render booking form
-	ewd_otp_load_view_files();
-
-	$customer_order_form = new ewdotpViewCustomerOrderForm( $args );
-
-	$customer_order_form->set_request_parameters();
-
-	$output = $customer_order_form->render();
-
-	return $output;
+	$result = ewdotpPremiumModules::call( 'customer_order_shortcode', array( $atts ) );
+	return is_wp_error( $result ) ? '' : $result;
 }
 add_shortcode( 'customer-order', 'ewd_otp_customer_order_form_shortcode' );
 
@@ -329,6 +123,8 @@ function ewd_otp_load_view_files() {
 	foreach ( $files as $file ) {
 		require_once $file;
 	}
+	// Compatible owners can load their views only after the shared bases exist.
+	do_action( 'ewd_otp_shared_views_loaded' );
 }
 
 function ewd_otp_possibly_update_order() {
@@ -336,8 +132,11 @@ function ewd_otp_possibly_update_order() {
 
 	if ( empty( $_POST['ewd_otp_update_status_and_location'] ) ) {
 		return false; }
+	if ( ! $ewd_otp_controller->order_access->front_end_changes_enabled() ) {
+		return false;
+	}
 
-	$order_id = intval( $_POST['ewd_otp_order_id'] );
+	$order_id = isset( $_POST['ewd_otp_order_id'] ) && is_scalar( $_POST['ewd_otp_order_id'] ) ? absint( $_POST['ewd_otp_order_id'] ) : 0;
 
 	if ( empty( $order_id ) ) {
 		return false;
