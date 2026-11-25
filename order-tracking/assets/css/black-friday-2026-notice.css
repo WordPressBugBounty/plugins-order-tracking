@@ -1,0 +1,38 @@
+.ewd-otp-bf2026-notice {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+	padding: 16px 20px;
+	border-left-color: #1b335f;
+	box-shadow: 0 0 2px #aaa;
+}
+.ewd-otp-bf2026-icon {
+	flex: 0 0 auto;
+	width: 100px;
+	height: 100px;
+	margin-top: 4px;
+}
+.ewd-otp-bf2026-content {
+	flex: 1;
+	min-width: 0;
+}
+.ewd-otp-bf2026-content > p:first-child {
+	margin-top: 0;
+	font-size: 15px;
+	line-height: 1.6;
+	font-weight: 600;
+}
+.ewd-otp-bf2026-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 0;
+}
+.ewd-otp-bf2026-status {
+	color: #b32d2e;
+}
+@media screen and (max-width: 600px) {
+	.ewd-otp-bf2026-notice { gap: 12px; padding: 12px; }
+	.ewd-otp-bf2026-icon { width: 56px; height: 56px; }
+}

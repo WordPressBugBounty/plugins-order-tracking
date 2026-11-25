@@ -4,7 +4,7 @@ Donate Link: https://www.etoilewebdesign.com/plugin-donations/
 Tags: order tracking, status tracking, order status, woocommerce order tracking, order management
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 3.7.0
+Stable tag: 3.7.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -322,6 +322,9 @@ For more info about the premium version, please see here: https://doc.etoilewebd
 29. The styling options to control fonts, colours, spacing, etc.
 
 == Changelog ==
+
+= 3.7.1 (2026-11-25) =
+- Update for premium helper compatibility.
 
 = 3.7.0 (2026-11-24) =
 - **If you are using the premium version, please make sure to also update the EWD Premium Helper plugin to version 0.3.0 at the same time.**
